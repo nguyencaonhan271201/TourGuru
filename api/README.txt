@@ -1,0 +1,1 @@
+This folder will be the workplace for Back-end, containing PHP files for handling requests

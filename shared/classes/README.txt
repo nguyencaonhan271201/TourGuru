@@ -1,0 +1,1 @@
+This folder contain OOP-structured data for use (maybe mainly Back-end for handling requests by using Class)

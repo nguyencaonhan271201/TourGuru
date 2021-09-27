@@ -1,0 +1,1 @@
+This folder contains assets such as images, audios, color themes, etc
