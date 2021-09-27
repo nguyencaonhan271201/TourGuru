@@ -1,0 +1,1 @@
+This folder contain shared CSS file for the whole site (should be included in header)

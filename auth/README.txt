@@ -1,0 +1,1 @@
+Each subpage should contains its own index.php along with other .php file and "private" .css file(s) for unique styles
