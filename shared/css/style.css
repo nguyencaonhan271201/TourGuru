@@ -1,0 +1,86 @@
+:root {
+  --white: #f8f7f7;
+  --purple-1: #a082af;
+  --purple-2: #c95998;
+  --purple-3: #6763a8;
+  --green: #00c2b1;
+  --black: #323545;
+}
+
+@font-face {
+  font-family: "medium";
+  src: url("../assets/fonts/Medium.ttf");
+}
+
+@font-face {
+  font-family: "regular";
+  src: url("../assets/fonts/Regular.ttf");
+}
+
+h1 {
+  font-family: "medium";
+  text-transform: lowercase;
+  color: var(--purple-1);
+  font-size: 60px;
+}
+
+h2 {
+  font-family: "medium";
+  text-transform: lowercase;
+  color: var(--purple-3);
+  font-size: 50px;
+}
+
+p {
+  font-family: "regular";
+  color: var(--black);
+  font-size: 17px;
+}
+
+.bordered_1 {
+  border-radius: 30px !important;
+}
+
+.bordered_2 {
+  border-radius: 20px !important;
+}
+
+nav {
+  background-image: linear-gradient(
+    to bottom,
+    hsla(0, 0%, 0%, 0.8) 0%,
+    hsla(0, 0%, 0%, 0.79) 4.5%,
+    hsla(0, 0%, 0%, 0.761) 9.3%,
+    hsla(0, 0%, 0%, 0.717) 14.3%,
+    hsla(0, 0%, 0%, 0.66) 19.7%,
+    hsla(0, 0%, 0%, 0.593) 25.3%,
+    hsla(0, 0%, 0%, 0.518) 31.2%,
+    hsla(0, 0%, 0%, 0.44) 37.4%,
+    hsla(0, 0%, 0%, 0.36) 43.9%,
+    hsla(0, 0%, 0%, 0.282) 50.8%,
+    hsla(0, 0%, 0%, 0.207) 58.1%,
+    hsla(0, 0%, 0%, 0.14) 65.7%,
+    hsla(0, 0%, 0%, 0.083) 73.7%,
+    hsla(0, 0%, 0%, 0.039) 82%,
+    hsla(0, 0%, 0%, 0.01) 90.8%,
+    hsla(0, 0%, 0%, 0) 100%
+  );
+}
+
+#logo {
+  width: 20px;
+}
+
+nav a {
+  font-family: "regular";
+  text-transform: lowercase;
+  color: var(--white) !important;
+  font-size: 20px;
+}
+
+nav a.active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--purple-1);
+  text-decoration-thickness: 2.5px;
+}
