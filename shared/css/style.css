@@ -17,6 +17,22 @@
   src: url("../assets/fonts/Regular.ttf");
 }
 
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+::-webkit-sadcrollbar {
+  width: 0px;
+  background: transparent;
+  display: none;
+}
+
+body * {
+  transition: all 0.3s ease;
+}
+
 h1 {
   font-family: "medium";
   text-transform: lowercase;
@@ -31,18 +47,57 @@ h2 {
   font-size: 50px;
 }
 
+h5 {
+  font-family: "regular";
+  color: var(--white);
+  font-size: 20px;
+}
+
+h6 {
+  font-family: "regular";
+  font-size: 8px !important;
+}
+
 p {
   font-family: "regular";
   color: var(--black);
   font-size: 17px;
 }
 
+th,
+td {
+  font-family: "regular";
+  color: var(--black);
+}
+
+th {
+  color: var(--purple-1);
+}
+
 .bordered_1 {
   border-radius: 30px !important;
+  border-color: transparent;
 }
 
 .bordered_2 {
   border-radius: 20px !important;
+  border-color: transparent;
+}
+.outline-1 {
+  color: var(--white);
+  text-shadow: 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1);
 }
 
 nav {
