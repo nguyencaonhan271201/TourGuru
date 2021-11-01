@@ -217,19 +217,6 @@ body {
 }
 
 #btn-save {
-    background: var(--theme-purple);
-    border: none;
-    border-radius: 10rem;
-    padding: 5px 20px;
-    color: white;
-    transition: background 200ms;
-}
-
-#btn-save:hover {
-    background: var(--theme-dark-purple);
-}
-
-#btn-print {
     background: var(--theme-pink);
     border: none;
     border-radius: 10rem;
@@ -238,7 +225,7 @@ body {
     transition: background 200ms;
 }
 
-#btn-print:hover {
+#btn-save:hover {
     background: var(--theme-dark-pink);
 }
 
@@ -277,6 +264,23 @@ body {
 .destination:hover {
     color: var(--theme-dark-purple);
     text-decoration: none;
+}
+
+.agency-name {
+    display: flex;
+    align-items: center;
+    color: var(--theme-pink);
+}
+
+.agency-detail {
+    text-align: center;
+    display: none;
+    justify-content: center;
+}
+
+#agency-logo {
+    width: 100px;
+    height: 100px;
 }
 
 @media screen and (max-width: 768px) {

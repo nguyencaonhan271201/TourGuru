@@ -1,5 +1,7 @@
 let title = "";
 let uid;
+let planID;
+let created;
 let fromDate = "";
 let toDate = "";
 let description = "";
@@ -11,10 +13,10 @@ let chosenBookings = {
     flights: [],
     hotels: []
 };
-let currentChoosingBooking = {
-    flights: -1,
-    hotels: -1
-};
+let chosenBookingIndex = {
+    flights: [],
+    hotels: []
+}
 let details = [];
 let choosingAttraction = {
     id: '',
@@ -35,6 +37,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     })
 
+    let urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("id")) {
+        planID = urlParams.get("id");
+    } else {
+        location.replace("./../");
+    } 
+
     // Swal.fire({
     //     title: 'Loading...',
     //     html: 'Please wait...',
@@ -45,38 +54,16 @@ window.addEventListener("DOMContentLoaded", () => {
     //     }
     // });
 
-    getAvailableBookings();
-    reInitializeEventListeners();
+    gatherInformation();
 
-    document.getElementById("btn-create").addEventListener("click", () => {
-        Swal.fire({
-            title: 'Are you sure want to create this plan?',
-            text: 'Further modifications are allowed.',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            confirmButtonColor: 'green',
-            cancelButtonColor: 'red'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Loading...',
-                    html: 'Please wait...',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                    Swal.showLoading()
-                    }
-                });
-                savePlan();
-            }
-        })
-    })
+    reInitializeEventListeners();
 })
 
 const reInitializeEventListeners = () => {
     document.querySelectorAll(".editable-icon").forEach(icon => {
         icon.addEventListener("click", () => {
             let getType = icon.getAttribute("data-type");
+            console.log(icon);
 
             switch (getType) {
                 case "title":
@@ -103,17 +90,6 @@ const reInitializeEventListeners = () => {
     document.getElementById("add-detail").addEventListener("click", () => {
         showAddDetailSwal();
     })
-}
-
-const getDisplayDateFormat = (isWeekDay, ISODate) => {
-    const newDateObj = new Date(ISODate);
-    const toMonth = newDateObj.getMonth() + 1;
-    const toYear = newDateObj.getFullYear();
-    const toDate = newDateObj.getDate();
-    const DOW = newDateObj.getDay()
-    const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
-    // console.log(dateTemplate)
-    return dateTemplate;
 }
 
 const showDateSwal = () => {
@@ -277,154 +253,6 @@ const showAddBookingSwal = () => {
     })
 }
 
-const getAvailableBookings = () => {
-    const getAvailableFlightBookings = () => {
-        let csrf = document.getElementById("csrf").innerText;
-        let xhr = new XMLHttpRequest();
-        xhr.open(
-            "GET",
-            "/api/plans/create.php",
-            true
-        )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            swal.close();
-            if (this.status === 200 && this.readyState === 4) {
-               //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(this.responseText); 
-               result.forEach(iteration => {
-                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
-                        availableBookings.flights[iteration.booking_id] = [];
-                        availableBookings.flights[iteration.booking_id].push(iteration);
-                    } else {
-                        availableBookings.flights[iteration.booking_id].push(iteration);
-                    }
-               })
-               getAvailableHotelBookings();
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    text: "Error occured."
-                });
-                location.replace("./../../");
-            }
-        }
-        xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
-    }
-
-    const getAvailableHotelBookings = () => {
-        let csrf = document.getElementById("csrf").innerText;
-        let xhr = new XMLHttpRequest();
-        xhr.open(
-            "GET",
-            "/api/plans/create.php",
-            true
-        )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            swal.close();
-            if (this.status === 200 && this.readyState === 4) {
-                //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
-                availableBookings.hotels = result;
-                Swal.close();
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    text: "Error occured."
-                });
-                location.replace("./../../");
-            }
-        }
-        xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
-    }
-    
-    //getAvailableFlightBookings();
-
-    availableBookings = {
-        hotels: [
-            {
-                'id': 1,
-                'user_id': 1,
-                'date_start': '2021-11-18',
-                'date_end': '2021-11-20',
-                'number_of_nights': 2,
-                'hotel_id': 12345,
-                'hotel_name': 'Bulgari Hotel London',
-                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
-                'status': 1,
-                'number_of_beds': 1,
-                'date_booked': '',
-                'total_cost': '2646.12 EUR',
-            }
-        ],
-        flights: {
-            1: [
-                {
-                    'id': 1,
-                    'booking_id': 1,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 1,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ],
-            2: [
-                {
-                    'id': 1,
-                    'booking_id': 2,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 2,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ]
-        }
-    }
-}
-
 const checkSelectedFlightBookings = (id) => {
     let isReturned = false;
     chosenBookings["flights"].forEach(booking => {
@@ -488,42 +316,6 @@ const createContentBookingSwal = () => {
     document.getElementById("search-hotel-booking-result").innerHTML = html;
 
     bookingSwalEventListeners();
-}
-
-const bookingSwalEventListeners = () => {
-    document.querySelectorAll('.flight-booking-enabled').forEach(item => {
-        item.addEventListener("click", () => {
-            let id = item.getAttribute("data-id");
-            currentChoosingBooking.flights = id;
-
-            createContentBookingSwal();
-        })
-    })
-
-    document.querySelectorAll('.flight-booking-disabled').forEach(item => {
-        item.addEventListener("click", () => {
-            currentChoosingBooking.flights = -1;
-
-            createContentBookingSwal();
-        })
-    })
-
-    document.querySelectorAll('.hotel-booking-disabled').forEach(item => {
-        item.addEventListener("click", () => {
-            currentChoosingBooking.hotels = -1;
-
-            createContentBookingSwal();
-        })
-    })
-
-    document.querySelectorAll('.hotel-booking-enabled').forEach(item => {
-        item.addEventListener("click", () => {
-            let id = item.getAttribute("data-id");
-            currentChoosingBooking.hotels = id;
-
-            createContentBookingSwal();
-        })
-    })
 }
 
 const updateBookingLinkedDetail = () => {
@@ -788,6 +580,310 @@ const deleteSelectedDestination = (e) => {
     document.getElementById("chosen-attraction").innerHTML = "";
 }
 
+const gatherInformation = () => {
+    const gatherGeneralInfo = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            "/api/plans/plans.php",
+            true
+        )
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            swal.close();
+            if (this.status === 200 && this.readyState === 4) {
+               //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(this.responseText); 
+                title = result.plan_title;
+                description = result.plan_description;
+                fromDate = result.from_date;
+                toDate = result.to_date;
+                created = result.date_created;
+                chosenBookingIndex.flights = result.flight_id.split(',');
+                chosenBookingIndex.hotels = result.hotel_id.split(',');
+                chosenBookingIndex.flights = chosenBookingIndex.flights.map(flight => parseInt(flight));
+                chosenBookingIndex.hotels = chosenBookingIndex.hotels.map(hotel => parseInt(hotel));
+                getAvailableFlightBookings();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                });
+                location.replace("./../");
+            }
+        }
+        xhr.send(`getPlanGeneral&user_id=${uid}&plan_id=${planID}&csrf=${csrf}`);
+    }
+
+    const getAvailableFlightBookings = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            "/api/plans/create.php",
+            true
+        )
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            swal.close();
+            if (this.status === 200 && this.readyState === 4) {
+               //Nhận thông tin và lưu vào danh mục
+               let result = JSON.parse(this.responseText); 
+               result.forEach(iteration => {
+                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
+                        availableBookings.flights[iteration.booking_id] = [];
+                        availableBookings.flights[iteration.booking_id].push(iteration);
+                    } else {
+                        availableBookings.flights[iteration.booking_id].push(iteration);
+                    }
+               })
+               getAvailableHotelBookings();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                });
+                location.replace("./../../");
+            }
+        }
+        xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
+    }
+
+    const getAvailableHotelBookings = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            "/api/plans/create.php",
+            true
+        )
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            swal.close();
+            if (this.status === 200 && this.readyState === 4) {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(this.responseText); 
+                availableBookings.hotels = result;
+                gatherPlanDetails();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                });
+                location.replace("./../../");
+            }
+        }
+        xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
+    }
+
+    const gatherPlanDetails = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            "/api/plans/plans.php",
+            true
+        )
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            swal.close();
+            if (this.status === 200 && this.readyState === 4) {
+               //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(this.responseText); 
+                result.forEach(result => {
+                    let detailToAdd = {
+                        date: result.date,
+                        time: result.start,
+                        detail: result.detail,
+                        attraction: {
+                            id: result.destination_id,
+                            name: result.destination_name,
+                            image: result.destination_image,
+                        },
+                        isRemind: result.set_alarmed,
+                        rawID: result.id
+                    }
+                    details.push(detailToAdd);
+
+                    //Load everything completed
+                    printToDisplay();
+                })
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                });
+                location.replace("./../");
+            }
+        }
+        xhr.send(`getPlanDetails&plan_id=${planID}&csrf=${csrf}`);
+    }
+
+    //gatherGeneralInfo();
+
+    availableBookings = {
+        hotels: [
+            {
+                'id': 1,
+                'user_id': 1,
+                'date_start': '2021-11-18',
+                'date_end': '2021-11-20',
+                'number_of_nights': 2,
+                'hotel_id': 12345,
+                'hotel_name': 'Bulgari Hotel London',
+                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
+                'status': 1,
+                'number_of_beds': 1,
+                'date_booked': '',
+                'total_cost': '2646.12 EUR',
+            }
+        ],
+        flights: {
+            1: [
+                {
+                    'id': 1,
+                    'booking_id': 1,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 1,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ],
+            2: [
+                {
+                    'id': 1,
+                    'booking_id': 2,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 2,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ]
+        }
+    }
+
+    title = 'hanoi hanoi hanoi',
+    description = 'hola welcome to the capital for the first time',
+    fromDate = '2020-11-27',
+    toDate = '2020-11-30',
+    created = '2021-11-01'
+    chosenBookingIndex = {
+        flights: [1],
+        hotels: [1]
+    }
+
+    details = [
+        {
+            "rawID": 1,
+            "detail": "abcdef",
+            "date": "2021-11-06",
+            "time": "09:45",
+            "isRemind": false,
+            "attraction": {
+                "id": "953101",
+                "name": "Disney’s Hollywood Studios",
+                "image": "https://media-cdn.tripadvisor.com/media/photo-m/1280/18/df/2c/bb/disney-s-hollywood-studios.jpg",
+            }
+        },
+        {
+            "rawID": 2,
+            "detail": "wake me up",
+            "date": "2021-11-06",
+            "time": "06:00",
+            "isRemind": true,
+            "attraction": {
+                "id": "",
+                "name": "",
+                "image": "",
+            }
+        }
+    ]
+
+    printToDisplay();
+}
+
+const printToDisplay = () => {
+    Swal.close();
+
+    chosenBookingIndex.flights.forEach(index => {
+        chosenBookings.flights.push(availableBookings.flights[index])
+    });
+
+    chosenBookingIndex.hotels.forEach(index => {
+        availableBookings.hotels.forEach(hotelBooking => {
+            if (hotelBooking.id == index) {
+                chosenBookings.hotels.push(hotelBooking);
+            }
+        })
+    });
+
+    document.getElementById("plan-title").innerText = title;
+    let dateString = "";
+    if (fromDate == toDate) {
+        dateString = getDisplayDateFormat(false, fromDate);
+    } else {
+        dateString = `${getDisplayDateFormat(false, fromDate)} - ${getDisplayDateFormat(false, toDate)}`
+    }
+    document.getElementById("plan-date").innerText = dateString;
+    
+    if (description == "") {
+        document.getElementById("description-div").style.display = "none";
+    } else {
+        document.getElementById("plan-description").innerText = description;
+        document.getElementById("description-div").style.display = "block";
+        document.getElementById("add-description").style.display = "none";
+    }
+
+    document.getElementById("plan-created").innerText = `created: ${getDisplayDateFormat(false, created)}`;
+
+    updateBookingLinkedDetail();
+
+    printDetails();
+} 
+
 const printDetails = () => {
     let detailsBox = document.getElementById("details");
     detailsBox.innerHTML = "";
@@ -864,6 +960,17 @@ const printDetails = () => {
             }
         })
     })
+}
+
+const getDisplayDateFormat = (isWeekDay, ISODate) => {
+    const newDateObj = new Date(ISODate);
+    const toMonth = newDateObj.getMonth() + 1;
+    const toYear = newDateObj.getFullYear();
+    const toDate = newDateObj.getDate();
+    const DOW = newDateObj.getDay()
+    const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
+    // console.log(dateTemplate)
+    return dateTemplate;
 }
 
 const showEditDetail = (detailID) => {
@@ -1006,99 +1113,38 @@ const showDeleteDetailConfirmation = (detailID) => {
     })
 }
 
-const savePlan = () => {
-    if (title == "" || fromDate == "" || toDate == "") {
-        swal.close();
-        Swal.fire({
-            icon: "error",
-            text: "Please fill in at least title and the dates of the plan."
-        });
-        return;
-    }
+const bookingSwalEventListeners = () => {
+    document.querySelectorAll('.flight-booking-enabled').forEach(item => {
+        item.addEventListener("click", () => {
+            let id = item.getAttribute("data-id");
+            currentChoosingBooking.flights = id;
 
-    //Add booking info to table
-    //Get csrf
-    let csrf = "";
-    csrf = document.getElementById("csrf").innerText;
-
-    let data = {
-        "user_id": uid,
-        "plan_title": `${title}`,
-        "description": `${description}`,
-        "flight_id": `${chosenBookings.flights.toString}`,
-        "hotel_id": `${chosenBookings.hotels.toString}`,
-        "from_date": `${fromDate}`,
-        "to_date": `${toDate}`
-    }
-
-    let xhr = new XMLHttpRequest();
-    xhr.open(
-        "POST",
-        "/api/plans/create.php",
-        true
-    )
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
-            let planID = int.Parse(this.responseText);
-            sendDetails(planID);
-        } else {
-            swal.close();
-            Swal.fire({
-                icon: "error",
-                text: "Error occured. Please try again later."
-            });
-        }
-    }
-    xhr.send(`planInfo&data=${JSON.stringify(data)}&csrf=${csrf}`);
-}
-
-const sendDetails = (planID) => {
-    //Add booking info to table
-    //Get csrf
-    let csrf = "";
-    csrf = document.getElementById("csrf").innerText;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open(
-        "POST",
-        "/api/plans/create.php",
-        true
-    )
-
-    let sendData = [];
-    details.forEach(detail => {
-        let detailStorage = {
-            "plan_id": planID,
-            "destination_id": detail.attraction.id,
-            "destination_name": detail.attraction.name,
-            "destination_image": detail.attraction.image,
-            "detail": detail.detail,
-            "date": detail.date,
-            "start": detail.time,
-            "set_alarmed": detail.isRemind
-        }
-
-        sendData.push(detailStorage)
+            createContentBookingSwal();
+        })
     })
 
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        swal.close();
-        if (this.status === 200 && this.readyState === 4) {
-            //Booking complete
-            Swal.fire({
-                title: 'Plan has been saved successfully.',
-                text: 'You can edit details of your plan in your profile section.',
-                icon: 'success'
-            })
-            location.replace("./../")
-        } else {
-            Swal.fire({
-                icon: "error",
-                text: "Error occured. Please try again later."
-            });
-        }
-    }
-    xhr.send(`planDetails&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    document.querySelectorAll('.flight-booking-disabled').forEach(item => {
+        item.addEventListener("click", () => {
+            currentChoosingBooking.flights = -1;
+
+            createContentBookingSwal();
+        })
+    })
+
+    document.querySelectorAll('.hotel-booking-disabled').forEach(item => {
+        item.addEventListener("click", () => {
+            currentChoosingBooking.hotels = -1;
+
+            createContentBookingSwal();
+        })
+    })
+
+    document.querySelectorAll('.hotel-booking-enabled').forEach(item => {
+        item.addEventListener("click", () => {
+            let id = item.getAttribute("data-id");
+            currentChoosingBooking.hotels = id;
+
+            createContentBookingSwal();
+        })
+    })
 }

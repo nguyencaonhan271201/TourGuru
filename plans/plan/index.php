@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Tour Guru | Plans</title>
+        <title>Tour Guru | Plan</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,24 +17,47 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="../../shared/css/tooltip.css">
     </head>
     <body>
         <div class="container-fluid mt-4 mb-4">
             <div class="main-container">
-                <h1 class="text-purple text-center mb-3">my plans</h1>
-                <h5 class="text-pink text-center mt-2">feel free to 
-                    <a id="btn-create" href="./create">create a new plan</a>
-                    if you wish
-                </h5>
+                <div class="btn-block text-right">
+                    <button type="button" id="btn-edit"><i class="fas fa-edit"></i></button>
+                    <button type="button" id="btn-print"><i class="fa fa-print" aria-hidden="true"></i></button>
+                </div>
+                <div class="agency-detail">
+                    <img id="agency-logo" src="https://firebasestorage.googleapis.com/v0/b/tour-guru-25442.appspot.com/o/logo.svg?alt=media&token=ca6b15e1-bce5-4d6b-be8d-8d834788d043" alt="">
+                    <div class="agency-name">
+                        <h2>Tour Guru</h2>
+                    </div>
+                </div>
+                <div class="header-div text-center">
+                    <div class="editable-container" id="title-div">
+                        <h1 id="plan-title">title</h1>
+                    </div>
+                    <div class="editable-container" id="date-div">
+                        <h4 id="plan-date">from date - to date</h4>
+                    </div>
+                    <div class="editable-container" id="description-div">
+                        <h5 id="plan-description"></h5>
+                    </div>
+                    <div class="">
+                        <p class="text-gray text-right font-italic" id="plan-created">created: </p>
+                    </div>
+                </div>
+                <hr>
+                <div class="external-linkings">
+                    <h2 class="text-pink text-right">bookings</h2>
+                    <div class="bookings">
+                        
+                    </div>
+                </div>
+                <hr>
+                <div class="main-detail-div text-center">
+                    <h2 class="text-pink text-right">details</h2>
+                    <div id="details">
 
-                <div class="plans row mt-4">
-                    <div class="col-md-4 col-sm-6 col-12 plan-container">
-                        <div class="plan text-center">
-                            <h3 class="text-pink">plan name</h3>
-                            <h5 class="text-purple">dd/mm/yyyy - dd/mm/yyyy</h5>
-                            <p class="text-gray">description of the plan</p>
-                            <button class="btn-view">view</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -63,7 +86,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <!-- Project JavaScript -->
-        <script src="./../shared/js/firebase.js"></script>
+        <script src="./../../shared/js/firebase.js"></script>
         <script src="./main.js"></script>
     </body>
 </html>

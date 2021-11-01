@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Tour Guru | Plans</title>
+        <title>Tour Guru | Edit Plan</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -17,25 +17,52 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="../../shared/css/tooltip.css">
     </head>
     <body>
         <div class="container-fluid mt-4 mb-4">
             <div class="main-container">
-                <h1 class="text-purple text-center mb-3">my plans</h1>
-                <h5 class="text-pink text-center mt-2">feel free to 
-                    <a id="btn-create" href="./create">create a new plan</a>
-                    if you wish
-                </h5>
-
-                <div class="plans row mt-4">
-                    <div class="col-md-4 col-sm-6 col-12 plan-container">
-                        <div class="plan text-center">
-                            <h3 class="text-pink">plan name</h3>
-                            <h5 class="text-purple">dd/mm/yyyy - dd/mm/yyyy</h5>
-                            <p class="text-gray">description of the plan</p>
-                            <button class="btn-view">view</button>
-                        </div>
+                <div class="btn-block text-right">
+                    <button type="button" id="btn-save"><i class="fas fa-save"></i></button>
+                </div>
+                <div class="header-div text-center">
+                    <div class="editable-container" id="title-div">
+                        <h1 id="plan-title">title</h1>
+                        <p class="editable-icon" data-type="title"><i class="fas fa-edit"></i></p>
                     </div>
+                    <div class="editable-container" id="date-div">
+                        <h4 id="plan-date">from date - to date</h4>
+                        <p class="editable-icon" data-type="date"><i class="fas fa-edit"></i></p>
+                    </div>
+                    <div class="editable-container" id="description-div">
+                        <h5 class="editable" id="plan-description"></h5>
+                        <p class="editable-icon" data-type="description"><i class="fas fa-edit"></i></p>
+                    </div>
+                    <p class="editable-icon-show" id="add-description"
+                    data-tooltip="Add description" data-tooltip-location="right"
+                    ><i class="fa fa-plus" aria-hidden="true"></i></p>
+                    <div class="">
+                        <p class="text-gray text-right font-italic" id="plan-created">created: </p>
+                    </div>
+                </div>
+                <hr>
+                <div class="external-linkings">
+                    <h2 class="text-pink text-right">bookings</h2>
+                    <div class="bookings">
+                        
+                    </div>
+                    <p class="editable-icon-show mt-3" id="add-booking"
+                    data-tooltip="Link an existing booking" data-tooltip-location="right"
+                    ><i class="fa fa-plus" aria-hidden="true"></i></p>
+                </div>
+                <hr>
+                <div class="main-detail-div text-center">
+                    <h2 class="text-pink text-right">details</h2>
+                    <div id="details">
+
+                    </div>
+                    <p class="editable-icon-show" id="add-detail"
+                    data-tooltip="Add a detail" data-tooltip-location="right"><i class="fa fa-plus" aria-hidden="true"></i></p>
                 </div>
             </div>
         </div>
@@ -63,7 +90,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <!-- Project JavaScript -->
-        <script src="./../shared/js/firebase.js"></script>
+        <script src="./../../shared/js/firebase.js"></script>
         <script src="./main.js"></script>
     </body>
 </html>

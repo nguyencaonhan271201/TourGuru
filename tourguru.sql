@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 31, 2021 at 04:55 PM
+-- Generation Time: Nov 01, 2021 at 04:12 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -193,14 +193,15 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 DROP TABLE IF EXISTS `visited_locations`;
 CREATE TABLE IF NOT EXISTS `visited_locations` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `location_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `location_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `longitude` double NOT NULL,
-  `latitude` double NOT NULL,
+  `longitude` double DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
   `region` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
   KEY `fk_visited_user` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
