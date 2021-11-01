@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Tour Guru | Sign Up</title>
+        <title>Tour Guru | Reset Password</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,51 +20,33 @@
     </head>
     <body>
         
-        <div class="container-fluid">
+    <div class="container-fluid">
             <div class="row">
                 <div class="align-items-center justify-content-center col-md-6 col-sm-0 d-md-flex d-none" id="sign-in-left-col"> 
-                    <img class="left-col-logo" alt="" src="./../shared/assets/images/logo-tilted.svg">
+                    <img class="left-col-logo" alt="" src="./../../shared/assets/images/logo-tilted.svg">
                 </div>
 
-                <div class="col-md-6 col-sm-0" id="sign-in-main-col"> 
+                <div class="col-md-6 col-sm-0 d-flex flex-column align-items-center justify-content-center" id="sign-in-main-col"> 
                     <div class="container">
-                        <div class="main-col-above text-md-left p-2 text-sm-center">
-                            <h3 class="text-purple">sign up</h3>
-                            <p><span class="text-lighter">already have an account? 
-                                <a href="./login.php" class="text-dark-purple a-dark-purple">sign in</a> 
+                        <div class="main-col-above text-md-left p-3 text-sm-center">
+                            <h3 class="text-purple">reset password</h3>
+                            <p><span class="text-lighter">don't have an account? 
+                                <a href="./../../auth" class="text-dark-purple a-dark-purple">sign up</a> 
                             </span> </p>
-                            <button class="btn btn-google d-flex align-items-center justify-content-center" id="btn-google">
-                                <img src = "./../shared/assets/images/google_logo.svg" alt="" id="img-google-logo" class="mr-2"/>
-                                continue with Google
-                            </button>
                         </div>
                         <hr id="main-col-hr">
                         <div class="main-col-below">
-                            <form id="sign-up-form" class="auth-form" method="post" action="index.php">
+                            <form id="reset-password-form" class="auth-form" method="post" action="login.php">
                                 <div class="p-3">
                                     <div>
                                         <div class="d-flex flex-row justify-content-between">
                                             <h5 class="input-label">email</h5>
                                             <h5 id="email-invalid" class="invalid-text">invalid</h5>
                                         </div>
-                                        <input type="email" id="sign-up-email" name="sign-up-email" class="" required>
-                                    </div>
-                                    <div>
-                                        <div class="d-flex flex-row justify-content-between">
-                                            <h5 class="input-label">password</h5>
-                                            <h5 id="password-invalid" class="invalid-text">invalid</h5>
-                                        </div>
-                                        <input type="password" id="sign-up-password" name="sign-up-password" class="" required>
-                                    </div>
-                                    <div>
-                                        <div class="d-flex flex-row justify-content-between">
-                                            <h5 class="input-label">confirm password</h5>
-                                            <h5 id="confirm-password-invalid" class="invalid-text">invalid</h5>
-                                        </div>
-                                        <input type="password" id="sign-up-confirm-password" name="sign-up-confirm-password" class="" required>
+                                        <input type="email" id="reset-password-email" name="reset-password-email" class="" required>
                                     </div>
                                 </div>
-                                <button type="submit" id="btn-sign-up-submit" class="btn-auth-submit"><i class="fas fa-arrow-right"></i></button>
+                                <button type="submit" id="btn-reset-pass-submit" class="btn-auth-submit"><i class="fas fa-check"></i></button>
                             </form>
 
                         </div>
@@ -74,7 +56,7 @@
         </div>
         
         <!-- Loading modal -->
-        <div class="modal" id="sign-up-loading-modal" 
+        <div class="modal" id="loading-modal" 
         data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -94,7 +76,7 @@
         </div>
 
         <!-- Error Modal -->
-        <div class="modal fade" id="sign-up-error-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="error-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body p-4">
@@ -106,14 +88,13 @@
         </div>
 
         <!-- CSRF Token -->
-        <p id="csrf-sign-up" style="display: none"><?php echo $_SESSION['csrf']; ?></p>
+        <p id="csrf" style="display: none"><?php echo $_SESSION['csrf']; ?></p>
 
         <!-- Firebase -->
         <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth-compat.js"></script>
-        
-        <!-- Optional JavaScript -->
+
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -121,7 +102,7 @@
         
         <!-- SweetAlert -->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+        
         <!-- Project JavaScript -->
         <script src="./main.js"></script>
     </body>

@@ -1,11 +1,11 @@
 @font-face {
     font-family: "header";
-    src: url("../shared/assets/fonts/header.TTF") format("truetype");
+    src: url("../../shared/assets/fonts/header.TTF") format("truetype");
 }
 
 @font-face {
     font-family: "body";
-    src: url("../shared/assets/fonts/body.TTF") format("truetype");
+    src: url("../../shared/assets/fonts/body.TTF") format("truetype");
 }
 
 p,
@@ -164,8 +164,19 @@ h3 {
 }
 
 @media screen and (max-width: 768px) {
-    .main-col-above h3 {
-        font-size: 36px;
-        padding-bottom: 20px;
+    .main-container {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .profile-img {
+        max-width: 80vw;
+        max-height: 80vh;
+        width: auto;
+    }
+
+    #sign-in-main-col .container {
+        width: 100vw;
+        height: auto;
     }
 }
