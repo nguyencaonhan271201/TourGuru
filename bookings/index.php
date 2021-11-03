@@ -45,7 +45,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>
                                     18 Nov 2021
                                 </td>
@@ -76,7 +76,7 @@
                                 <td>
                                     <a type="button" class="btn btn-info btn-view-booking">View</a>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -94,7 +94,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>
                                     18/11/2021 - 20/11/2021
                                     <br>
@@ -119,7 +119,7 @@
                                 <td>
                                     <a type="button" class="btn btn-info btn-view-booking">View</a>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </tbody>
                     </table>
                 </div>
