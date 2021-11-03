@@ -63,6 +63,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
     });
+
+    let checkInPicker = document.getElementById('depart');
+    let checkOutPicker = document.getElementById('arrival');
+    let picker = new Litepicker({
+        element: checkInPicker,
+        format: 'YYYY-MM-DD'
+    });
+    let picker2 = new Litepicker({
+        element: checkOutPicker,
+        format: 'YYYY-MM-DD'
+    });
 })
 
 const getCurrencyInfo = () => {
@@ -130,7 +141,7 @@ const initializeEventListener = () => {
     toSearch.addEventListener("focusout", (e) => {
         let isHovered = $('#search-flight-to-result').is(":hover");
         if (!isHovered) {
-            resetSearchResult(true);
+            resetSearchResult(false);
         }
     })
 
@@ -150,13 +161,30 @@ const initializeEventListener = () => {
         }
     })
 
-    swapButton.addEventListener("click", (e) => {
+    swapButton.parentNode.addEventListener("click", (e) => {
         e.preventDefault();
+        swapButton.classList.add("rotate");
         toSearch.value = fromID;
         fromSearch.value = toID;
         let tmp = fromID;
         fromID = toID;
         toID = tmp;
+        setTimeout(() => {
+            swapButton.classList.remove("rotate");
+        }, 1000)
+    })
+
+    swapButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        swapButton.classList.add("rotate");
+        toSearch.value = fromID;
+        fromSearch.value = toID;
+        let tmp = fromID;
+        fromID = toID;
+        toID = tmp;
+        setTimeout(() => {
+            swapButton.classList.remove("rotate");
+        }, 1000)
     })
 
     searchButton.addEventListener("click", (e) => {
@@ -228,7 +256,7 @@ const initializeEventListener = () => {
         returnSearchResult = [];
 
         if (isOneWay) {
-            getFlights("DEPARTTIME", fromDate.toISOString().split('T')[0], "ONE_WAY", getClass, 1, fromID, toID, true);
+            getFlights("PRICE", fromDate.toISOString().split('T')[0], "ONE_WAY", getClass, 1, fromID, toID, true);
         }
 
         if (!isOneWay) {
@@ -375,6 +403,7 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
     `date_departure=${date_departure}&location_arrival=${to}&itinerary_type=${itinerary_type}&` + 
     `location_departure=${from}&class_type=${class_type}&number_of_passengers=${number_of_pax}`;
 
+
     xhr.open("GET", url);
     xhr.setRequestHeader("x-rapidapi-host", "priceline-com-provider.p.rapidapi.com");
     xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
@@ -418,6 +447,8 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
     segmentsClone = segment.filter(segment => (segment.origAirport == from && segment.destAirport == to))
     segmentsID = []
     segmentsClone.forEach(segment => segmentsID.push(segment.uniqueSegId));
+    console.log(segment);
+
     slicesClone = []
     slice.forEach(item => {
         let passed = true;
@@ -431,6 +462,7 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
     })
     slicesID = []
     slicesClone.forEach(item => slicesID.push(item.uniqueSliceId));
+    console.log(slice);
 
     itineraryClone = []
     pricedItinerary.forEach(itinerary => {

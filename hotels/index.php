@@ -44,14 +44,14 @@
                             <div id="date-search-div" class="col-md-6 col-sm-12 d-flex p-0 mb-sm-2">
                                 <div class="input-block">
                                     <span class="d-flex align-items-center">
-                                        <i class="fas fa-calendar ml-2 mr-2"></i>
-                                        <input type="text" name="check-in" id="check-in" placeholder="check-in" onfocusin="(this.type='date')" onfocusout="(this.type='text')">
+                                        <i class="fa fa-map-marker-alt ml-2 mr-2" aria-hidden="true"></i>
+                                        <input name="check-in" id="check-in" placeholder="check-in">
                                     </span>
                                 </div>
                                 <div class="input-block right-most">
                                     <span class="d-flex align-items-center">
                                         <i class="fas fa-calendar ml-2 mr-2"></i>
-                                        <input type="text" name="check-out" id="check-out" placeholder="check-out" onfocusin="(this.type='date')" onfocusout="(this.type='text')">
+                                        <input name="check-out" id="check-out" placeholder="check-out">
                                     </span>
                                 </div>
                             </div>
@@ -152,6 +152,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         
+        <!-- DatePicker -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/litepicker/2.0.11/litepicker.js"></script>
+
         <!-- SweetAlert -->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         

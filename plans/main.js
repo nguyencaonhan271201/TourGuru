@@ -12,36 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 
-    // Swal.fire({
-    //     title: 'Loading...',
-    //     html: 'Please wait...',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     didOpen: () => {
-    //       Swal.showLoading()
-    //     }
-    // });
-
-    //getPlans();
-
-    printPlansToDisplay([
-        {
-            id: 1,
-            plan_title: 'hanoi hanoi hanoi',
-            description: 'hola welcome to the capital for the first time',
-            from_date: '2020-11-27',
-            to_date: '2020-11-30',
-            date_created: '2021-11-01'
-        },
-        {
-            id: 2,
-            plan_title: 'hanoi hanoi hanoi',
-            description: 'hola welcome to the capital for the first time',
-            from_date: '2020-11-27',
-            to_date: '2020-11-30',
-            date_created: '2021-11-01'
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
         }
-    ]);
+    });
+
+    getPlans();
 })
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {
@@ -115,4 +96,26 @@ const printPlansToDisplay = (result) => {
             location.replace(`./plan?id=${id}`);
         })
     })
+}
+
+//Testing only
+const dummyData = () => {
+    printPlansToDisplay([
+        {
+            id: 1,
+            plan_title: 'hanoi hanoi hanoi',
+            description: 'hola welcome to the capital for the first time',
+            from_date: '2020-11-27',
+            to_date: '2020-11-30',
+            date_created: '2021-11-01'
+        },
+        {
+            id: 2,
+            plan_title: 'hanoi hanoi hanoi',
+            description: 'hola welcome to the capital for the first time',
+            from_date: '2020-11-27',
+            to_date: '2020-11-30',
+            date_created: '2021-11-01'
+        }
+    ]);
 }

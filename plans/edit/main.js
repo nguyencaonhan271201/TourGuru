@@ -44,27 +44,73 @@ window.addEventListener("DOMContentLoaded", () => {
         location.replace("./../");
     } 
 
-    // Swal.fire({
-    //     title: 'Loading...',
-    //     html: 'Please wait...',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     didOpen: () => {
-    //       Swal.showLoading()
-    //     }
-    // });
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+    });
 
     gatherInformation();
 
     reInitializeEventListeners();
+
+    document.getElementById("btn-save").addEventListener("click", () => {
+        Swal.fire({
+            title: 'Are you sure want to save this plan?',
+            text: 'Further modifications are allowed.',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            confirmButtonColor: 'green',
+            cancelButtonColor: 'red'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Loading...',
+                    html: 'Please wait...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                savePlan();
+            }
+        })
+    })
+
+    document.getElementById("btn-delete").addEventListener("click", () => {
+        Swal.fire({
+            title: 'Are you sure want to delete this plan?',
+            text: 'You cannot recover the plan after deleted.',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            confirmButtonColor: 'green',
+            cancelButtonColor: 'red'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Loading...',
+                    html: 'Please wait...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    }
+                });
+                deletePlan(planID, true);
+            }
+        })
+    })
 })
 
 const reInitializeEventListeners = () => {
     document.querySelectorAll(".editable-icon").forEach(icon => {
         icon.addEventListener("click", () => {
             let getType = icon.getAttribute("data-type");
-            console.log(icon);
-
             switch (getType) {
                 case "title":
                     showTitleSwal();
@@ -720,129 +766,9 @@ const gatherInformation = () => {
         xhr.send(`getPlanDetails&plan_id=${planID}&csrf=${csrf}`);
     }
 
-    //gatherGeneralInfo();
+    gatherGeneralInfo();
 
-    availableBookings = {
-        hotels: [
-            {
-                'id': 1,
-                'user_id': 1,
-                'date_start': '2021-11-18',
-                'date_end': '2021-11-20',
-                'number_of_nights': 2,
-                'hotel_id': 12345,
-                'hotel_name': 'Bulgari Hotel London',
-                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
-                'status': 1,
-                'number_of_beds': 1,
-                'date_booked': '',
-                'total_cost': '2646.12 EUR',
-            }
-        ],
-        flights: {
-            1: [
-                {
-                    'id': 1,
-                    'booking_id': 1,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 1,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ],
-            2: [
-                {
-                    'id': 1,
-                    'booking_id': 2,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 2,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ]
-        }
-    }
-
-    title = 'hanoi hanoi hanoi',
-    description = 'hola welcome to the capital for the first time',
-    fromDate = '2020-11-27',
-    toDate = '2020-11-30',
-    created = '2021-11-01'
-    chosenBookingIndex = {
-        flights: [1],
-        hotels: [1]
-    }
-
-    details = [
-        {
-            "rawID": 1,
-            "detail": "abcdef",
-            "date": "2021-11-06",
-            "time": "09:45",
-            "isRemind": false,
-            "attraction": {
-                "id": "953101",
-                "name": "Disney’s Hollywood Studios",
-                "image": "https://media-cdn.tripadvisor.com/media/photo-m/1280/18/df/2c/bb/disney-s-hollywood-studios.jpg",
-            }
-        },
-        {
-            "rawID": 2,
-            "detail": "wake me up",
-            "date": "2021-11-06",
-            "time": "06:00",
-            "isRemind": true,
-            "attraction": {
-                "id": "",
-                "name": "",
-                "image": "",
-            }
-        }
-    ]
-
-    printToDisplay();
+    //dummyData();
 }
 
 const printToDisplay = () => {
@@ -926,7 +852,7 @@ const printDetails = () => {
                     <p class="ml-2 mb-0">
                         <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
                         <span class="d-flex align-items-center" style="display: inline-flex !important">
-                            <a target="_blank" href="/attraction/${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
+                            <a target="_blank" href="/attraction/attraction.html?=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
                         </span>
                     </p>
                 `
@@ -1147,4 +1073,258 @@ const bookingSwalEventListeners = () => {
             createContentBookingSwal();
         })
     })
+}
+
+const savePlan = () => {
+    const sendDetails = (newPlanID) => {
+        //Add booking info to table
+        //Get csrf
+        let csrf = "";
+        csrf = document.getElementById("csrf").innerText;
+    
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "POST",
+            "/api/plans/create.php",
+            true
+        )
+    
+        let sendData = [];
+        details.forEach(detail => {
+            let detailStorage = {
+                "plan_id": planID,
+                "destination_id": detail.attraction.id,
+                "destination_name": detail.attraction.name,
+                "destination_image": detail.attraction.image,
+                "detail": detail.detail,
+                "date": detail.date,
+                "start": detail.time,
+                "set_alarmed": detail.isRemind
+            }
+    
+            sendData.push(detailStorage)
+        })
+    
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            swal.close();
+            if (this.status === 200 && this.readyState === 4) {
+                //Booking complete
+                deletePlan(planID, true);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured. Please try again later."
+                });
+                deletePlan(newPlanID, false);
+            }
+        }
+        xhr.send(`planDetails&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    }
+
+    const reAddNewPlan = () => {
+        //Add booking info to table
+        //Get csrf
+        let csrf = "";
+        csrf = document.getElementById("csrf").innerText;
+
+        let data = {
+            "user_id": uid,
+            "plan_title": `${title}`,
+            "description": `${description}`,
+            "flight_id": `${chosenBookings.flights.toString}`,
+            "hotel_id": `${chosenBookings.hotels.toString}`,
+            "from_date": `${fromDate}`,
+            "to_date": `${toDate}`
+        }
+
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "POST",
+            "/api/plans/create.php",
+            true
+        )
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = () => {
+            if (this.status === 200 && this.readyState === 4) {
+                let planID = int.Parse(this.responseText);
+                sendDetails(planID);
+            } else {
+                swal.close();
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured. Please try again later."
+                });
+            }
+        }
+        xhr.send(`planInfo&data=${JSON.stringify(data)}&csrf=${csrf}`);
+    }
+
+    if (title == "" || fromDate == "" || toDate == "") {
+        swal.close();
+        Swal.fire({
+            icon: "error",
+            text: "Please fill in at least title and the dates of the plan."
+        });
+        return;
+    }
+
+    reAddNewPlan();  
+}
+
+const deletePlan = async (id, isRedirect) => {
+    //Add booking info to table
+    //Get csrf
+    let csrf = "";
+    csrf = document.getElementById("csrf").innerText;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        "POST",
+        "/api/plans/plans.php",
+        true
+    )
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = () => {
+        if (this.status === 200 && this.readyState === 4) {
+            if (isRedirect) {
+                Swal.fire({
+                    title: 'Plan has been saved successfully.',
+                    icon: 'success'
+                })
+
+                location.replace("./../")
+            }
+        } else {
+            swal.close();
+            Swal.fire({
+                icon: "error",
+                text: "Error occured. Please try again later."
+            });
+        }
+    }
+    xhr.send(`deletePlan&planID=${planID}&uid=${uid}&csrf=${csrf}`);
+}
+
+//Testing only
+const dummyData = () => {
+    availableBookings = {
+        hotels: [
+            {
+                'id': 1,
+                'user_id': 1,
+                'date_start': '2021-11-18',
+                'date_end': '2021-11-20',
+                'number_of_nights': 2,
+                'hotel_id': 12345,
+                'hotel_name': 'Bulgari Hotel London',
+                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
+                'status': 1,
+                'number_of_beds': 1,
+                'date_booked': '',
+                'total_cost': '2646.12 EUR',
+            }
+        ],
+        flights: {
+            1: [
+                {
+                    'id': 1,
+                    'booking_id': 1,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 1,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ],
+            2: [
+                {
+                    'id': 1,
+                    'booking_id': 2,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 2,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ]
+        }
+    }
+
+    title = 'hanoi hanoi hanoi',
+    description = 'hola welcome to the capital for the first time',
+    fromDate = '2020-11-27',
+    toDate = '2020-11-30',
+    created = '2021-11-01'
+    chosenBookingIndex = {
+        flights: [1],
+        hotels: [1]
+    }
+
+    details = [
+        {
+            "rawID": 1,
+            "detail": "abcdef",
+            "date": "2021-11-06",
+            "time": "09:45",
+            "isRemind": false,
+            "attraction": {
+                "id": "953101",
+                "name": "Disney’s Hollywood Studios",
+                "image": "https://media-cdn.tripadvisor.com/media/photo-m/1280/18/df/2c/bb/disney-s-hollywood-studios.jpg",
+            }
+        },
+        {
+            "rawID": 2,
+            "detail": "wake me up",
+            "date": "2021-11-06",
+            "time": "06:00",
+            "isRemind": true,
+            "attraction": {
+                "id": "",
+                "name": "",
+                "image": "",
+            }
+        }
+    ]
 }

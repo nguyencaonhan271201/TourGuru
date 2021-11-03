@@ -28,14 +28,7 @@
                 </h5>
 
                 <div class="plans row mt-4">
-                    <div class="col-md-4 col-sm-6 col-12 plan-container">
-                        <div class="plan text-center">
-                            <h3 class="text-pink">plan name</h3>
-                            <h5 class="text-purple">dd/mm/yyyy - dd/mm/yyyy</h5>
-                            <p class="text-gray">description of the plan</p>
-                            <button class="btn-view">view</button>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

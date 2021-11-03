@@ -31,10 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeEventListener();
     getCurrencyInfo();
 
-    let today = new Date().addHours(7).toISOString().split('T')[0];
-    document.getElementById("check-in").setAttribute('min', today);
-    document.getElementById("check-out").setAttribute('min', today);
-
+    let checkInPicker = document.getElementById('check-in');
+    let checkOutPicker = document.getElementById('check-out');
+    let picker = new Litepicker({
+        element: checkInPicker,
+        format: 'YYYY-MM-DD'
+    });
+    let picker2 = new Litepicker({
+        element: checkOutPicker,
+        format: 'YYYY-MM-DD'
+    });
 })
 
 const getCurrencyInfo = () => {

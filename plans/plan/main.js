@@ -39,15 +39,15 @@ window.addEventListener("DOMContentLoaded", () => {
         location.replace("./../");
     } 
 
-    // Swal.fire({
-    //     title: 'Loading...',
-    //     html: 'Please wait...',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     didOpen: () => {
-    //       Swal.showLoading()
-    //     }
-    // });
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+    });
 
     gatherInformation();
 
@@ -214,8 +214,159 @@ const gatherInformation = () => {
         xhr.send(`getPlanDetails&plan_id=${planID}&csrf=${csrf}`);
     }
 
-    //gatherGeneralInfo();
+    gatherGeneralInfo();
 
+    //dummyData();
+}
+
+const printToDisplay = () => {
+    Swal.close();
+
+    chosenBookingIndex.flights.forEach(index => {
+        chosenBookings.flights.push(availableBookings.flights[index])
+    });
+
+    chosenBookingIndex.hotels.forEach(index => {
+        availableBookings.hotels.forEach(hotelBooking => {
+            if (hotelBooking.id == index) {
+                chosenBookings.hotels.push(hotelBooking);
+            }
+        })
+    });
+
+    document.getElementById("plan-title").innerText = title;
+    let dateString = "";
+    if (fromDate == toDate) {
+        dateString = getDisplayDateFormat(false, fromDate);
+    } else {
+        dateString = `${getDisplayDateFormat(false, fromDate)} - ${getDisplayDateFormat(false, toDate)}`
+    }
+    document.getElementById("plan-date").innerText = dateString;
+    
+    if (description == "") {
+        document.getElementById("description-div").style.display = "none";
+    } else {
+        document.getElementById("plan-description").innerText = description;
+        document.getElementById("description-div").style.display = "block";
+    }
+
+    document.getElementById("plan-created").innerText = `created: ${getDisplayDateFormat(false, created)}`;
+
+    updateBookingLinkedDetail();
+
+    printDetails();
+} 
+
+const updateBookingLinkedDetail = () => {
+    let html = ``;
+    
+    chosenBookings.flights.forEach(booking => {
+        let subHTMLContent = ``;
+        booking.forEach(iteration => {
+            subHTMLContent += `
+                <div>
+                    <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
+                    ${iteration.flight_number}: ${iteration.origin_code} - ${iteration.dest_code} (${iteration.departure} - ${iteration.arrival}) 
+                    - ${getDisplayDateFormat(false, iteration.date)}
+                </div>
+            `
+        })
+
+        html += `
+            <div class="flight-booking text-center mt-1 mb-1 editable-container" data-booking-id=${booking[0].booking_id}>
+                ${subHTMLContent}
+            </div>
+        `
+    })
+
+    chosenBookings.hotels.forEach(hotel => {
+        html += `
+            <div class="hotel-booking text-center mt-2 mb-2 editable-container" data-booking-id=${hotel.id}>
+                <i class="fa fa-hotel" aria-hidden="true"></i>
+                ${hotel.hotel_name} - ${hotel.number_of_beds} rooms (${getDisplayDateFormat(false, hotel.date_start)} - ${getDisplayDateFormat(false, hotel.date_end)})
+            </div>
+        `
+    })
+
+    document.querySelector(".bookings").innerHTML = html;
+}
+
+const printDetails = () => {
+    let detailsBox = document.getElementById("details");
+    detailsBox.innerHTML = "";
+    let html = "";
+
+    const detailsByDay = {};
+    details.forEach(detail => {
+        let date = detail.date;
+        if (Object.keys(detailsByDay).includes(date)) {
+            detailsByDay[date].push(detail);
+        } else {
+            detailsByDay[date] = [];
+            detailsByDay[date].push(detail);
+        }
+    }) 
+
+    Object.keys(detailsByDay).forEach(key => {
+        detailsByDay[key] = detailsByDay[key].sort(function(a, b) {
+            return Date.parse('1970/01/01 ' + a.time.slice(0, -2) + ' ' + a.time.slice(-2)) - Date.parse('1970/01/01 ' + b.time.slice(0, -2) + ' ' + b.time.slice(-2))
+        })
+    })
+
+    let listOfDays = Object.keys(detailsByDay).sort(
+        function (a, b) {
+            return Date.parse(a) - Date.parse(b)
+        }
+    )
+
+    listOfDays.forEach(day => {
+        html += `
+            <h3 class="mt-2 text-purple">${getDisplayDateFormat(true, day)}</h3>
+        `
+        detailsByDay[day].forEach(detail => {
+            let alarmClass = "";
+            let attractionClass = "";
+            if (detail.isRemind)
+                alarmClass = '<span class="mr-1"><i class="fas fa-clock"></i></span>'
+            if (detail.attraction.id != '')
+                attractionClass = `
+                    <p class="ml-2 mb-0">
+                        <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
+                        <span class="d-flex align-items-center" style="display: inline-flex !important">
+                            <a target="_blank" href="/attraction/attraction.html?id=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
+                        </span>
+                    </p>
+                `
+
+            html += `
+                <div class="editable-container left-container">
+                    <p class="ml-2 mb-0 mt-1 text-gray">
+                        <span class="text-pink time font-weight-bold" style="display: inline;">${detail.time}: </span>
+                        <span>${detail.detail}</span>
+                        ${alarmClass}
+                    </p>
+                    ${attractionClass}
+                </div>
+            `   
+        }) 
+    })
+
+    detailsBox.innerHTML = html;
+}
+
+const getDisplayDateFormat = (isWeekDay, ISODate) => {
+    const newDateObj = new Date(ISODate);
+    const toMonth = newDateObj.getMonth() + 1;
+    const toYear = newDateObj.getFullYear();
+    const toDate = newDateObj.getDate();
+    const DOW = newDateObj.getDay()
+    const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
+    // console.log(dateTemplate)
+    return dateTemplate;
+}
+
+//Testing only
+const dummyData = () => {
     availableBookings = {
         hotels: [
             {
@@ -335,152 +486,4 @@ const gatherInformation = () => {
             }
         }
     ]
-
-    printToDisplay();
-}
-
-const printToDisplay = () => {
-    Swal.close();
-
-    chosenBookingIndex.flights.forEach(index => {
-        chosenBookings.flights.push(availableBookings.flights[index])
-    });
-
-    chosenBookingIndex.hotels.forEach(index => {
-        availableBookings.hotels.forEach(hotelBooking => {
-            if (hotelBooking.id == index) {
-                chosenBookings.hotels.push(hotelBooking);
-            }
-        })
-    });
-
-    document.getElementById("plan-title").innerText = title;
-    let dateString = "";
-    if (fromDate == toDate) {
-        dateString = getDisplayDateFormat(false, fromDate);
-    } else {
-        dateString = `${getDisplayDateFormat(false, fromDate)} - ${getDisplayDateFormat(false, toDate)}`
-    }
-    document.getElementById("plan-date").innerText = dateString;
-    
-    if (description == "") {
-        document.getElementById("description-div").style.display = "none";
-    } else {
-        document.getElementById("plan-description").innerText = description;
-        document.getElementById("description-div").style.display = "block";
-    }
-
-    document.getElementById("plan-created").innerText = `created: ${getDisplayDateFormat(false, created)}`;
-
-    updateBookingLinkedDetail();
-
-    printDetails();
-} 
-
-const updateBookingLinkedDetail = () => {
-    let html = ``;
-    
-    chosenBookings.flights.forEach(booking => {
-        let subHTMLContent = ``;
-        booking.forEach(iteration => {
-            subHTMLContent += `
-                <div>
-                    <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
-                    ${iteration.flight_number}: ${iteration.origin_code} - ${iteration.dest_code} (${iteration.departure} - ${iteration.arrival}) 
-                    - ${getDisplayDateFormat(false, iteration.date)}
-                </div>
-            `
-        })
-
-        html += `
-            <div class="flight-booking text-center mt-1 mb-1 editable-container" data-booking-id=${booking[0].booking_id}>
-                ${subHTMLContent}
-            </div>
-        `
-    })
-
-    chosenBookings.hotels.forEach(hotel => {
-        html += `
-            <div class="hotel-booking text-center mt-2 mb-2 editable-container" data-booking-id=${hotel.id}>
-                <i class="fa fa-hotel" aria-hidden="true"></i>
-                ${hotel.hotel_name} - ${hotel.number_of_beds} rooms (${getDisplayDateFormat(false, hotel.date_start)} - ${getDisplayDateFormat(false, hotel.date_end)})
-            </div>
-        `
-    })
-
-    document.querySelector(".bookings").innerHTML = html;
-}
-
-const printDetails = () => {
-    let detailsBox = document.getElementById("details");
-    detailsBox.innerHTML = "";
-    let html = "";
-
-    const detailsByDay = {};
-    details.forEach(detail => {
-        let date = detail.date;
-        if (Object.keys(detailsByDay).includes(date)) {
-            detailsByDay[date].push(detail);
-        } else {
-            detailsByDay[date] = [];
-            detailsByDay[date].push(detail);
-        }
-    }) 
-
-    Object.keys(detailsByDay).forEach(key => {
-        detailsByDay[key] = detailsByDay[key].sort(function(a, b) {
-            return Date.parse('1970/01/01 ' + a.time.slice(0, -2) + ' ' + a.time.slice(-2)) - Date.parse('1970/01/01 ' + b.time.slice(0, -2) + ' ' + b.time.slice(-2))
-        })
-    })
-
-    let listOfDays = Object.keys(detailsByDay).sort(
-        function (a, b) {
-            return Date.parse(a) - Date.parse(b)
-        }
-    )
-
-    listOfDays.forEach(day => {
-        html += `
-            <h3 class="mt-2 text-purple">${getDisplayDateFormat(true, day)}</h3>
-        `
-        detailsByDay[day].forEach(detail => {
-            let alarmClass = "";
-            let attractionClass = "";
-            if (detail.isRemind)
-                alarmClass = '<span class="mr-1"><i class="fas fa-clock"></i></span>'
-            if (detail.attraction.id != '')
-                attractionClass = `
-                    <p class="ml-2 mb-0">
-                        <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
-                        <span class="d-flex align-items-center" style="display: inline-flex !important">
-                            <a target="_blank" href="/attraction/${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
-                        </span>
-                    </p>
-                `
-
-            html += `
-                <div class="editable-container left-container">
-                    <p class="ml-2 mb-0 mt-1 text-gray">
-                        <span class="text-pink time font-weight-bold" style="display: inline;">${detail.time}: </span>
-                        <span>${detail.detail}</span>
-                        ${alarmClass}
-                    </p>
-                    ${attractionClass}
-                </div>
-            `   
-        }) 
-    })
-
-    detailsBox.innerHTML = html;
-}
-
-const getDisplayDateFormat = (isWeekDay, ISODate) => {
-    const newDateObj = new Date(ISODate);
-    const toMonth = newDateObj.getMonth() + 1;
-    const toYear = newDateObj.getFullYear();
-    const toDate = newDateObj.getDate();
-    const DOW = newDateObj.getDay()
-    const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
-    // console.log(dateTemplate)
-    return dateTemplate;
 }

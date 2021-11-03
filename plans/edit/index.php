@@ -24,6 +24,7 @@
             <div class="main-container">
                 <div class="btn-block text-right">
                     <button type="button" id="btn-save"><i class="fas fa-save"></i></button>
+                    <button type="button" id="btn-delete"><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
                 <div class="header-div text-center">
                     <div class="editable-container" id="title-div">

@@ -35,15 +35,15 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    // Swal.fire({
-    //     title: 'Loading...',
-    //     html: 'Please wait...',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     didOpen: () => {
-    //       Swal.showLoading()
-    //     }
-    // });
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+    });
 
     getAvailableBookings();
     reInitializeEventListeners();
@@ -339,90 +339,9 @@ const getAvailableBookings = () => {
         xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
     }
     
-    //getAvailableFlightBookings();
+    getAvailableFlightBookings();
 
-    availableBookings = {
-        hotels: [
-            {
-                'id': 1,
-                'user_id': 1,
-                'date_start': '2021-11-18',
-                'date_end': '2021-11-20',
-                'number_of_nights': 2,
-                'hotel_id': 12345,
-                'hotel_name': 'Bulgari Hotel London',
-                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
-                'status': 1,
-                'number_of_beds': 1,
-                'date_booked': '',
-                'total_cost': '2646.12 EUR',
-            }
-        ],
-        flights: {
-            1: [
-                {
-                    'id': 1,
-                    'booking_id': 1,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 1,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ],
-            2: [
-                {
-                    'id': 1,
-                    'booking_id': 2,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 2,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ]
-        }
-    }
+    //dummyData();
 }
 
 const checkSelectedFlightBookings = (id) => {
@@ -830,7 +749,7 @@ const printDetails = () => {
                     <p class="ml-2 mb-0">
                         <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
                         <span class="d-flex align-items-center" style="display: inline-flex !important">
-                            <a target="_blank" href="/attraction/${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
+                            <a target="_blank" href="/attraction/attraction.html?id=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
                         </span>
                     </p>
                 `
@@ -1101,4 +1020,90 @@ const sendDetails = (planID) => {
         }
     }
     xhr.send(`planDetails&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+}
+
+//Testing only
+const dummyData = () => {
+    availableBookings = {
+        hotels: [
+            {
+                'id': 1,
+                'user_id': 1,
+                'date_start': '2021-11-18',
+                'date_end': '2021-11-20',
+                'number_of_nights': 2,
+                'hotel_id': 12345,
+                'hotel_name': 'Bulgari Hotel London',
+                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
+                'status': 1,
+                'number_of_beds': 1,
+                'date_booked': '',
+                'total_cost': '2646.12 EUR',
+            }
+        ],
+        flights: {
+            1: [
+                {
+                    'id': 1,
+                    'booking_id': 1,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 1,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ],
+            2: [
+                {
+                    'id': 1,
+                    'booking_id': 2,
+                    'origin_code': 'FCO',
+                    'dest_code': 'LHR',
+                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'destination': 'Heathrow Airport',
+                    'departure': '07:30',
+                    'arrival': '09:30',
+                    'date': '2021-11-18',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321neo',
+                    'airline': 'British Airways',
+                    'flight_number': 'BA551'
+                }, {
+                    'id': 2,
+                    'booking_id': 2,
+                    'origin_code': 'LHR',
+                    'dest_code': 'FCO',
+                    'origin': 'Heathrow Airport',
+                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
+                    'departure': '07:25',
+                    'arrival': '10:55',
+                    'date': '2021-11-20',
+                    'class': 'BUSINESS',
+                    'aircraft': 'Airbus A321',
+                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
+                    'flight_number': 'AZ201'
+                }
+            ]
+        }
+    }
 }

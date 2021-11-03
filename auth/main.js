@@ -270,7 +270,7 @@ const validateAndSignIn = () => {
             icon: 'error',
             text: "Please type in your email."
         });
-        $('#sign-in-loading-modal').modal("toggle");
+        //$('#sign-in-loading-modal').modal("toggle");
         return;
     }
 
@@ -287,7 +287,7 @@ const validateAndSignIn = () => {
             icon: 'error',
             text: "Password must be at least 6 characters."
         });
-        $('#sign-in-loading-modal').modal("toggle");
+        //$('#sign-in-loading-modal').modal("toggle");
         return;
     }
 
@@ -313,10 +313,11 @@ const validateAndSignIn = () => {
                 icon: 'error',
                 text: "Please verify your email."
             });
-            $('#sign-in-loading-modal').modal("toggle");
+            //$('#sign-in-loading-modal').modal("toggle");
         }
     })
     .catch(err => {
+        swal.close();
         if (err.code == "auth/invalid-email") {
             //signInErrorText.innerHTML = "Invalid email.";
             let emailInvalid = signInForm.querySelector("#email-invalid");
@@ -330,7 +331,7 @@ const validateAndSignIn = () => {
                 icon: 'error',
                 text: "Invalid email."
             });
-            $('#sign-in-loading-modal').modal("toggle");
+            //$('#sign-in-loading-modal').modal("toggle");
             return;
         }
         if (err.code == "auth/wrong-password") {
@@ -346,7 +347,7 @@ const validateAndSignIn = () => {
                 icon: 'error',
                 text: "Wrong password."
             });
-            $('#sign-in-loading-modal').modal("toggle");
+            //$('#sign-in-loading-modal').modal("toggle");
             return;
         }
         //signInErrorText.innerHTML = err.message;
@@ -355,7 +356,7 @@ const validateAndSignIn = () => {
             icon: 'error',
             text: err.message
         });
-        $('#sign-in-loading-modal').modal("toggle");
+        //$('#sign-in-loading-modal').modal("toggle");
     })   
 }
 
@@ -487,7 +488,7 @@ const updateToDatabaseNormalLogin = (data) => {
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = () => {
-        swal.close();
+        Swal.close();
         if (this.status === 200 && this.readyState === 4) {
             //Register complete, login and save to local storage
             //errorText.innerHTML = "Register completed. Please verify your account by checking your email.";
@@ -514,4 +515,5 @@ const loginRedirect = () => {
         location.replace("./../flights/confirmation/");
     if (localStorage.getItem("hotelInfo") != "null")
         location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
+    location.replace("./../");
 }

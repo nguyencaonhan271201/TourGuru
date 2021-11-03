@@ -283,6 +283,19 @@ body {
     height: 100px;
 }
 
+#btn-delete {
+    background: #e53935;
+    border: none;
+    border-radius: 10rem;
+    padding: 5px 20px;
+    color: white;
+    transition: background 200ms;
+}
+
+#btn-delete:hover {
+    background: #c62828;
+}
+
 @media screen and (max-width: 768px) {
     .main-container {
         width: 100%;
