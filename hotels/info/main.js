@@ -91,8 +91,7 @@ const getHotelInfo = (hotelID) => {
                 updateInfo(hotelInfo);
             }
             catch (e) {
-                console.log(e)
-                //location.replace("./../");
+                location.replace("./../");
                 return;
             }
         }

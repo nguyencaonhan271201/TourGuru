@@ -113,7 +113,7 @@ const loadBookings = () => {
                     icon: "error",
                     text: "Error occured."
                 });
-                location.replace("./../../");
+                location.replace("./../");
             }
         }
         xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
@@ -140,7 +140,7 @@ const loadBookings = () => {
                     icon: "error",
                     text: "Error occured."
                 });
-                location.replace("./../../");
+                location.replace("./../");
             }
         }
         xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);

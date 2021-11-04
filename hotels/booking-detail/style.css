@@ -87,8 +87,8 @@ h5 {
 #print-block {
     position: absolute;
     top: 20px;
-    left: 20px;
-    font-size: 24px;
+    right: 20px;
+    font-size: 18px;
 }
 
 #print-block a {
@@ -178,6 +178,20 @@ h5 {
 
 #hotel-name-span {
     font-weight: bold;
+}
+
+.btn-print {
+    color: white;
+    border: none;
+    background: var(--theme-link);
+    border-radius: 10rem;
+    padding: 5px 20px;
+    transition: background 200ms;
+    text-decoration: none;
+}
+
+.btn-print:hover {
+    background: var(--theme-link-hover);
 }
 
 @media screen and (max-width: 768px) {

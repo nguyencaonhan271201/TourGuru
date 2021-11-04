@@ -25,8 +25,8 @@
         <div class="container-fluid mt-5 mb-4 d-flex justify-content-center">
             <div class="booking-detail" id="booking-detail" style="position:relative;">
                 <div id="print-block">
-                    <a href="#" id="download"><i class="fas fa-save    "></i></a>
-                    <a href="#" id="print"><i class="fas fa-print    "></i></a>
+                    <!-- <a href="#" id="download"><i class="fas fa-save    "></i></a> -->
+                    <button class="btn-print" id="print"><i class="fas fa-print"></i></button>
                 </div>
                 <div class="agency-detail">
                     <img id="agency-logo" src="https://firebasestorage.googleapis.com/v0/b/tour-guru-25442.appspot.com/o/logo.svg?alt=media&token=ca6b15e1-bce5-4d6b-be8d-8d834788d043" alt="">
