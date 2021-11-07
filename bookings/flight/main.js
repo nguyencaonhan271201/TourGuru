@@ -112,11 +112,11 @@ const getFlightBookingInfo = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 flightInfo = result;
                 getPassengersInfo();
             } else {
@@ -139,11 +139,11 @@ const getFlightBookingInfo = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 passengers = result;
                 printToDisplay();
             } else {
@@ -289,8 +289,8 @@ const deleteBooking = () => {
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             Swal.fire({
                 title: 'Your booking has been deleted successfully.',
                 icon: 'success'

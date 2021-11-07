@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     $csrf_token = bin2hex(random_bytes(32));
     $_SESSION['csrf'] = $csrf_token;
 ?>
@@ -88,6 +89,45 @@
                     </div>
                 </div>
 
+                <div class="booking-hide">
+                    <h3 class="hotel-option-name">book now</h3>
+                    <div class="search-div container d-flex align-items-center justify-content-center">
+                        <form id="flight-search-form" method="post" action="#">
+                            <div class="ml-md-3 ml-sm-0 d-flex" id="horizontal-upper-form-div">
+                                <label for="currency" class="mb-0 mr-2">currency</label>
+                                <select name="currency" id="currency">
+                                    <option value="USD" selected="selected">USD</option>
+                                </select>
+                            </div>
+                            <div class="p-1" id="main-search-form">
+                                <div class="row m-0" style="height: 100%; width: 100%;">
+                                    <div id="date-search-div" class="col-md-9 col-sm-12 d-flex p-0 mb-sm-2">
+                                        <div class="input-block">
+                                            <span class="d-flex align-items-center">
+                                                <i class="fa fa-calendar ml-2 mr-2" aria-hidden="true"></i>
+                                                <input name="check-in" id="check-in" placeholder="check-in">
+                                            </span>
+                                        </div>
+                                        <div class="input-block right-most">
+                                            <span class="d-flex align-items-center">
+                                                <i class="fas fa-calendar ml-2 mr-2"></i>
+                                                <input name="check-out" id="check-out" placeholder="check-out">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-12 d-flex p-0">
+                                        <div class="input-block btn-search-block">
+                                            <button id="btn-search-form">
+                                                <i class="fa fa-search mr-1" aria-hidden="true"></i>Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="booking">
                     <h3 class="hotel-option-name">booking</h3>
                     <div class="booking-summary">
@@ -153,6 +193,9 @@
         
         <!-- Slider -->
         <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+        
+        <!-- DatePicker -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/litepicker/2.0.11/litepicker.js"></script>
         
         <!-- Google Maps -->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>

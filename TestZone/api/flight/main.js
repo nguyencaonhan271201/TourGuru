@@ -12,7 +12,7 @@ function getSearchInfo(searchQuery, isFrom) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printToDropdown(results, isFrom);
         } else {
             console.log("Not found");
@@ -34,7 +34,7 @@ function getFlights(sort_order, date_departure, itinerary_type, class_type, numb
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results);
             printFlights(from, to, results.airline, results.airport, results.equipment, results.pricedItinerary, results.slice, results.segment);
         } else {

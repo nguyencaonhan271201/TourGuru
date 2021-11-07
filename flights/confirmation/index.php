@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     $csrf_token = bin2hex(random_bytes(32));
     $_SESSION['csrf'] = $csrf_token;
 ?>
@@ -142,6 +143,7 @@
                                     <option value="PhD">PhD</option>
                                 </select>
                                 <label for="dob">date of birth</label>
+                                <!-- <input type="text" name="dob" class="dob" id="dob" placeholder="date of birth" required> -->
                                 <input type="date" name="dob" class="dob" required>
                                 <div class="input-div">
                                     <label for="first">middle and first/given name (as in Passport)</label>

@@ -1,4 +1,5 @@
 let hotelInfo = {}
+let cloneHotelInfo = {}
 let uid;
 let user_email;
 let hotelChoosingInfo = {}
@@ -13,6 +14,9 @@ let hotelName = "";
 let btnBook = document.querySelector("#btn-book");
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let ratesList = null;
+let choosingCurrency = "USD";
+let tmpSingleNight = 0;
 
 //For local storage
 let stars;
@@ -43,42 +47,167 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Not chosen any hotel
     if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
-        location.replace("./../");
-        return;
+        document.querySelector(".booking").style.display = "none";
+        document.querySelector(".booking-hide").style.display = "block";
+
+        //Load currencies
+        getCurrencyInfo();
+        
+        let checkInPicker = document.getElementById('check-in');
+        let checkOutPicker = document.getElementById('check-out');
+        let picker = new Litepicker({
+            element: checkInPicker,
+            format: 'YYYY-MM-DD'
+        });
+        let picker2 = new Litepicker({
+            element: checkOutPicker,
+            format: 'YYYY-MM-DD'
+        });
+
+        document.getElementById('btn-search-form').addEventListener("click", (e) => {
+            e.preventDefault();
+
+            let urlParams = new URLSearchParams(window.location.search);
+            //Initiate the rooms list
+            cloneHotelInfo["hotelID"] = urlParams.get("hotel");
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                Swal.showLoading()
+                }
+            });
+
+            //Validate day
+            let fromDate = new Date($('#check-in').val());
+            if (isNaN(fromDate.getTime())) {
+                swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    text: "Check-in date is not valid. Please try again.",
+                });
+                return;
+            }
+
+            //Check for return day
+            let toDate = new Date($('#check-out').val());
+            if (isNaN(toDate.getTime())) {
+                swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    text: "Check-out date is not valid. Please try again.",
+                });
+                return;
+            }
+
+            if (toDate.getTime() < fromDate.getTime()) {
+                swal.close();
+                //$("#loading-modal").modal("hide");
+                //errorText.innerHTML += "Return date cannot be before Depart date. Please try again";
+                //$("#error-modal").modal("show");
+                Swal.fire({
+                    icon: 'error',
+                    text: "Check-out date cannot be before Check-in date. Please try again.",
+                });
+                return;
+            } else {
+                let Difference_In_Time = toDate.getTime() - fromDate.getTime();
+                let numberOfNights = Difference_In_Time / (1000 * 3600 * 24);
+                cloneHotelInfo["numberOfNights"] = numberOfNights;
+
+                if (numberOfNights == 0) {
+                    swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        text: "Check-out date must be at least 1 day after Check-in date.",
+                    });
+                }
+            }
+
+            choosingCurrency = document.getElementById("currency").value;
+
+            let checkIn = fromDate.toISOString().split('T')[0];
+            let checkOut = toDate.toISOString().split('T')[0];
+
+            cloneHotelInfo["checkIn"] = checkIn;
+            cloneHotelInfo["checkOut"] = checkOut;
+
+            cloneHotelInfo["currencyCode"] = choosingCurrency;
+            cloneHotelInfo["currencyRate"] = ratesList[choosingCurrency];
+
+            let calculateFare = tmpSingleNight * ratesList[choosingCurrency] * cloneHotelInfo["numberOfNights"];
+            calculateFare = Math.round(calculateFare * 100) / 100
+            cloneHotelInfo["singleNight"] = calculateFare;
+
+            localStorage.setItem("hotelInfo", JSON.stringify(cloneHotelInfo));
+            location.reload();
+        })
+    } else {
+        //Check for the correct hotel
+        if (JSON.parse(localStorage.getItem("hotelInfo")).hotelID !== urlParams.get("hotel").toString()) {
+            location.replace("./../");
+            return;
+        } else {
+            document.querySelector(".booking").style.display = "initial";
+            document.querySelector(".booking-hide").style.display = "none";
+
+            hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
+            usingCurrency = hotelChoosingInfo["currencyCode"];
+            currencyRate = hotelChoosingInfo["currencyRate"];
+            singleNightPrice = hotelChoosingInfo["singleNight"];
+            totalRoomPrice = singleNightPrice;
+            document.getElementById("total-price").innerText = `${Math.round(singleNightPrice * 100) / 100} ${usingCurrency}`;
+            let nightOrNights = hotelChoosingInfo["numberOfNights"] == 1 ? "night" : "nights";
+            document.getElementById("nights-count").innerText = `${hotelChoosingInfo["numberOfNights"]} ${nightOrNights}`;
+            document.getElementById("nights-range").innerText = `${getDisplayDateFormat(false, hotelChoosingInfo["checkIn"])} - ${getDisplayDateFormat(false, hotelChoosingInfo["checkOut"])}`;
+        
+            roomSelect = document.getElementById("rooms");
+            roomSelect.addEventListener("change", () => {
+                numberOfRoom = parseInt(roomSelect.value);
+                totalRoomPrice = singleNightPrice * numberOfRoom;
+                document.getElementById("total-price").innerText = `${Math.round(totalRoomPrice * 100) / 100} ${usingCurrency}`;
+                let roomOrRooms = numberOfRoom == 1? "room" : "rooms";
+                document.getElementById("number-of-rooms").innerText = `${numberOfRoom} ${roomOrRooms}`;
+            })
+        
+            btnBook.addEventListener("click", performBook);
+        
+            document.getElementById("btn-search").addEventListener("click", () => {
+                location.replace('./../')
+            })
+        }
+    }
+})
+
+const getCurrencyInfo = () => {
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        'GET',
+        'https://exchangerate-api.p.rapidapi.com/rapid/latest/USD',
+        true
+    );
+    xhr.onload = function() {
+        if (this.status == 200) {
+            let result = JSON.parse(xhr.responseText);
+            ratesList = result.rates;
+
+            //Upload the select
+            Object.keys(ratesList).forEach((key) => {
+                if (key != "USD") {
+                    document.getElementById("currency").innerHTML += `<option value="${key}">${key}</option>`
+                }
+            })
+        }
     }
 
-    //Check for the correct hotel
-    if (JSON.parse(localStorage.getItem("hotelInfo")).hotelID !== urlParams.get("hotel").toString()) {
-        location.replace("./../");
-        return;
-    } 
-    
+    xhr.setRequestHeader("x-rapidapi-host", "exchangerate-api.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
 
-    hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
-    usingCurrency = hotelChoosingInfo["currencyCode"];
-    currencyRate = hotelChoosingInfo["currencyRate"];
-    singleNightPrice = hotelChoosingInfo["singleNight"];
-    totalRoomPrice = singleNightPrice;
-    document.getElementById("total-price").innerText = `${Math.round(singleNightPrice * 100) / 100} ${usingCurrency}`;
-    let nightOrNights = hotelChoosingInfo["numberOfNights"] == 1 ? "night" : "nights";
-    document.getElementById("nights-count").innerText = `${hotelChoosingInfo["numberOfNights"]} ${nightOrNights}`;
-    document.getElementById("nights-range").innerText = `${getDisplayDateFormat(false, hotelChoosingInfo["checkIn"])} - ${getDisplayDateFormat(false, hotelChoosingInfo["checkOut"])}`;
-
-    roomSelect = document.getElementById("rooms");
-    roomSelect.addEventListener("change", () => {
-        numberOfRoom = parseInt(roomSelect.value);
-        totalRoomPrice = singleNightPrice * numberOfRoom;
-        document.getElementById("total-price").innerText = `${Math.round(totalRoomPrice * 100) / 100} ${usingCurrency}`;
-        let roomOrRooms = numberOfRoom == 1? "room" : "rooms";
-        document.getElementById("number-of-rooms").innerText = `${numberOfRoom} ${roomOrRooms}`;
-    })
-
-    btnBook.addEventListener("click", performBook);
-
-    document.getElementById("btn-search").addEventListener("click", () => {
-        location.replace('./../')
-    })
-})
+    xhr.send();
+}
 
 const getHotelInfo = (hotelID) => {
     const xhr = new XMLHttpRequest();
@@ -86,7 +215,7 @@ const getHotelInfo = (hotelID) => {
     xhr.onload = function() {
         if(this.status == 200) {
             try {
-                let results = JSON.parse(this.responseText);
+                let results = JSON.parse(xhr.responseText);
                 hotelInfo = results.data.body;
                 updateInfo(hotelInfo);
             }
@@ -110,7 +239,7 @@ const getHotelImages = (hotelID) => {
     xhr.onload = function() {
         if(this.status == 200) {
             try {
-                let results = JSON.parse(this.responseText);
+                let results = JSON.parse(xhr.responseText);
             
                 //Xử lý kết quả khi in ảnh
                 hotelImages = results.hotelImages.map(image => {
@@ -226,37 +355,6 @@ const updateInfo = (hotelInfo) => {
 
     document.querySelector(".overview").innerHTML = overviewHTML;
 
-    /*
-    hotelInfo.amenities.forEach(amenity => {
-        let currentDiv;
-        if (amenity.heading == "In the hotel") {
-            currentDiv = document.getElementById("in-the-hotel-amenities");
-            
-        } else if (amenity.heading == "In the room") {
-            currentDiv = document.getElementById("in-the-room-amenities");
-        }
-
-        let html = "";
-        amenity.listItems.forEach(item => {
-            if (item.heading) {
-                let childHTML = ``;
-                item.listItems.forEach(content => {
-                    childHTML += `<li class="col-md-4 col-sm-6"><i class="fa fa-check" aria-hidden="true"></i> ${content}</li>`
-                })
-                html += `
-                    <div class="mb-2">
-                        <h5 class="ml-md-3 ml-sm-0 amenity-subtitle"><i class="fas fa-utensils"></i> ${item.heading}</h5>
-                        <ul class="hotel-info-ul row" style="width: 100%; margin: 0 auto;">
-                            ${childHTML}
-                        </ul>
-                    </div>
-                `
-                currentDiv.innerHTML = html;
-            }
-        })
-    })
-    */
-
     let hotelInfoHTML = "";
 
     Object.keys(hotelInfo.atAGlance.keyFacts).forEach(
@@ -300,6 +398,12 @@ const updateInfo = (hotelInfo) => {
     //initMap(new google.maps.LatLng(hotelInfo.pdpHeader.hotelLocation.coordinates.latitude, hotelInfo.pdpHeader.hotelLocation.coordinates.longitude))
 
     document.getElementById("booking-summary-img").setAttribute("src", document.querySelector(".head-img-right img").getAttribute("src"))
+
+    tmpSingleNight = hotelInfo.propertyDescription.featuredPrice.currentPrice.plain;
+
+    if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
+        cloneHotelInfo["hotelImageURL"] = document.querySelector(".head-img-right img").getAttribute("src"); 
+    }
 }
 
 function showImageBox() {
@@ -423,6 +527,10 @@ const sendBookingInfo = () => {
     let totalRoomPriceReformatted = Math.round(totalRoomPrice * 100) / 100
     let totalCostString = `${totalRoomPriceReformatted} ${usingCurrency}`
 
+    let reformattedImageURL = hotelChoosingInfo["hotelImageURL"].indexOf("?") != -1? 
+    hotelChoosingInfo["hotelImageURL"].substring(0, hotelChoosingInfo["hotelImageURL"].indexOf("?"))
+    : hotelChoosingInfo["hotelImageURL"];
+
     let sendData = {
         "user_id": `${uid}`,
         "date_start": `${hotelChoosingInfo["checkIn"]}`,
@@ -430,7 +538,7 @@ const sendBookingInfo = () => {
         "number_of_nights": `${hotelChoosingInfo["numberOfNights"]}`,
         "hotel_id": `${hotelChoosingInfo["hotelID"]}`,
         "hotel_name": `${hotelName}`,
-        "hotel_image_url": `${hotelChoosingInfo["hotelImageURL"]}`,
+        "hotel_image_url": `${reformattedImageURL}`,
         "number_of_beds": `${numberOfRoom}`,
         "total_cost": `${totalCostString}`,
     }
@@ -438,19 +546,12 @@ const sendBookingInfo = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/hotels/hotel.php",
+        "../../api/hotels/hotel.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
-            //Booking complete
-            Swal.fire({
-                title: 'Booking is completed.',
-                text: 'Please complete your payment and receive the confirmation through your email.',
-                icon: 'success'
-            })
-
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             hotelChoosingInfo["hotelName"] = hotelName;
             hotelChoosingInfo["numberOfRooms"] = numberOfRoom;
             hotelChoosingInfo["totalCost"] = totalCostString;
@@ -466,6 +567,7 @@ const sendBookingInfo = () => {
             });
         }
     }
+
     xhr.send(`bookingInfo&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
 }
 
@@ -484,7 +586,6 @@ const sendBookingConfirmationEmail = () => {
                 <div class="booking-detail">
                     <div class="booking-detail" id="booking-detail" style="position:relative;">
                         <div class="agency-detail">
-                            <img id="agency-logo" src="https://firebasestorage.googleapis.com/v0/b/tour-guru-25442.appspot.com/o/logo.svg?alt=media&token=ca6b15e1-bce5-4d6b-be8d-8d834788d043" alt="">
                             <div class="agency-name">
                                 <h2>Tour Guru</h2>
                             </div>
@@ -556,12 +657,12 @@ const sendBookingConfirmationEmail = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/hotels/hotel.php",
+        "../../api/hotels/hotel.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             location.replace("./../booking-detail");
         } else {
             Swal.fire({

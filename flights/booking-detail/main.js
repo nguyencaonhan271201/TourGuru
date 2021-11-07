@@ -15,6 +15,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     })
 
+    //Booking complete
+    Swal.fire({
+        title: 'Booking is completed.',
+        text: 'Please complete your payment and receive the confirmation through your email.',
+        icon: 'success'
+    })
+
     //Not chosen any flight
     if (localStorage.getItem("fromFlight") == "null" || localStorage.getItem("flightPassengers") == "null") {
         location.replace("./../");
@@ -22,21 +29,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     printToDisplay();
-
-    document.getElementById("download").addEventListener("click", (e) => {
-        e.preventDefault();
-        document.getElementById("print-block").style.display = "none";
-        
-        var pdf = new jsPDF('p', 'pt', 'letter');
-        pdf.canvas.height = 72 * 11;
-        pdf.canvas.width = 72 * 8.5;
-
-        pdf.addHTML(document.getElementById("booking-detail"), function() {
-            pdf.save('TourGuru-FlightBooking.pdf');
-        });
-
-        document.getElementById("print-block").style.display = "initial";
-    });
 
     document.getElementById("print").addEventListener("click", () => {
         document.getElementById("print-block").style.display = "none";
@@ -69,7 +61,7 @@ const printToDisplay = () => {
             <div class="boarding-pass mb-2">
                 <div class="flight-detail">
                     <div>
-                        <img src="http://pics.avs.io/40/40/${forwardFlight.airline.code}.png" alt="">
+                        <img src="http://pics.avs.io/80/40/${forwardFlight.airline.code}.png" alt="">
                         <span>${forwardFlight.airline.name} - ${forwardFlight.airline.code}${forwardFlight.flightnumber}</span>
                     </div>
                     <p class="m-0">${forwardFlight.aircraft}</p>
@@ -115,7 +107,7 @@ const printToDisplay = () => {
                 <div class="boarding-pass mb-2">
                     <div class="flight-detail">
                         <div>
-                            <img src="http://pics.avs.io/40/40/${returnFlight.airline.code}.png" alt="">
+                            <img src="http://pics.avs.io/80/40/${returnFlight.airline.code}.png" alt="">
                             <span>${returnFlight.airline.name} - ${returnFlight.airline.code}${returnFlight.flightnumber}</span>
                         </div>
                         <p class="m-0">${returnFlight.aircraft}</p>

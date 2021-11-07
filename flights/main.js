@@ -85,7 +85,7 @@ const getCurrencyInfo = () => {
     );
     xhr.onload = function() {
         if (this.status == 200) {
-            let result = JSON.parse(this.responseText);
+            let result = JSON.parse(xhr.responseText);
             ratesList = result.rates;
 
             //Upload the select
@@ -317,7 +317,7 @@ const getSearchInfo = (searchQuery, isFrom) => {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printToSearchBox(results, isFrom);
         } else {
             
@@ -368,7 +368,7 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
     xhr.onload = function() {
         swal.close();
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
 
             if (!isPrintedFlight) {
                 isPrintedFlight = true;
@@ -441,13 +441,14 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
             document.getElementById("return-summary-from").innerText = `${from}`;
             document.getElementById("return-summary-to").innerText = `${to}`;
         }
+
+        return;
     }
 
     //Lọc các chuyến bay thẳng hợp lệ
     segmentsClone = segment.filter(segment => (segment.origAirport == from && segment.destAirport == to))
     segmentsID = []
     segmentsClone.forEach(segment => segmentsID.push(segment.uniqueSegId));
-    console.log(segment);
 
     slicesClone = []
     slice.forEach(item => {
@@ -462,7 +463,6 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
     })
     slicesID = []
     slicesClone.forEach(item => slicesID.push(item.uniqueSliceId));
-    console.log(slice);
 
     itineraryClone = []
     pricedItinerary.forEach(itinerary => {

@@ -32,9 +32,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 })
 
-const signInWithGoogle = (result) => {
-    document.getElementById("user-img").setAttribute("src", res.user.photoURL);
-
+const signInWithGoogle = (res) => {
     //Get information
     let uid = res.user.uid
     let email = res.user.email
@@ -61,9 +59,8 @@ const signInWithGoogle = (result) => {
             "providerToken": res.credential.idToken,
             "isGoogle": true,
         }))
+        loginRedirect();
     }
-
-    loginRedirect();
 }
 
 const validateAndSignUp = () => {
@@ -311,7 +308,7 @@ const validateAndSignIn = () => {
             //$('#sign-in-error-modal').modal("show");
             Swal.fire({
                 icon: 'error',
-                text: "Please verify your email."
+                text: "Please verify your account with your registered email."
             });
             //$('#sign-in-loading-modal').modal("toggle");
         }
@@ -366,13 +363,11 @@ const initializeEventListeners = () => {
         firebase.auth().signInWithPopup(provider)
         .then(res => {
             //Send to backend
-            console.log(res);
             signInWithGoogle(res)
         })
         .catch(err => {
+            console.log(err);
             if (errorText != null) {
-                //errorText.innerHTML = "Error occured. Please try again later.";
-                //$('#sign-up-error-modal').modal("show");
                 Swal.fire({
                     icon: 'error',
                     text: "Error occured. Please try again later."
@@ -380,8 +375,6 @@ const initializeEventListeners = () => {
             }
             
             if (signInErrorText != null) {
-                //signInErrorText.innerHTML = "Error occured. Please try again later.";
-                //$('#sign-in-error-modal').modal("show");
                 Swal.fire({
                     icon: 'error',
                     text: "Error occured. Please try again later."
@@ -441,32 +434,30 @@ const updateToDatabaseProviderLogin = (data, token) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/auth/auth.php",
+        "../api/auth/auth.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             //Register complete, login and save to local storage
-            localStorage.setItem("user", JSON.stringify({
+            let storingItem = {
                 "uid": data.id,
                 "email": data.email,
                 "password": "",
                 "providerToken": token,
                 "isGoogle": true,
-            }))
+            };
+            localStorage.setItem("user", JSON.stringify(storingItem))
+            loginRedirect();
         } else {
             if (signInErrorText != null) {
-                //signInErrorText.innerHTML = "Error occured. Please try again.";
-                //$('#sign-in-error-modal').modal("show");
                 Swal.fire({
                     icon: 'error',
                     text: "Error occured. Please try again later."
                 });
             }
             if (errorText != null) {
-                //errorText.innerHTML = "Error occured. Please try again.";
-                //$('#sign-up-error-modal').modal("show");
                 Swal.fire({
                     icon: 'error',
                     text: "Error occured. Please try again later."
@@ -475,7 +466,7 @@ const updateToDatabaseProviderLogin = (data, token) => {
             }
         }
     }
-    xhr.send(`googleSignUp&id=${data.id}&email=${data.email}&password=""&displayName=${data.displayName}&image=${data.image}&csrf=${csrf}`);
+    xhr.send(`googleSignUp&id=${data.id}&email=${data.email}&password=dummy&displayName=${data.displayName}&image=${data.image}&csrf=${csrf}`);
 }
 
 const updateToDatabaseNormalLogin = (data) => {
@@ -483,13 +474,13 @@ const updateToDatabaseNormalLogin = (data) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/auth/auth.php",
+        "../api/auth/auth.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
+    xhr.onload = () => {
         Swal.close();
-        if (this.status === 200 && this.readyState === 4) {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             //Register complete, login and save to local storage
             //errorText.innerHTML = "Register completed. Please verify your account by checking your email.";
             //$('#sign-up-error-modal').modal("show");

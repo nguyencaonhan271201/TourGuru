@@ -94,11 +94,11 @@ const loadBookings = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(this.responseText); 
+               let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
                     if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
                         availableBookings.flights[iteration.booking_id] = [];
@@ -128,11 +128,11 @@ const loadBookings = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
                 Swal.close();
             } else {

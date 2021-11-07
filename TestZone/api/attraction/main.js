@@ -13,7 +13,7 @@ function getSearchInfo(searchQuery, limit, offset) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             //console.log(results);
             printSearchInfo(results.data);
         } else {
@@ -33,7 +33,7 @@ function getAttractionsOfGeo(geoID, name) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results);
             printAttractionsOfPlace(results.data, name)
         } else {
@@ -54,7 +54,7 @@ function getDetailOfAttractions(geoID) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results);
             printAttractionDetails(results)
         } else {
@@ -75,7 +75,7 @@ function getPhotosOfLocation(geoID) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results);
             let resultArray = [];
             results.data.forEach(image => {
@@ -291,7 +291,7 @@ function getTop20TouristAttractions() {
     const offset = 0;
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             dataRetrieve = dataRetrieve.concat(results.data);
 
             let resultArray = [];

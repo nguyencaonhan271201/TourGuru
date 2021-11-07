@@ -145,8 +145,8 @@ const showDateSwal = () => {
         cancelButtonColor: 'red',
         showCancelButton: true,
         html:
-            `<label for="from" class="mr-2">from:</label><input class="swal2-input" type="date" id="from" value=${fromDate}><br>` +
-            `<label for="from" class="mr-2">to: </label><input class="swal2-input" type="date" id="to" value=${toDate}>`,
+            `<label for="from" class="mr-2">from:</label><input class="swal2-input" type="text" id="from" placeholder="from" value=${fromDate}><br>` +
+            `<label for="from" class="mr-2">to: </label><input class="swal2-input" type="text" id="to" placeholder="to" value=${toDate}>`,
         preConfirm: () => {
             //Get input
             let from = $('#from').val();
@@ -193,8 +193,15 @@ const showDateSwal = () => {
                 document.getElementById("plan-date").innerText = dateString;
             }
         },
-        onOpen: function () {
-          $('#from').focus()
+        didOpen: function () {
+            let picker = new Litepicker({
+                element: document.getElementById("from"),
+                format: 'YYYY-MM-DD'
+            });
+            let picker2 = new Litepicker({
+                element: document.getElementById("to"),
+                format: 'YYYY-MM-DD'
+            });
         },
         allowOutsideClick: () => !Swal.isLoading()
     })
@@ -544,7 +551,7 @@ const searchDestination = (searchQuery) => {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printDestinationSearchResults(results);
         } else {
             
@@ -636,11 +643,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 title = result.plan_title;
                 description = result.plan_description;
                 fromDate = result.from_date;
@@ -671,11 +678,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(this.responseText); 
+               let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
                     if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
                         availableBookings.flights[iteration.booking_id] = [];
@@ -705,11 +712,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
                 gatherPlanDetails();
             } else {
@@ -732,11 +739,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 result.forEach(result => {
                     let detailToAdd = {
                         date: result.date,
@@ -1106,9 +1113,9 @@ const savePlan = () => {
         })
     
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Booking complete
                 deletePlan(planID, true);
             } else {
@@ -1128,12 +1135,23 @@ const savePlan = () => {
         let csrf = "";
         csrf = document.getElementById("csrf").innerText;
 
+        let flightIndexes = [];
+        let hotelIndexes = [];
+
+        chosenBookings.flights.forEach(booking => {
+            flightIndexes.push(booking[0]["booking_id"]);
+        })
+
+        chosenBookings.hotels.forEach(booking => {
+            hotelIndexes.push(booking["id"]);
+        })
+
         let data = {
             "user_id": uid,
             "plan_title": `${title}`,
             "description": `${description}`,
-            "flight_id": `${chosenBookings.flights.toString}`,
-            "hotel_id": `${chosenBookings.hotels.toString}`,
+            "flight_id": `${flightIndexes.toString()}`,
+            "hotel_id": `${hotelIndexes.toString()}`,
             "from_date": `${fromDate}`,
             "to_date": `${toDate}`
         }
@@ -1145,9 +1163,9 @@ const savePlan = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            if (this.status === 200 && this.readyState === 4) {
-                let planID = int.Parse(this.responseText);
+        xhr.onload = () => {
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                let planID = parseInt(xhr.responseText);
                 sendDetails(planID);
             } else {
                 swal.close();
@@ -1185,8 +1203,8 @@ const deletePlan = async (id, isRedirect) => {
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             if (isRedirect) {
                 Swal.fire({
                     title: 'Plan has been saved successfully.',

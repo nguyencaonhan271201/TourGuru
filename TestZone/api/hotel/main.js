@@ -9,7 +9,7 @@ function getSearchInfo(searchQuery) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printSearchInfo(results.suggestions);
         }
     }
@@ -27,7 +27,7 @@ function getHotelsList(destinationID, pageNumber, pageSize, adults, sortBy, star
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printHotelList(results.data.body.header, results.data.body.searchResults.results);
         }
     }
@@ -54,7 +54,7 @@ function getHotelInfo(hotelID) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results.data.body);
         }
     }
@@ -72,7 +72,7 @@ function getHotelPhotos(hotelID) {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             console.log(results.hotelImages);
             
             //Xử lý kết quả khi in ảnh

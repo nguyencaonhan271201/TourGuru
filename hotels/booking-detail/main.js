@@ -20,25 +20,16 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
+    //Booking complete
+    Swal.fire({
+        title: 'Booking is completed.',
+        text: 'Please complete your payment and receive the confirmation through your email.',
+        icon: 'success'
+    })
+
     info = JSON.parse(localStorage.getItem("hotelInfo"));
 
     printToDisplay();
-
-    document.getElementById("download").addEventListener("click", (e) => {
-        e.preventDefault();
-        console.log("Aloha")
-        document.getElementById("print-block").style.display = "none";
-        
-        var pdf = new jsPDF('p', 'pt', 'letter');
-        pdf.canvas.height = 72 * 11;
-        pdf.canvas.width = 72 * 8.5;
-
-        pdf.addHTML(document.getElementById("booking-detail"), function() {
-            pdf.save('TourGuru-HotelBooking.pdf');
-        });
-
-        document.getElementById("print-block").style.display = "initial";
-    });
 
     document.getElementById("print").addEventListener("click", () => {
         document.getElementById("print-block").style.display = "none";

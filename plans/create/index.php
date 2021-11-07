@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     $csrf_token = bin2hex(random_bytes(32));
     $_SESSION['csrf'] = $csrf_token;
 ?>
@@ -86,6 +87,9 @@
         
         <!-- SweetAlert -->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <!-- DatePicker -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/litepicker/2.0.11/litepicker.js"></script>
         
         <!-- Material Design -->
         <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">

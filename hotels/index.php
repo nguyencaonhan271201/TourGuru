@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     $csrf_token = bin2hex(random_bytes(32));
     $_SESSION['csrf'] = $csrf_token;
 ?>
@@ -44,7 +45,7 @@
                             <div id="date-search-div" class="col-md-6 col-sm-12 d-flex p-0 mb-sm-2">
                                 <div class="input-block">
                                     <span class="d-flex align-items-center">
-                                        <i class="fa fa-map-marker-alt ml-2 mr-2" aria-hidden="true"></i>
+                                        <i class="fa fa-calendar ml-2 mr-2" aria-hidden="true"></i>
                                         <input name="check-in" id="check-in" placeholder="check-in">
                                     </span>
                                 </div>

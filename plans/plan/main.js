@@ -84,11 +84,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 title = result.plan_title;
                 description = result.plan_description;
                 fromDate = result.from_date;
@@ -119,11 +119,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(this.responseText); 
+               let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
                     if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
                         availableBookings.flights[iteration.booking_id] = [];
@@ -153,11 +153,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
                 gatherPlanDetails();
             } else {
@@ -180,11 +180,11 @@ const gatherInformation = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 result.forEach(result => {
                     let detailToAdd = {
                         date: result.date,

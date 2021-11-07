@@ -403,13 +403,14 @@ const sendBookingInfo = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/flights/flight.php",
+        "../../api/flights/flight.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
-            let bookingID = int.Parse(this.responseText);
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+            console.log(xhr.responseText);
+            let bookingID = parseInt(xhr.responseText);
             sendBookingIterations(bookingID);
         } else {
             swal.close();
@@ -431,7 +432,7 @@ const sendBookingIterations = (bookingID) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/flights/flight.php",
+        "../../api/flights/flight.php",
         true
     )
 
@@ -456,7 +457,6 @@ const sendBookingIterations = (bookingID) => {
     sendData.push(flight);
     if (localStorage.getItem("toFlight") != "null") {
         getFlight = JSON.parse(localStorage.getItem("toFlight"));
-        getClass = getFlight.class;
         flight = {
             "booking_id": bookingID,
             "origin_code": `${getFlight.fromICAO}`,
@@ -475,8 +475,8 @@ const sendBookingIterations = (bookingID) => {
     }
 
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             sendPassengerInfos(bookingID);
         } else {
             swal.close();
@@ -486,7 +486,7 @@ const sendBookingIterations = (bookingID) => {
             });
         }
     }
-    xhr.send(`bookingIterations&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    xhr.send(`bookingIterations&booking_id=${bookingID}&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
 }
 
 const sendPassengerInfos = (bookingID) => {
@@ -498,7 +498,7 @@ const sendPassengerInfos = (bookingID) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/flights/flight.php",
+        "../../api/flights/flight.php",
         true
     )
 
@@ -517,15 +517,8 @@ const sendPassengerInfos = (bookingID) => {
     
 
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        swal.close();
-        if (this.status === 200 && this.readyState === 4) {
-            //Booking complete
-            Swal.fire({
-                title: 'Booking is completed.',
-                text: 'Please complete your payment and receive the confirmation through your email.',
-                icon: 'success'
-            })
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             //Send email
             sendBookingConfirmationEmail();
         } else {
@@ -535,7 +528,7 @@ const sendPassengerInfos = (bookingID) => {
             });
         }
     }
-    xhr.send(`bookingCustomers&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    xhr.send(`bookingCustomers&booking_id=${bookingID}&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
 }
 
 const sendBookingConfirmationEmail = () => {
@@ -544,6 +537,7 @@ const sendBookingConfirmationEmail = () => {
     let dateString = "";
     
     let getClass = departureFlight.class;
+    let getClassString = getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY";
 
     if (departureFlight != null) {
         forwardHTML += `<h4 class="text-purple">Forward Flight</h4>`;
@@ -554,7 +548,7 @@ const sendBookingConfirmationEmail = () => {
                 <div class="boarding-pass" style="margin-bottom: 5px;">
                     <div class="flight-detail">
                         <div>
-                            <img src="http://pics.avs.io/40/40/${forwardFlight.airline.code}.png" alt="">
+                            <img src="http://pics.avs.io/80/40/${forwardFlight.airline.code}.png" alt="">
                             <span>${forwardFlight.airline.name} - ${forwardFlight.airline.code}${forwardFlight.flightnumber}</span>
                         </div>
                         <p class="m-0">${forwardFlight.aircraft}</p>
@@ -580,7 +574,7 @@ const sendBookingConfirmationEmail = () => {
                         </div>
                     </div>
                     <div class="pax-detail">
-                        <h3 class="pax-class">${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}</h3>
+                        <h3 class="pax-class">${getClassString}</h3>
                         <h3>${pax.title} ${pax.first} ${pax.last}</h3>
                         <h3>DOB: ${getDisplayDateFormat(false, pax.dob)}</h3>
                         <h3>Passport: ${pax.passport}</h3>
@@ -598,7 +592,7 @@ const sendBookingConfirmationEmail = () => {
                 <div class="boarding-pass" style="margin-bottom: 5px;">
                     <div class="flight-detail">
                         <div>
-                            <img src="http://pics.avs.io/40/40/${returnFlight.airline.code}.png" alt="">
+                            <img src="http://pics.avs.io/80/40/${returnFlight.airline.code}.png" alt="">
                             <span>${returnFlight.airline.name} - ${returnFlight.airline.code}${returnFlight.flightnumber}</span>
                         </div>
                         <p class="m-0">${returnFlight.aircraft}</p>
@@ -624,7 +618,7 @@ const sendBookingConfirmationEmail = () => {
                         </div>
                     </div>
                     <div class="pax-detail">
-                        <h3 class="pax-class">${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}</h3>
+                        <h3 class="pax-class">${getClassString}</h3>
                         <h3>${pax.title} ${pax.first} ${pax.last}</h3>
                         <h3>DOB: ${getDisplayDateFormat(false, pax.dob)}</h3>
                         <h3>Passport: ${pax.passport}</h3>
@@ -683,12 +677,12 @@ const sendBookingConfirmationEmail = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/flights/flight.php",
+        "../../api/flights/flight.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             let getFlight = JSON.parse(localStorage.getItem("fromFlight"));
             getFlight["totalPrice"] = `${totalFare} ${usingCurrency}`;
             localStorage.setItem("fromFlight", JSON.stringify(getFlight));

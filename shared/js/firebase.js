@@ -9,3 +9,19 @@ const firebaseConfig = {
   
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 let provider = new firebase.auth.GoogleAuthProvider();
+
+const signOut = () => {
+    firebase.auth().signOut()
+    .then(() => {
+        location.replace("/auth/login.php");
+    })
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        uid = user.uid;
+    } else {
+        location.replace("/auth/login.php");
+        return;
+    }
+})

@@ -52,7 +52,7 @@ const getCurrencyInfo = () => {
     );
     xhr.onload = function() {
         if (this.status == 200) {
-            let result = JSON.parse(this.responseText);
+            let result = JSON.parse(xhr.responseText);
             ratesList = result.rates;
 
             //Upload the select
@@ -228,14 +228,14 @@ const getSearchInfo = (searchQuery) => {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printSearchInfo(results.suggestions);
         } else {
             
         }
     }
 
-    xhr.open("GET", `https://hotels4.p.rapidapi.com/locations/search?query=${searchQuery}&locale=en_US`);
+    xhr.open("GET", `https://hotels4.p.rapidapi.com/locations/v2/search?query=${searchQuery}&locale=en_US`);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
     xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
 
@@ -246,13 +246,15 @@ const printSearchInfo = (suggestions) => {
     let getSearchBox = document.getElementById("search-location-result");
     getSearchBox.innerHTML = "";
     suggestions.forEach((group) => {
-        group.entities.forEach((item) => {
-            getSearchBox.innerHTML += `
-                <div class="search-result" data-id=${item.destinationId}>
-                    ${item.caption}
-                </div>
-            `
-        })
+        if (group.group === "CITY_GROUP" || group.group === "LANDMARK_GROUP") {
+            group.entities.forEach((item) => {
+                getSearchBox.innerHTML += `
+                    <div class="search-result" data-id=${item.destinationId}>
+                        ${item.caption}
+                    </div>
+                `
+            })
+        }
     })
 
     //Add event listener for each search-result
@@ -304,7 +306,7 @@ const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, star
     xhr.onload = function() {
         swal.close();
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
 
             if (!isPrintedHotel) {
                 isPrintedHotel = true;

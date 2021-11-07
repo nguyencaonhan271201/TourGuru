@@ -50,7 +50,6 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("print-block").style.display = "initial";
 
         return false;
-
     });
 
     document.getElementById("delete").addEventListener("click", () => {
@@ -129,7 +128,7 @@ const getHotelInfo = () => {
     xhr.onload = function() {
         if(this.status == 200) {
             try {
-                let results = JSON.parse(this.responseText);
+                let results = JSON.parse(xhr.responseText);
                 hotelInfo = results.data.body;
                 printToDisplay();
             }
@@ -161,10 +160,10 @@ const getHotelBookingInfo = () => {
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
-            if (this.status === 200 && this.readyState === 4) {
+        xhr.onload = () => {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 bookingInfo = result;
                 hotelID = bookingInfo.hotel_id;
                 getHotelInfo();
@@ -221,8 +220,8 @@ const deleteBooking = () => {
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             Swal.fire({
                 title: 'Your booking has been deleted successfully.',
                 icon: 'success'

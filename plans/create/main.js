@@ -29,47 +29,47 @@ window.addEventListener("DOMContentLoaded", () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading()
+                }
+            });
+        
+            getAvailableBookings();
+            reInitializeEventListeners();
+        
+            document.getElementById("btn-create").addEventListener("click", () => {
+                Swal.fire({
+                    title: 'Are you sure want to create this plan?',
+                    text: 'Further modifications are allowed.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    confirmButtonColor: 'green',
+                    cancelButtonColor: 'red'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Loading...',
+                            html: 'Please wait...',
+                            allowEscapeKey: false,
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                            Swal.showLoading()
+                            }
+                        });
+                        savePlan();
+                    }
+                })
+            })
         } else {
             location.replace("./../../auth/login.php");
             return;
         }
-    })
-
-    Swal.fire({
-        title: 'Loading...',
-        html: 'Please wait...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-    });
-
-    getAvailableBookings();
-    reInitializeEventListeners();
-
-    document.getElementById("btn-create").addEventListener("click", () => {
-        Swal.fire({
-            title: 'Are you sure want to create this plan?',
-            text: 'Further modifications are allowed.',
-            showCancelButton: true,
-            confirmButtonText: 'Yes',
-            confirmButtonColor: 'green',
-            cancelButtonColor: 'red'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Loading...',
-                    html: 'Please wait...',
-                    allowEscapeKey: false,
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                    Swal.showLoading()
-                    }
-                });
-                savePlan();
-            }
-        })
     })
 })
 
@@ -123,8 +123,8 @@ const showDateSwal = () => {
         cancelButtonColor: 'red',
         showCancelButton: true,
         html:
-            `<label for="from" class="mr-2">from:</label><input class="swal2-input" type="date" id="from" value=${fromDate}><br>` +
-            `<label for="from" class="mr-2">to: </label><input class="swal2-input" type="date" id="to" value=${toDate}>`,
+            `<label for="from" class="mr-2">from:</label><input class="swal2-input" type="text" id="from" placeholder="from" value=${fromDate}><br>` +
+            `<label for="from" class="mr-2">to: </label><input class="swal2-input" type="text" id="to" placeholder="to" value=${toDate}>`,
         preConfirm: () => {
             //Get input
             let from = $('#from').val();
@@ -171,8 +171,15 @@ const showDateSwal = () => {
                 document.getElementById("plan-date").innerText = dateString;
             }
         },
-        onOpen: function () {
-          $('#from').focus()
+        didOpen: function () {
+            let picker = new Litepicker({
+                element: document.getElementById("from"),
+                format: 'YYYY-MM-DD'
+            });
+            let picker2 = new Litepicker({
+                element: document.getElementById("to"),
+                format: 'YYYY-MM-DD'
+            });
         },
         allowOutsideClick: () => !Swal.isLoading()
     })
@@ -283,17 +290,16 @@ const getAvailableBookings = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../../api/plans/create.php?getFlightBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(this.responseText); 
+               let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
-                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
+                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id.toString())) {
                         availableBookings.flights[iteration.booking_id] = [];
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     } else {
@@ -309,7 +315,7 @@ const getAvailableBookings = () => {
                 location.replace("./../../");
             }
         }
-        xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const getAvailableHotelBookings = () => {
@@ -317,15 +323,14 @@ const getAvailableBookings = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../../api/plans/create.php?getHotelBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = () => {
+        xhr.onload = () => {
             swal.close();
-            if (this.status === 200 && this.readyState === 4) {
+            if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(this.responseText); 
+                let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
                 Swal.close();
             } else {
@@ -336,7 +341,7 @@ const getAvailableBookings = () => {
                 location.replace("./../../");
             }
         }
-        xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
     
     getAvailableFlightBookings();
@@ -625,7 +630,7 @@ const searchDestination = (searchQuery) => {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            let results = JSON.parse(this.responseText);
+            let results = JSON.parse(xhr.responseText);
             printDestinationSearchResults(results);
         } else {
             
@@ -940,12 +945,23 @@ const savePlan = () => {
     let csrf = "";
     csrf = document.getElementById("csrf").innerText;
 
+    let flightIndexes = [];
+    let hotelIndexes = [];
+
+    chosenBookings.flights.forEach(booking => {
+        flightIndexes.push(booking[0]["booking_id"]);
+    })
+
+    chosenBookings.hotels.forEach(booking => {
+        hotelIndexes.push(booking["id"]);
+    })
+    
     let data = {
         "user_id": uid,
         "plan_title": `${title}`,
         "description": `${description}`,
-        "flight_id": `${chosenBookings.flights.toString}`,
-        "hotel_id": `${chosenBookings.hotels.toString}`,
+        "flight_id": `${flightIndexes.toString()}`,
+        "hotel_id": `${hotelIndexes.toString()}`,
         "from_date": `${fromDate}`,
         "to_date": `${toDate}`
     }
@@ -953,13 +969,13 @@ const savePlan = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/plans/create.php",
+        "../../api/plans/create.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
-        if (this.status === 200 && this.readyState === 4) {
-            let planID = int.Parse(this.responseText);
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+            let planID = parseInt(xhr.responseText);
             sendDetails(planID);
         } else {
             swal.close();
@@ -981,7 +997,7 @@ const sendDetails = (planID) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/plans/create.php",
+        "../../api/plans/create.php",
         true
     )
 
@@ -1002,16 +1018,17 @@ const sendDetails = (planID) => {
     })
 
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = () => {
+    xhr.onload = () => {
         swal.close();
-        if (this.status === 200 && this.readyState === 4) {
+        if (xhr.status === 200 && xhr.readyState === 4) {
             //Booking complete
             Swal.fire({
                 title: 'Plan has been saved successfully.',
                 text: 'You can edit details of your plan in your profile section.',
                 icon: 'success'
+            }).then(() => {
+                location.replace("./../")
             })
-            location.replace("./../")
         } else {
             Swal.fire({
                 icon: "error",
