@@ -311,8 +311,9 @@ const getAvailableBookings = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../../");
+                }).then(() => {
+                    location.replace("./../../");
+                })            
             }
         }
         xhr.send();
@@ -337,8 +338,9 @@ const getAvailableBookings = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../../");
+                }).then(() => {
+                    location.replace("./../../");
+                })
             }
         }
         xhr.send();

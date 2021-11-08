@@ -12,31 +12,30 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             uid = user.uid;
             user_email = user.email;
+
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("id")) {
+                flightBookingID = urlParams.get("id");
+            } else {
+                location.replace("./../");
+            } 
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                Swal.showLoading()
+                }
+            });
+
+            getFlightBookingInfo();
         } else {
             location.replace("./../../auth");
             return;
         }
     })
-
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("id")) {
-        flightBookingID = urlParams.get("id");
-    } else {
-        location.replace("./../");
-    } 
-
-    Swal.fire({
-        title: 'Loading...',
-        html: 'Please wait...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-    });
-
-    getFlightBookingInfo();
-
 
     document.getElementById("print").addEventListener("click", () => {
         document.getElementById("print-block").style.display = "none";
@@ -108,10 +107,9 @@ const getFlightBookingInfo = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/bookings/info.php",
+            `../../api/bookings/info.php?getFlightsInfo&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
@@ -122,12 +120,13 @@ const getFlightBookingInfo = () => {
             } else {
                 Swal.fire({
                     icon: "error",
-                    text: "Error occured."
-                });
-                location.replace("./../");
+                    text: "Error 1 occured."
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getFlightsInfo&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const getPassengersInfo = () => {
@@ -135,10 +134,9 @@ const getFlightBookingInfo = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/bookings/info.php",
+            `../../api/bookings/info.php?getFlightsPax&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
@@ -149,12 +147,13 @@ const getFlightBookingInfo = () => {
             } else {
                 Swal.fire({
                     icon: "error",
-                    text: "Error occured."
-                });
-                location.replace("./../");
+                    text: "Error 2 occured."
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getFlightsPax&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     getInfoAndIterations();
@@ -173,8 +172,6 @@ const calculateDuration = (depart, arrival) => {
         arrivalInfo[0] += 24;
     }
 
-    console.log(arrivalInfo,)
-
     let minute = arrivalInfo[0] * 60 + arrivalInfo[1] - departInfo[0] * 60 - departInfo[1];
     return timePrintFormat(minute);
 }
@@ -191,7 +188,7 @@ const printToDisplay = () => {
             <div class="boarding-pass mb-2">
                 <div class="flight-detail">
                     <div>
-                        <img src="http://pics.avs.io/40/40/${forwardFlight.flight_number.substring(0, 2)}.png" alt="">
+                        <img src="http://pics.avs.io/80/40/${forwardFlight.flight_number.substring(0, 2)}.png" alt="">
                         <span>${forwardFlight.airline} - ${forwardFlight.flight_number}</span>
                     </div>
                     <p class="m-0">${forwardFlight.aircraft}</p>
@@ -237,7 +234,7 @@ const printToDisplay = () => {
                 <div class="boarding-pass mb-2">
                     <div class="flight-detail">
                         <div>
-                            <img src="http://pics.avs.io/40/40/${returnFlight.flight_number.substring(0, 2)}.png" alt="">
+                            <img src="http://pics.avs.io/80/40/${returnFlight.flight_number.substring(0, 2)}.png" alt="">
                             <span>${returnFlight.airline} - ${returnFlight.flight_number}</span>
                         </div>
                         <p class="m-0">${returnFlight.aircraft}</p>
@@ -285,7 +282,7 @@ const deleteBooking = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/bookings/info.php",
+        "../../api/bookings/info.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -294,9 +291,9 @@ const deleteBooking = () => {
             Swal.fire({
                 title: 'Your booking has been deleted successfully.',
                 icon: 'success'
+            }).then(() => {
+                location.replace("./../")
             })
-
-            location.replace("./../")
         } else {
             swal.close();
             Swal.fire({
@@ -305,7 +302,7 @@ const deleteBooking = () => {
             });
         }
     }
-    xhr.send(`deleteFlightBooking&booking_id=${planID}&user_id=${uid}&csrf=${csrf}`);
+    xhr.send(`deleteFlightBooking&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}`);
 }
 
 //For testing only

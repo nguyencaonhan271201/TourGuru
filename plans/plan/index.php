@@ -44,7 +44,7 @@
                         <h5 id="plan-description"></h5>
                     </div>
                     <div class="">
-                        <p class="text-gray text-right font-italic" id="plan-created">created: </p>
+                        <p class="text-gray text-right font-italic" id="plan-created">updated: </p>
                     </div>
                 </div>
                 <hr>

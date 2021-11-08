@@ -35,7 +35,6 @@ class Plan {
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
     } catch (Exception $e) {
-      $errors['execute_err'] = "Server error.";
       return;
     }
   }
@@ -49,7 +48,6 @@ class Plan {
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
     } catch (Exception $e) {
-      $errors['execute_err'] = "Server error.";
       return;
     }
   }
@@ -92,7 +90,48 @@ class Plan {
   }
 
   public function addPlanDetails($details, &$errors) {
-    $iteration = new PlanDetail($this->conn);
-    $iteration->addPlanDetails($details, $errors);
+    $detail = new PlanDetail($this->conn);
+    $detail->addPlanDetails($details, $errors);
+  }
+
+  public function getPlans($uid) {
+    try {
+      $query = "SELECT * FROM plans WHERE user_id = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("s", $uid);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
+
+  public function getPlanGeneral($uid, $plan_id) {
+    try {
+      $query = "SELECT * FROM plans WHERE user_id = ? AND id = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("si", $uid, $plan_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_assoc();
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
+
+  public function getPlanDetails($plan_id, &$errors) {
+    $detail = new PlanDetail($this->conn);
+    return $detail->getPlanDetails($plan_id, $errors);
+  }
+
+  public function deletePlan($plan_id, $uid, &$errors) {
+    $sql = "DELETE FROM plans WHERE user_id = ? AND id = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("si", $uid, $plan_id);
+    $stmt->execute();
+    if ($stmt->affected_rows != 1){
+      $errors["server_err"] = "Error occurred!!!";
+    }
   }
 }

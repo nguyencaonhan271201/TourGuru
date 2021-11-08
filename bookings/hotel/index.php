@@ -92,6 +92,9 @@
 
         </div>
 
+        <!-- CSRF Token -->
+        <p id="csrf" style="display: none"><?php echo $_SESSION['csrf']; ?></p>
+
         <!-- Firebase -->
         <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-firestore-compat.js"></script>

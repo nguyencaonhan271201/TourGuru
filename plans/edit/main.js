@@ -31,30 +31,30 @@ window.addEventListener("DOMContentLoaded", () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
+
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("id")) {
+                planID = urlParams.get("id");
+            } else {
+                location.replace("./../");
+            } 
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                Swal.showLoading()
+                }
+            });
+
+            gatherInformation();
         } else {
             location.replace("./../../auth/login.php");
             return;
         }
     })
-
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("id")) {
-        planID = urlParams.get("id");
-    } else {
-        location.replace("./../");
-    } 
-
-    Swal.fire({
-        title: 'Loading...',
-        html: 'Please wait...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-    });
-
-    gatherInformation();
 
     reInitializeEventListeners();
 
@@ -639,17 +639,16 @@ const gatherInformation = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/plans.php",
+            `../../api/plans/plans.php?getPlanGeneral&user_id=${uid}&plan_id=${planID}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 title = result.plan_title;
-                description = result.plan_description;
+                description = result.description;
                 fromDate = result.from_date;
                 toDate = result.to_date;
                 created = result.date_created;
@@ -662,11 +661,12 @@ const gatherInformation = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getPlanGeneral&user_id=${uid}&plan_id=${planID}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const getAvailableFlightBookings = () => {
@@ -674,17 +674,16 @@ const gatherInformation = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../../api/plans/create.php?getFlightBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
                let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
-                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
+                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id.toString())) {
                         availableBookings.flights[iteration.booking_id] = [];
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     } else {
@@ -696,11 +695,12 @@ const gatherInformation = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../../");
+                }).then(() => {
+                    location.replace("./../../");
+                })
             }
         }
-        xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const getAvailableHotelBookings = () => {
@@ -708,10 +708,9 @@ const gatherInformation = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../../api/plans/create.php?getHotelBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
@@ -723,11 +722,12 @@ const gatherInformation = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../../");
+                }).then(() => {
+                    location.replace("./../../");
+                })
             }
         }
-        xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const gatherPlanDetails = () => {
@@ -735,14 +735,13 @@ const gatherInformation = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/plans.php",
+            `../../api/plans/plans.php?getPlanDetails&plan_id=${planID}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
-               //Nhận thông tin và lưu vào danh mục
+                //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 result.forEach(result => {
                     let detailToAdd = {
@@ -758,19 +757,19 @@ const gatherInformation = () => {
                         rawID: result.id
                     }
                     details.push(detailToAdd);
-
-                    //Load everything completed
-                    printToDisplay();
                 })
+                //Load everything completed
+                printToDisplay();
             } else {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    //location.replace("./../");
+                })  
             }
         }
-        xhr.send(`getPlanDetails&plan_id=${planID}&csrf=${csrf}`);
+        xhr.send();
     }
 
     gatherGeneralInfo();
@@ -810,7 +809,7 @@ const printToDisplay = () => {
         document.getElementById("add-description").style.display = "none";
     }
 
-    document.getElementById("plan-created").innerText = `created: ${getDisplayDateFormat(false, created)}`;
+    document.getElementById("plan-created").innerText = `updated: ${getDisplayDateFormat(false, created)}`;
 
     updateBookingLinkedDetail();
 
@@ -1092,14 +1091,14 @@ const savePlan = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "POST",
-            "/api/plans/create.php",
+            "../../api/plans/create.php",
             true
         )
     
         let sendData = [];
         details.forEach(detail => {
             let detailStorage = {
-                "plan_id": planID,
+                "plan_id": newPlanID,
                 "destination_id": detail.attraction.id,
                 "destination_name": detail.attraction.name,
                 "destination_image": detail.attraction.image,
@@ -1159,7 +1158,7 @@ const savePlan = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "POST",
-            "/api/plans/create.php",
+            "../../api/plans/create.php",
             true
         )
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -1199,7 +1198,7 @@ const deletePlan = async (id, isRedirect) => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/plans/plans.php",
+        "../../api/plans/plans.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -1221,7 +1220,7 @@ const deletePlan = async (id, isRedirect) => {
             });
         }
     }
-    xhr.send(`deletePlan&planID=${planID}&uid=${uid}&csrf=${csrf}`);
+    xhr.send(`deletePlan&planID=${id}&uid=${uid}&csrf=${csrf}`);
 }
 
 //Testing only

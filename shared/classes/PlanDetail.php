@@ -44,4 +44,18 @@ class PlanDetail {
       return;
     }
   }
+
+  public function getPlanDetails($plan_id, $errors) {
+    try {
+      $query = "SELECT * FROM plan_details WHERE plan_id = ? ORDER BY id ASC";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $plan_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+      return $result;
+    } catch (Exception $e) {
+      $errors["execute_err"] = "Error occured";
+      return;
+    }
+  }
 }

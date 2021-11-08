@@ -65,4 +65,27 @@ class HotelBooking {
       return;
     }
   }
+
+  public function getHotelBookingInfo($user_id, $booking_id) {
+    try {
+      $query = "SELECT * FROM hotel_bookings WHERE id = ? AND user_id = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("is", $booking_id, $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_assoc();
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
+
+  public function deleteBooking($uid, $booking_id, &$errors) {
+    $sql = "DELETE FROM hotel_bookings WHERE user_id = ? AND id = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("si", $uid, $booking_id);
+    $stmt->execute();
+    if ($stmt->affected_rows != 1){
+      $errors["server_err"] = "Error occurred!!!";
+    }
+  }
 }

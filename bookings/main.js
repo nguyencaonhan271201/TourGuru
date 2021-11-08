@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
+
+            loadBookings();
         } else {
             location.replace("./../auth/login.php");
             return;
@@ -39,8 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //       Swal.showLoading()
     //     }
     // });
-
-    loadBookings();
 })
 
 const chooseFlight = () => {
@@ -90,17 +90,16 @@ const loadBookings = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../api/plans/create.php?getFlightBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                //Nhận thông tin và lưu vào danh mục
                let result = JSON.parse(xhr.responseText); 
                result.forEach(iteration => {
-                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id)) {
+                    if (!Object.keys(availableBookings.flights).includes(iteration.booking_id.toString())) {
                         availableBookings.flights[iteration.booking_id] = [];
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     } else {
@@ -112,11 +111,12 @@ const loadBookings = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getFlightBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
 
     const getAvailableHotelBookings = () => {
@@ -124,33 +124,33 @@ const loadBookings = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/plans/create.php",
+            `../api/plans/create.php?getHotelBookings&id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
-            swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
-                Swal.close();
+
+                loadToTables();
             } else {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getHotelBookings&id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
     
-    //getAvailableFlightBookings();
+    getAvailableFlightBookings();
 
-    dummyData();
+    //dummyData();
 
-    loadToTables();
+    //loadToTables();
 }
 
 //Testing only
@@ -252,6 +252,8 @@ const dummyData = () => {
 }
 
 const loadToTables = () => {
+    swal.close();
+
     let html = ``;
     Object.keys(availableBookings.flights).forEach(key => {
         let bookingDetail = availableBookings.flights[key];
@@ -300,7 +302,7 @@ const loadToTables = () => {
                     ${bookingDetail[0]["total_price"]}
                 </td>
                 <td>
-                    ${bookingDetail[0]["date_booked"]}
+                    ${getDisplayDateFormatAdd7Hours(bookingDetail[0]["date_booked"])}
                 </td>
                 <td>
                     <a type="button" class="btn btn-info btn-view-booking btn-view-booking-flight" data-booking-id=${bookingDetail[0]["booking_id"]}>View</a>
@@ -335,7 +337,7 @@ const loadToTables = () => {
                     ${booking.total_cost}
                 </td>
                 <td>
-                    ${booking.date_booked}
+                    ${getDisplayDateFormatAdd7Hours(booking.date_booked)}
                 </td>
                 <td>
                     <a type="button" class="btn btn-info btn-view-booking btn-view-booking-hotel" data-booking-id=${booking.id}>View</a>
@@ -360,4 +362,19 @@ const loadToTables = () => {
     })
 
     chooseFlight();
+}
+
+const getDisplayDateFormatAdd7Hours = (ISODate) => {
+    function addHoursToDate(date, hours) {
+        return new Date(new Date(date).setHours(date.getHours() + hours));
+    }
+
+    let newDateObj = new Date(ISODate);
+    newDateObj = addHoursToDate(newDateObj, 7);
+    const toMonth = newDateObj.getMonth() + 1;
+    const toYear = newDateObj.getFullYear();
+    const toDate = newDateObj.getDate();
+    const DOW = newDateObj.getDay()
+    const dateTemplate = `${toDate} ${months[toMonth - 1]} ${toYear}`;
+    return dateTemplate;
 }

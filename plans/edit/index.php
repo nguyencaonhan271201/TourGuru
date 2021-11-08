@@ -44,7 +44,7 @@
                     data-tooltip="Add description" data-tooltip-location="right"
                     ><i class="fa fa-plus" aria-hidden="true"></i></p>
                     <div class="">
-                        <p class="text-gray text-right font-italic" id="plan-created">created: </p>
+                        <p class="text-gray text-right font-italic" id="plan-created">updated: </p>
                     </div>
                 </div>
                 <hr>

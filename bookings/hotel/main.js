@@ -11,30 +11,30 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             uid = user.uid;
             user_email = user.email;
+
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("id")) {
+                planID = urlParams.get("id");
+            } else {
+                location.replace("./../");
+            } 
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                Swal.showLoading()
+                }
+            });
+
+            getHotelBookingInfo();
         } else {
             location.replace("./../../auth");
             return;
         }
     })
-
-    let urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("id")) {
-        planID = urlParams.get("id");
-    } else {
-        location.replace("./../");
-    } 
-
-    Swal.fire({
-        title: 'Loading...',
-        html: 'Please wait...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-    });
-
-    getHotelBookingInfo();
 
     document.getElementById("print").addEventListener("click", () => {
         document.getElementById("print-block").style.display = "none";
@@ -136,8 +136,10 @@ const getHotelInfo = () => {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    location.replace("./../");
+                })
+                
                 return;
             }
         }
@@ -156,26 +158,27 @@ const getHotelBookingInfo = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            "/api/bookings/info.php",
+            `../../api/bookings/info.php?getHotelsInfo&booking_id=${planID}&user_id=${uid}&csrf=${csrf}`,
             true
         )
-        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhr.onload = () => {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 bookingInfo = result;
+                console.log(result);
                 hotelID = bookingInfo.hotel_id;
                 getHotelInfo();
             } else {
                 Swal.fire({
                     icon: "error",
                     text: "Error occured."
-                });
-                location.replace("./../");
+                }).then(() => {
+                    location.replace("./../");
+                })
             }
         }
-        xhr.send(`getHotelsInfo&booking_id=${planID}&user_id=${uid}&csrf=${csrf}`);
+        xhr.send();
     }
     getBookingInfo();
 
@@ -216,7 +219,7 @@ const deleteBooking = () => {
     let xhr = new XMLHttpRequest();
     xhr.open(
         "POST",
-        "/api/bookings/info.php",
+        "../../api/bookings/info.php",
         true
     )
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -225,9 +228,9 @@ const deleteBooking = () => {
             Swal.fire({
                 title: 'Your booking has been deleted successfully.',
                 icon: 'success'
+            }).then(() => {
+                location.replace("./../");
             })
-
-            location.replace("./../")
         } else {
             swal.close();
             Swal.fire({

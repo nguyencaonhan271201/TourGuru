@@ -6,23 +6,25 @@ document.addEventListener('DOMContentLoaded', () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
+
+            Swal.fire({
+                title: 'Loading...',
+                html: 'Please wait...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading()
+                }
+            });
+        
+            getPlans();
         } else {
             location.replace("./../auth/login.php");
             return;
         }
     })
 
-    Swal.fire({
-        title: 'Loading...',
-        html: 'Please wait...',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-    });
-
-    getPlans();
+    
 })
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {
@@ -36,15 +38,29 @@ const getDisplayDateFormat = (isWeekDay, ISODate) => {
     return dateTemplate;
 }
 
+const getDisplayDateFormatAdd7Hours = (ISODate) => {
+    function addHoursToDate(date, hours) {
+        return new Date(new Date(date).setHours(date.getHours() + hours));
+    }
+
+    let newDateObj = new Date(ISODate);
+    newDateObj = addHoursToDate(newDateObj, 7);
+    const toMonth = newDateObj.getMonth() + 1;
+    const toYear = newDateObj.getFullYear();
+    const toDate = newDateObj.getDate();
+    const DOW = newDateObj.getDay()
+    const dateTemplate = `${toDate} ${months[toMonth - 1]} ${toYear}`;
+    return dateTemplate;
+}
+
 const getPlans = () => {
     let csrf = document.getElementById("csrf").innerText;
     let xhr = new XMLHttpRequest();
     xhr.open(
         "GET",
-        "/api/plans/plans.php",
+        `../api/plans/plans.php?getPlans&id=${uid}&csrf=${csrf}`,
         true
     )
-    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
         swal.close();
         if (xhr.status === 200 && xhr.readyState === 4) {
@@ -56,11 +72,12 @@ const getPlans = () => {
             Swal.fire({
                 icon: "error",
                 text: "Error occured."
+            }).then(() => {
+                //location.replace("./../");
             });
-            location.replace("./../");
         }
     }
-    xhr.send(`getPlans&id=${uid}&csrf=${csrf}`);
+    xhr.send();
 }
 
 const printPlansToDisplay = (result) => {
@@ -83,7 +100,7 @@ const printPlansToDisplay = (result) => {
                     <h3 class="text-pink">${plan.plan_title}</h3>
                     <h5 class="text-purple">${getDisplayDateFormat(false, plan.from_date)} - ${getDisplayDateFormat(false, plan.to_date)}</h5>
                     <p class="">${plan.description}</p>
-                    <p class="text-gray font-italic">created: ${plan.date_created}</p>
+                    <p class="text-gray font-italic">created: ${getDisplayDateFormatAdd7Hours(plan.date_created)}</p>
                     <button class="btn-view" data-plan-id=${plan.id}>view</button>
                 </div>
             </div>
