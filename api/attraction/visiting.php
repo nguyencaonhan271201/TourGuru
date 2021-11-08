@@ -8,6 +8,9 @@
         //var_dump($locaction->addVisited($userID, $locID));
         if($location->checkVisited($userID, $locID)){
             return $location->addVisited($userID, $locID);
-        } else return 2; //vi tri da den nen khong add vao
+        } else{
+            return $locaction->removeVisited($userID, $locID);
+            //2 xoa thanh cong
+        }
     } else return 3;//chua set du lieu 
 ?>

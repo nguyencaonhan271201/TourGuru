@@ -30,5 +30,15 @@ class location{
         } else return 1; //add khong thanh cong
     }
 
+    public function removeVisited($userID, $geoID){
+        $sql = "DELETE FROM visited_locations(user_id, location_id) VALUES(?,?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $userID, $geoID);
+        $stmt->execute();
+        if($stmt->affected_rows == 1){
+            return 2; //xoa thanh cong
+        } else return 1; //xoa khong thanh cong
+    }
+
 }
 ?>
