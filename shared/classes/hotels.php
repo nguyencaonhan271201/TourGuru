@@ -11,40 +11,39 @@
             $this->bookingID = $bookingID;
         }
 
-        public function getPeriodRange($period){
-            $today = new DateTime(date('Y-m-d'));
-            // $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
-            // echo($today->format('Y-m-d')); echo("\r\n");
-            // echo($day->format('Y-m-d')); echo("\r\n");
-            switch ($period) {
-               case 'Y':
-                    $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
-                   break;
-                case 'Q':
-                    return 0;
-                case 'M':
-                    return 0;
-                case 'W':
-                    return 0;
+        // public function getPeriodRange($period){
+        //     $today = new DateTime(date('Y-m-d'));
+        //     // $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
+        //     // echo($today->format('Y-m-d')); echo("\r\n");
+        //     // echo($day->format('Y-m-d')); echo("\r\n");
+        //     switch ($period) {
+        //        case 'Y':
+        //             $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
+        //            break;
+        //         case 'Q':
+        //             return 0;
+        //         case 'M':
+        //             return 0;
+        //         case 'W':
+        //             return 0;
    
-               default:
-                   return false; //Param period have problems
-            }
-            $interval = $day->diff($today)->format("%r%a");
-            echo($interval);
-            //return $today->diff($day); //Tổng số ngày tính từ $day -> today;
-        }
+        //        default:
+        //            return false; //Param period have problems
+        //     }
+        //     $interval = $day->diff($today)->format("%r%a");
+        //     echo($interval);
+        //     //return $today->diff($day); //Tổng số ngày tính từ $day -> today;
+        // }
 
-        public function getTotalBooking($period = 'D'){
+        public function getTotalBooking($period = 'W'){
             //period ('Y'/'Q'/'M'/'W')
-            $sql = 
-            "SELECT count(*) 
-            FROM hotel_bookings 
-            WHERE date_booked > cast(CURRENT_DATE - ? as date)";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i");
-
-
+            $query = "SELECT date_booked FROM hotel_bookings";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            include "getInfoByPeriod.php";
+            $info = new getInfoByPeriod();
+            return $info->executeReturnObjects($result, $period);
         }
 
         public function getBookingInfo($offset){
@@ -60,6 +59,10 @@
             $stmt->execute();
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             return array_slice($result, -10);//get last 10 elements of result ()
+        }
+
+        public function deleteBooking($userID){
+
         }
     }
 ?>
