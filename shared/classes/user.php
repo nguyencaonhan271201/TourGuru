@@ -7,11 +7,9 @@ class User{
     public $role;
     public $conn;
 
-    public function __construct(){
-
-    }
-    public function setConn($conn) {
+    public function __construct($conn = null, $ID = null){
         $this->conn = $conn;
+        $this->ID = $ID;
     }
 
     public function deleteUser($userID){
@@ -27,5 +25,22 @@ class User{
         }
     }
     
+
+    public function getUserForDashboard($offset){
+        $offset *= 10;
+            $sql = 
+            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated
+            FROM users
+            ORDER BY date_created DESC
+            LIMIT ?  ";
+
+            //userID,userName, mail, timeCreated
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("i", $offset);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            return array_slice($result, -10);//get last 10 elements of result ()
+    }
 }
 ?>
