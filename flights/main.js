@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeEventListener();
     getCurrencyInfo();
     document.querySelector(".search-result-div").style.display = "none";
+    document.getElementById("carousel").style.display = "initial";
 
     localStorage.setItem("fromFlight", null)
     localStorage.setItem("toFlight", null)
@@ -374,6 +375,7 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
                 isPrintedFlight = true;
                 let searchBox = document.querySelector(".search-div");
                 searchBox.classList.add("search-div-found");
+                document.getElementById("carousel").style.display = "none";
             }
 
             let isOneWay = document.getElementById("flight-type").value == "oneway";

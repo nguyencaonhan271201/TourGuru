@@ -20,7 +20,43 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid mt-4 mb-4">
+        <div class="container-fluid" style="margin-top: 60px;">
+            <div id="carousel" class="carousel slide" style="margin-top: 60px;" data-ride="carousel">
+                <div id="carousel-backdrop"></div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/1.jpg" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/8.jpg" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/7.jpeg" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/3.jpg" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/5.png" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/2.webp" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/6.jpg" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/4.webp" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/9.png" alt="">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" src="../shared/assets/images/carousel/hotels/10.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+
             <div class="search-div container d-flex align-items-center justify-content-center">
                 <form id="flight-search-form" method="post" action="#">
                     <div class="ml-md-3 ml-sm-0 d-flex" id="horizontal-upper-form-div">

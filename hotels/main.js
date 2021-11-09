@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelector(".search-result-div").style.display = "none";
     document.querySelector(".search-result-div").style.opacity = "1";
+    document.getElementById("carousel").style.display = "initial";
 
     initializeEventListener();
     getCurrencyInfo();
@@ -312,6 +313,7 @@ const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, star
                 isPrintedHotel = true;
                 let searchBox = document.querySelector(".search-div");
                 searchBox.classList.add("search-div-found");
+                document.getElementById("carousel").style.display = "none";
             }
 
             if (results.data) {

@@ -104,7 +104,7 @@ class User {
 
             if (!isset($profileErr)) {
                 $newFilename = uniqid('', true) . "." . end($ftype);
-                $dest = "../../shared/assets/images/users" . $newFilename;
+                $dest = "../../shared/assets/images/users/" . $newFilename;
                 if(move_uploaded_file($ftmp, $dest)) {
                     //
                     $newURL = $dest;

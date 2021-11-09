@@ -41,6 +41,43 @@ h4 {
   --theme-text-warning: #d32f2f;
 }
 
+.carousel {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#carousel-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255);
+  opacity: 0.5;
+  z-index: -2;
+  -webkit-filter: blur(20px);
+  -moz-filter: blur(20px);
+  -ms-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.carousel-inner,
+.carousel-item,
+.carousel-item img {
+  height: 100% !important;
+  width: 100%;
+  object-fit: cover;
+  z-index: -3;
+}
+
+.carousel-item img {
+  opacity: 0.65;
+}
+
 #horizontal-upper-form-div select {
   background: none !important;
   border: none !important;
@@ -114,6 +151,7 @@ input[type="date"]:after {
 .search-div {
   height: 90vh;
   transition: height 300ms;
+  position: relative;
 }
 
 .header-search-result {
@@ -267,6 +305,9 @@ input[type="date"]:after {
 
 #flight-search-form {
   width: 100%;
+  background: rgb(255, 255, 255, 0.65);
+  padding: 15px;
+  border-radius: 5px;
 }
 
 #btn-confirm {
