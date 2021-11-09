@@ -62,7 +62,15 @@
         }
 
         public function deleteBooking($userID){
-
+            $query = 
+            "DELETE FROM hotel_bookings 
+            WHERE id = ? AND user_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("is", $this->bookingID, $userID);
+            $stmt->execute();
+            if($stmt->affected_rows == 1){
+                return 0; //xoa thanh cong
+            } else return 1; //xoa khong thanh cong
         }
     }
 ?>
