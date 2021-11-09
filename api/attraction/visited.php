@@ -1,7 +1,7 @@
 <?php
     include "../../db.php";
     include "../../shared/classes/location.php";
-    if(isset($_POST['userID']) && isset($_POST['GeoID'])){
+    if(isset($_GET['userID']) && isset($_GET['GeoID'])){
         $userID = $_POST['userID'];
         $locID = $_POST['GeoID'];
         $location = new location($conn);
