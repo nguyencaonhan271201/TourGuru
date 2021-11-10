@@ -24,10 +24,12 @@
         public function getBookingInfo($offset){
             $offset *= 10;
             $sql = 
-            "SELECT id as bookingNo, hotel_name as hotelName, hotel_id, date_start as 'from', date_end as 'to', user_id as userID, date_booked as timeBooked 
-            FROM hotel_bookings 
+            "SELECT booking_id as bookingNo, origin as 'from', destination as 'to', user_id as userID, departure as dep, date_booked as timeBooked 
+            FROM flight_bookings_iterations 
+            JOIN flight_bookings 
+            ON flight_bookings_iterations.booking_id = flight_bookings.id
             ORDER BY date_booked DESC
-            LIMIT ?  ";
+            LIMIT ?";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("i", $offset);
