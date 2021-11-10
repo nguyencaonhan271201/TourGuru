@@ -19,11 +19,13 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
     </head>
-    <body>
-        
-        <div class="container-fluid" style="margin-top: 60px;">
-            
-            <div id="carousel" class="carousel slide" style="margin-top: 60px;" data-ride="carousel">
+    <body>    
+        <?php 
+            include '../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid" id="main-container" style="position: relative;">
+            <div id="carousel" class="carousel slide" data-ride="carousel">
                 <div id="carousel-backdrop"></div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">

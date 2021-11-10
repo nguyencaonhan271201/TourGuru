@@ -23,7 +23,11 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid mt-5 mb-4 d-flex justify-content-center">
+        <?php 
+            include '../../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid mb-4 d-flex justify-content-center" style="margin-top: 80px;">
             <div class="booking-detail" id="booking-detail" style="position:relative;">
                 <div id="print-block">
                     <!-- <a href="#" id="download"><i class="fas fa-save    "></i></a> -->

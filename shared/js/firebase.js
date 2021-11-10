@@ -1,3 +1,5 @@
+let rootDir = "/TourGuru"
+
 const firebaseConfig = {
     apiKey: "AIzaSyAJj6Z-kMC94FeLTY5aiEZ4NHhAklOcLnU",
     authDomain: "tour-guru-25442.firebaseapp.com",
@@ -13,15 +15,16 @@ let provider = new firebase.auth.GoogleAuthProvider();
 const signOut = () => {
     firebase.auth().signOut()
     .then(() => {
-        location.replace("/auth/login.php");
+        localStorage.setItem("headerInfo", null);
+        location.replace(`${rootDir}/`);
     })
 }
 
-firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        uid = user.uid;
-    } else {
-        location.replace("/auth/login.php");
-        return;
-    }
-})
+// firebase.auth().onAuthStateChanged(function(user) {
+//     if (user) {
+//         uid = user.uid;
+//     } else {
+//         location.replace(`${rootDir}/auth/login.php`);
+//         return;
+//     }
+// })

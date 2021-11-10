@@ -20,8 +20,12 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid" style="margin-top: 60px;">
-            <div id="carousel" class="carousel slide" style="margin-top: 60px;" data-ride="carousel">
+        <?php 
+            include '../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid" id="main-container" style="position: relative;">
+            <div id="carousel" class="carousel slide" data-ride="carousel">
                 <div id="carousel-backdrop"></div>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
@@ -145,7 +149,7 @@
                             <h2 id="location-title-h2" class="mt-1"></h2>
 
                             <div class="text-right d-flex align-items-center justify-content-start">
-                                <h5 class="mr-2 mb-1 mt-0">sort by: </h5>
+                                <h5 class="mr-2 mb-1 mt-0" style="color: black !important;">sort by: </h5>
                                 <select name="sort" id="sort">
                                     <option value="BEST_SELLER" selected="selected">best seller</option>
                                     <option value="STAR_RATING_HIGHEST_FIRST">stars (high to low)</option>

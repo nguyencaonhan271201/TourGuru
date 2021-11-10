@@ -13,10 +13,19 @@ let availableBookings = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+    });
+    
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
-
             loadBookings();
         } else {
             location.replace("./../auth/login.php");
@@ -32,15 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chooseFlight();
     })
 
-    // Swal.fire({
-    //     title: 'Loading...',
-    //     html: 'Please wait...',
-    //     allowEscapeKey: false,
-    //     allowOutsideClick: false,
-    //     didOpen: () => {
-    //       Swal.showLoading()
-    //     }
-    // });
+    
 })
 
 const chooseFlight = () => {

@@ -20,7 +20,11 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid mt-4 mb-4">
+        <?php 
+            include '../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid mb-4" style="padding-top: 80px;">
             <div class="main-container">
                 <h1 class="text-purple text-center mb-3">my bookings</h1>
                 <ul class="nav nav-tabs d-flex align-items-center justify-content-end">

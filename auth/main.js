@@ -18,8 +18,11 @@ let btnSignUp = document.getElementById("btn-sign-up-submit");
 let btnSignIn = document.getElementById("btn-sign-in-submit");
 let errorText = document.querySelector("#sign-up-error-modal #modal-error-content");
 let signInErrorText = document.querySelector("#sign-in-error-modal #modal-error-content");
+let user_id;
 
 window.addEventListener("DOMContentLoaded", () => {
+    localStorage.setItem("headerInfo", null);
+    
     initializeEventListeners();
 
     if (window.location.search.includes("flight_confirmation")
@@ -38,6 +41,7 @@ const signInWithGoogle = (res) => {
     let email = res.user.email
     let displayName = res.user.displayName;
     let photoURL = res.user.photoURL;
+    user_id = uid;
 
     //Check if is a new user
     if (res.additionalUserInfo.isNewUser) {
@@ -293,7 +297,7 @@ const validateAndSignIn = () => {
     .then(res => {
         if (res.user.emailVerified) {
             //Logged in
-            $('#sign-in-loading-modal').modal("toggle");
+            //$('#sign-in-loading-modal').modal("toggle");
             localStorage.setItem("user", JSON.stringify({
                 "uid": res.user.uid,
                 "email": res.user.email,
@@ -301,6 +305,8 @@ const validateAndSignIn = () => {
                 "providerToken": res.user._delegate.accessToken,
                 "isGoogle": false,
             }));
+
+            user_id = res.user.uid;
 
             loginRedirect()
         } else {
@@ -448,6 +454,8 @@ const updateToDatabaseProviderLogin = (data, token) => {
                 "providerToken": token,
                 "isGoogle": true,
             };
+            getInfoFromServer();
+            user_id = data.id;
             localStorage.setItem("user", JSON.stringify(storingItem))
             loginRedirect();
         } else {
@@ -501,10 +509,46 @@ const updateToDatabaseNormalLogin = (data) => {
     xhr.send(`localSignUp&id=${data.id}&email=${data.email}&password=${data.password}&csrf=${csrf}`);
 }
 
-const loginRedirect = () => {
-    if (localStorage.getItem("fromFlight") != "null")
-        location.replace("./../flights/confirmation/");
-    if (localStorage.getItem("hotelInfo") != "null")
-        location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
-    location.replace("./../");
+const loginRedirect = async() => {
+    await getInfoFromServer();
+}
+
+const getInfoFromServer = async() => {
+    let csrf = "";
+    if (signInErrorText != null) {
+        //From sign up page
+        csrf = document.getElementById("csrf-sign-in").innerText;
+    } 
+    if (errorText != null) {
+        csrf = document.getElementById("csrf-sign-up").innerText;
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        "GET",
+        `../api/profile/edit.php?getHeaderInfo&id=${user_id}&csrf=${csrf}`,
+        true
+    )
+    xhr.onload = () => {
+        Swal.close();
+        if (xhr.status === 200 && xhr.readyState === 4) {
+           //Nhận thông tin và in ra các ô input
+           let result = JSON.parse(xhr.responseText); 
+           localStorage.setItem("headerInfo", JSON.stringify({
+               "isAdmin": result.isAdmin,
+               "image": result.image
+           }));
+           if (localStorage.getItem("fromFlight") != "null")
+                location.replace("./../flights/confirmation/");
+            if (localStorage.getItem("hotelInfo") != "null")
+                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
+            location.replace("./../");
+        } else {
+            if (localStorage.getItem("fromFlight") != "null")
+                location.replace("./../flights/confirmation/");
+            if (localStorage.getItem("hotelInfo") != "null")
+                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
+            location.replace("./../");
+        }
+    }
+    xhr.send();
 }

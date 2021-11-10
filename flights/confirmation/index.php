@@ -21,7 +21,11 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid mt-5 mb-4">
+        <?php 
+            include '../../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid mb-4" style="margin-top: 80px;">
             <div class="container search-result-div mt-4">
                 <div class="row">
                     <div class="col-md-4 col-sm-12 summary-box">

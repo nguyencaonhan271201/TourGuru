@@ -6,6 +6,16 @@ let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 window.addEventListener("DOMContentLoaded", () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+        Swal.showLoading()
+        }
+    });
+    
     //Check if signed in
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -17,17 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 planID = urlParams.get("id");
             } else {
                 location.replace("./../");
-            } 
-
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                Swal.showLoading()
-                }
-            });
+            }
 
             getHotelBookingInfo();
         } else {

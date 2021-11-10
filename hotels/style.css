@@ -41,12 +41,16 @@ h4 {
 }
 
 .carousel {
-  position: absolute;
+  position: absolute !important;
   z-index: -1;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+#main-container {
+  min-height: 100vh;
 }
 
 #carousel-backdrop {
@@ -210,6 +214,7 @@ input[type="date"]:after {
 .search-div-found {
   height: auto;
   margin-bottom: 30px;
+  margin-top: 70px;
 }
 
 .highlighted {

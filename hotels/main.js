@@ -392,7 +392,7 @@ const printHotelList = (header, results) => {
                             </div>
                             <div class="col-md-3 col-sm-12" style="position:relative">
                                 ${reviewHTML}
-                                <button class="btn-full btn-info button-choose mt-2 btn-depart" data-id=${result.id} 
+                                <button class="btn-full button-choose mt-2 btn-depart" data-id=${result.id} 
                                 data-image-url="${result.optimizedThumbUrls.srpDesktop}" data-price=${calculateFare}>
                                     more info
                                 </button>
@@ -415,7 +415,7 @@ const printHotelList = (header, results) => {
     paginationHTML += `</ul>`
     document.getElementById("hotel-pagination").innerHTML = paginationHTML;
 
-    document.querySelectorAll(".btn-info").forEach(btn => {
+    document.querySelectorAll(".button-choose").forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
             let getID = btn.getAttribute("data-id");

@@ -194,6 +194,10 @@ h5 {
   background: var(--theme-link-hover);
 }
 
+h5 {
+  color: black !important;
+}
+
 @media screen and (max-width: 768px) {
   #main-div {
     display: block;

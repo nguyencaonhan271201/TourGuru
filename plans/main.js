@@ -3,19 +3,19 @@ let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 document.addEventListener('DOMContentLoaded', () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+    });
+    
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
-
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                  Swal.showLoading()
-                }
-            });
         
             getPlans();
         } else {
@@ -73,7 +73,7 @@ const getPlans = () => {
                 icon: "error",
                 text: "Error occured."
             }).then(() => {
-                //location.replace("./../");
+                location.replace("./../");
             });
         }
     }

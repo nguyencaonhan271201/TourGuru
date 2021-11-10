@@ -18,21 +18,22 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 window.addEventListener("DOMContentLoaded", () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+        Swal.showLoading()
+        }
+    });
+    
     //Check if signed in
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
 
             getInfoFromServer();
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                Swal.showLoading()
-                }
-            });
 
             image.addEventListener("click", () => {
                 $("#profile-img-input").trigger("click");
@@ -100,9 +101,10 @@ const getInfoFromServer = () => {
         } else {
             Swal.fire({
                 icon: "error",
-                text: "1Error occured."
-            });
-            //location.replace("./../../");
+                text: "Error occured."
+            }).then(() => {
+                location.replace("./../../");
+            })
         }
     }
     xhr.send();
@@ -154,8 +156,7 @@ const validateAndEditAccount = () => {
             let result = JSON.parse(xhr.responseText);
             if (result["resultCode"] == 0) {
                 //Success
-                //Navigate to home page
-                location.replace("./../../");
+                getHeaderInfoFromServer();
             }
             if (result["resultCode"] == 1) {
                     errorText.innerHTML = "";
@@ -197,4 +198,29 @@ const validateAndEditAccount = () => {
         formData.append("image", imageInput.files[0]);
     }
     xhr.send(formData);
+}
+
+const getHeaderInfoFromServer = () => {
+    let csrf = document.getElementById("csrf").innerText;
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        "GET",
+        `../../api/profile/edit.php?getHeaderInfo&id=${uid}&csrf=${csrf}`,
+        true
+    )
+    xhr.onload = () => {
+        Swal.close();
+        if (xhr.status === 200 && xhr.readyState === 4) {
+           //Nhận thông tin và in ra các ô input
+           let result = JSON.parse(xhr.responseText); 
+           localStorage.setItem("headerInfo", JSON.stringify({
+               "isAdmin": result.isAdmin,
+               "image": result.image
+           }));
+            //Navigate to home page
+            location.replace("./../../");
+        } else {
+        }
+    }
+    xhr.send();
 }

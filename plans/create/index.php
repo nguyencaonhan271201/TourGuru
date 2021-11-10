@@ -21,7 +21,11 @@
         <link rel="stylesheet" href="../../shared/css/tooltip.css">
     </head>
     <body>
-        <div class="container-fluid mt-4 mb-4">
+        <?php 
+            include '../../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid mb-4" style="padding-top: 80px;">
             <div class="main-container">
                 <!-- <div class="btn-block text-right">
                     <button type="button" id="btn-save"><i class="fas fa-save"></i></button>

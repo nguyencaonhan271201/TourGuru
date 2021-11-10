@@ -7,6 +7,16 @@ let passengers = [];
 let flightInfo = [];
 
 window.addEventListener("DOMContentLoaded", () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+        Swal.showLoading()
+        }
+    });
+    
     //Check if signed in
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
@@ -19,16 +29,6 @@ window.addEventListener("DOMContentLoaded", () => {
             } else {
                 location.replace("./../");
             } 
-
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                Swal.showLoading()
-                }
-            });
 
             getFlightBookingInfo();
         } else {

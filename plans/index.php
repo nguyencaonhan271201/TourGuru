@@ -20,7 +20,11 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div class="container-fluid mt-4 mb-4">
+        <?php 
+            include '../shared/php/header.php';
+        ?>
+
+        <div class="container-fluid mb-4" style="margin-top: 80px;">
             <div class="main-container">
                 <h1 class="text-purple text-center mb-3">my plans</h1>
                 <h5 class="text-pink text-center mt-2">feel free to 

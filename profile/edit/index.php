@@ -20,8 +20,10 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        
-        <div class="container mt-5 p-3">
+        <?php 
+            include '../../shared/php/header.php';
+        ?>
+        <div class="container p-3" style="margin-top: 80px;">
             <div class="main-container">
                 <h3 class="text-purple">edit account</h3>
                 <hr id="main-col-hr">

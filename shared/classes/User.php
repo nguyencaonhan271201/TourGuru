@@ -66,6 +66,19 @@ class User {
         }
     }
 
+    public function getHeaderInfo($id) {
+        try {
+            $query = "SELECT role, image FROM users WHERE user_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("s", $id);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            return $result;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
     public function editProfile($id, $displayName, $image, &$errors) {
         $newURL = "";
 

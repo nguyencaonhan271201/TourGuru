@@ -22,6 +22,25 @@
         unset($info['display_name']);
         echo json_encode($info);
       }
+    } else {
+      if (isset($_GET["getHeaderInfo"])) {
+        $user = new User($conn);
+        if (!isset($_GET["id"])) {
+          http_response_code(400);
+          exit;
+        }
+  
+        $id = $_GET["id"];
+        
+        $info = $user->getHeaderInfo($id);
+        $info['isAdmin'] = $info['role'] == 0;
+        if (empty($info)) {
+          http_response_code(400);
+          exit;
+        } else {
+          echo json_encode($info);
+        }
+      }
     }
   } else if (isset($_POST["csrf"]) && ($_POST["csrf"] == $_SESSION["csrf"])) {
     if (!isset($POST["id"]) || !isset($_POST["displayName"])) {

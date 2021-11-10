@@ -217,7 +217,7 @@ const getHotelInfo = (hotelID) => {
             try {
                 let results = JSON.parse(xhr.responseText);
                 hotelInfo = results.data.body;
-                updateInfo(hotelInfo);
+                updateHotelInfo(hotelInfo);
             }
             catch (e) {
                 location.replace("./../");
@@ -311,7 +311,7 @@ const updateImages = () => {
           
 }
 
-const updateInfo = (hotelInfo) => {
+const updateHotelInfo = (hotelInfo) => {
     Swal.close()
     document.querySelector(".main-container").style.opacity = 1;
 

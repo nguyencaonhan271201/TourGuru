@@ -23,7 +23,11 @@
         <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
     </head>
     <body>
-        <div class="container mt-5 mb-4 d-flex justify-content-center">
+        <?php 
+            include '../../shared/php/header.php';
+        ?>
+
+        <div class="container mb-4 d-flex justify-content-center" style="margin-top: 80px;">
             <div class="main-container">
                 <div class="hotel-info-head">
                     <div class="row" style="width: 100%; margin: 0 auto">

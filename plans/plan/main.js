@@ -23,6 +23,16 @@ let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oc
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 window.addEventListener("DOMContentLoaded", () => {
+    Swal.fire({
+        title: 'Loading...',
+        html: 'Please wait...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+        Swal.showLoading()
+        }
+    });
+    
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             uid = user.uid;
@@ -33,16 +43,6 @@ window.addEventListener("DOMContentLoaded", () => {
             } else {
                 location.replace("./../");
             } 
-
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                Swal.showLoading()
-                }
-            });
 
             gatherInformation();
         } else {
@@ -69,7 +69,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     });
 
-    document.getElementById("btn-edit").addEventListener("click", () => {
+    document.getElementById("btn-edit").addEventListener("click", (e) => {
+        e.preventDefault();
         location.replace(`./../edit?id=${planID}`)
     });
 })
@@ -207,7 +208,7 @@ const gatherInformation = () => {
                     icon: "error",
                     text: "Error occured."
                 }).then(() => {
-                    //location.replace("./../");
+                    location.replace("./../");
                 })  
             }
         }
