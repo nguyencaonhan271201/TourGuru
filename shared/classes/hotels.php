@@ -11,30 +11,6 @@
             $this->bookingID = $bookingID;
         }
 
-        // public function getPeriodRange($period){
-        //     $today = new DateTime(date('Y-m-d'));
-        //     // $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
-        //     // echo($today->format('Y-m-d')); echo("\r\n");
-        //     // echo($day->format('Y-m-d')); echo("\r\n");
-        //     switch ($period) {
-        //        case 'Y':
-        //             $day = new DateTime(($today->format('Y') - 1).'-'.$today->format('m').'-1');
-        //            break;
-        //         case 'Q':
-        //             return 0;
-        //         case 'M':
-        //             return 0;
-        //         case 'W':
-        //             return 0;
-   
-        //        default:
-        //            return false; //Param period have problems
-        //     }
-        //     $interval = $day->diff($today)->format("%r%a");
-        //     echo($interval);
-        //     //return $today->diff($day); //Tổng số ngày tính từ $day -> today;
-        // }
-
         public function getTotalBooking($period = 'W'){
             //period ('Y'/'Q'/'M'/'W')
             $query = "SELECT date_booked FROM hotel_bookings";
