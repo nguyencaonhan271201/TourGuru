@@ -5,6 +5,6 @@
         $offset = $_GET['offset'];
         $info = new flights($conn);
 
-        return json_encode($info->getBookingInfo($offset));
-    } else return false;//chua set du lieu 
+        echo json_encode($info->getBookingInfo($offset));
+    } else echo false;//chua set du lieu 
 ?>

@@ -5,6 +5,6 @@
         $period = $_GET['period'];
         $info = new hotels($conn);
         //var_dump($info->getTotalBooking($period));
-        return json_encode($info->getTotalBooking($period));
-    } else return false;//chua set du lieu 
+        echo json_encode($info->getTotalBooking($period));
+    } else echo false;//chua set du lieu 
 ?>

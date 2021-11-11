@@ -7,10 +7,10 @@
         $location = new location($conn);
         //var_dump($locaction->addVisited($userID, $locID));
         if($location->checkVisited($userID, $locID)){
-            return $location->addVisited($userID, $locID);
+            echo $location->addVisited($userID, $locID);
         } else{
-            return $locaction->removeVisited($userID, $locID);
+            echo $location->removeVisited($userID, $locID);
             //2 xoa thanh cong
         }
-    } else return 3;//chua set du lieu 
+    } else echo 3;//chua set du lieu 
 ?>

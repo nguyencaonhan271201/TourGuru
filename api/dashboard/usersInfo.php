@@ -5,6 +5,6 @@
         $offset = $_GET['offset'];
         $info = new user($conn);
 
-        return json_encode($info->getUserForDashboard($offset));
-    } else return false;//chua set du lieu 
+        echo json_encode($info->getUserForDashboard($offset));
+    } else echo false;//chua set du lieu 
 ?>

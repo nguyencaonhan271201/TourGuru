@@ -4,6 +4,6 @@
     if(isset($_GET['period'])){
         $period = $_GET['period'];
         $info = new flights($conn);
-        return json_encode($info->getTotalBooking($period));
-    } else return false;//chua set du lieu 
+        echo json_encode($info->getTotalBooking($period));
+    } else echo false;//chua set du lieu 
 ?>
