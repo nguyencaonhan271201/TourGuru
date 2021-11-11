@@ -12,10 +12,10 @@
       }
 
       $id = $_GET["id"];
-      
-      $bookings = $plan->getFlightBookings($id);
+      $errors = [];
+      $bookings = $plan->getFlightBookings($id, $errors);
 
-      if (empty($bookings)) {
+      if (!empty($errors)) {
         http_response_code(400);
         exit;
       } else {
@@ -29,10 +29,10 @@
       }
 
       $id = $_GET["id"];
-      
-      $bookings = $plan->getHotelBookings($id);
+      $errors = [];
+      $bookings = $plan->getHotelBookings($id, $errors);
 
-      if (empty($bookings)) {
+      if (!empty($errors)) {
         http_response_code(400);
         exit;
       } else {

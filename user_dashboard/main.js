@@ -2,8 +2,12 @@ let uid;
 
 let flightsDiv = document.querySelector(".flights-bookings");
 let hotelsDiv = document.querySelector(".hotels-bookings");
+let visitedDiv = document.querySelector(".visited-location-div");
 let navHotel = document.querySelector("#nav-hotel");
 let navFlight = document.querySelector("#nav-flight");
+let navVisited = document.querySelector("#nav-visited");
+
+let visitedLocations = [];
 
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -41,18 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
         chooseFlight();
     })
 
-    
+    navVisited.addEventListener("click", () => {
+        chooseVisited();
+    })
 })
 
 const chooseFlight = () => {
     if (!navFlight.classList.contains("active")) {
         navFlight.classList.add("active");
     }
+    if (navVisited.classList.contains("active")) {
+        navVisited.classList.remove("active");
+    }
     if (navHotel.classList.contains("active")) {
         navHotel.classList.remove("active");
     }
     hotelsDiv.style.display = "none";
     flightsDiv.style.display = "block";
+    visitedDiv.style.display = "none";
 }
 
 const chooseHotel = () => {
@@ -62,8 +72,27 @@ const chooseHotel = () => {
     if (navFlight.classList.contains("active")) {
         navFlight.classList.remove("active");
     }
+    if (navVisited.classList.contains("active")) {
+        navVisited.classList.remove("active");
+    }
     hotelsDiv.style.display = "block";
     flightsDiv.style.display = "none";
+    visitedDiv.style.display = "none";
+}
+
+const chooseVisited = () => {
+    if (navHotel.classList.contains("active")) {
+        navHotel.classList.remove("active");
+    }
+    if (navFlight.classList.contains("active")) {
+        navFlight.classList.remove("active");
+    }
+    if (!navVisited.classList.contains("active")) {
+        navVisited.classList.add("active");
+    }
+    hotelsDiv.style.display = "none";
+    flightsDiv.style.display = "none";
+    visitedDiv.style.display = "block";
 }
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {
@@ -133,6 +162,33 @@ const loadBookings = () => {
                 //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 availableBookings.hotels = result;
+                getVisitedLocations();
+                
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                }).then(() => {
+                    location.replace("./../");
+                })
+            }
+        }
+        xhr.send();
+    }
+
+    const getVisitedLocations = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            `../api/profile/visited.php?getVisitedLocations&id=${uid}&csrf=${csrf}`,
+            true
+        )
+        xhr.onload = () => {
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(xhr.responseText); 
+                visitedLocations = result;
 
                 loadToTables();
             } else {
@@ -306,7 +362,7 @@ const loadToTables = () => {
                     ${getDisplayDateFormatAdd7Hours(bookingDetail[0]["date_booked"])}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-info btn-view-booking btn-view-booking-flight" data-booking-id=${bookingDetail[0]["booking_id"]}>View</a>
+                    <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${bookingDetail[0]["booking_id"]}>View</a>
                 </td>
             </tr>
         `
@@ -341,7 +397,7 @@ const loadToTables = () => {
                     ${getDisplayDateFormatAdd7Hours(booking.date_booked)}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-info btn-view-booking btn-view-booking-hotel" data-booking-id=${booking.id}>View</a>
+                    <a type="button" class="btn btn-view-booking btn-view-booking-hotel" data-booking-id=${booking.id}>View</a>
                 </td>
             </tr>
         `
@@ -362,6 +418,8 @@ const loadToTables = () => {
         })
     })
 
+    loadVisitedLocationsToMap();
+
     chooseFlight();
 }
 
@@ -378,4 +436,8 @@ const getDisplayDateFormatAdd7Hours = (ISODate) => {
     const DOW = newDateObj.getDay()
     const dateTemplate = `${toDate} ${months[toMonth - 1]} ${toYear}`;
     return dateTemplate;
+}
+
+const loadVisitedLocationsToMap = () => {
+    console.log(visitedLocations);
 }

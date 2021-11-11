@@ -7,7 +7,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Tour Guru | My Bookings</title>
+        <title>Tour Guru | My Dashboard</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,13 +26,16 @@
 
         <div class="container-fluid mb-4" style="padding-top: 80px;">
             <div class="main-container">
-                <h1 class="text-purple text-center mb-3">my bookings</h1>
+                <h1 class="text-purple text-center mb-3">my dashboard</h1>
                 <ul class="nav nav-tabs d-flex align-items-center justify-content-end">
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="#" id="nav-flight">flights</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="nav-hotel">hotels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="nav-visited">visited</a>
                     </li>
                 </ul>
                 <div class="flights-bookings mt-3" style="display: none;">
@@ -128,6 +131,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="visited-location-div mt-3" style="display: none;">
+                    <h3 class="text-pink text-center mb-3">visited attractions</h3>
+                </div>
             </div>
         </div>
 
@@ -152,6 +158,9 @@
         <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <!-- Google Map -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>
 
         <!-- Project JavaScript -->
         <script src="./../shared/js/firebase.js"></script>

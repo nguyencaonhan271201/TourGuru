@@ -11,9 +11,10 @@
       }
 
       $plan = new Plan($conn);
-      $plans = $plan->getPlans($_GET["id"]);
+      $errors = [];
+      $plans = $plan->getPlans($_GET["id"], $errors);
 
-      if (empty($plans)) {
+      if (!empty($errors)) {
         http_response_code(400);
         exit;
       } else {

@@ -1,0 +1,135 @@
+@font-face {
+  font-family: "header";
+  src: url("../shared/assets/fonts/header.TTF") format("truetype");
+}
+
+@font-face {
+  font-family: "body";
+  src: url("../shared/assets/fonts/body.TTF") format("truetype");
+}
+
+p,
+span,
+button,
+h5,
+input,
+i,
+b,
+a,
+li {
+  font-family: "body";
+}
+
+h1,
+h2,
+h3,
+h4,
+.table thead th {
+  font-family: "header";
+}
+
+:root {
+  --theme-purple: #a082af;
+  --theme-dark-purple: #876897;
+  --theme-text-dark-purple: rgb(103, 99, 168);
+  --theme-text-dark-purple-hover: rgb(82, 79, 139);
+  --theme-invalid: #e5b7d1;
+  --theme-dark-border: #818181;
+  --theme-light-border: #cccccc;
+  --theme-input-border: rgb(229, 229, 229);
+  --theme-text-light-grey: rgb(127, 127, 127);
+  --theme-text-lighter: rgb(204, 198, 198);
+  --theme-link: #00c2b1;
+  --theme-link-hover: rgb(1, 163, 150);
+  --theme-pink: #c95998;
+  --theme-dark-pink: #a03d75;
+}
+
+.main-container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.text-purple {
+  color: var(--theme-purple);
+}
+
+.text-pink {
+  color: var(--theme-pink);
+}
+
+#btn-create {
+  color: white;
+  border: none;
+  background: var(--theme-link);
+  border-radius: 10rem;
+  padding: 0px 20px;
+  transition: background 200ms;
+  text-decoration: none;
+}
+
+#btn-create:hover {
+  background: var(--theme-link-hover);
+}
+
+.plan {
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.plan-container {
+  padding: 20px;
+  height: 100%;
+}
+
+.text-gray {
+  color: gray;
+}
+
+.btn-view {
+  color: white;
+  border: none;
+  background: var(--theme-link);
+  border-radius: 10rem;
+  padding: 5px 20px;
+  transition: background 200ms;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  background: var(--theme-link-hover);
+}
+
+.nav-link.active,
+.nav-link.active:hover {
+  color: var(--theme-pink) !important;
+}
+
+.nav-link {
+  color: #495057 !important;
+}
+
+.nav-link:hover {
+  color: #31363b !important;
+}
+
+.table td {
+  vertical-align: middle !important;
+  text-align: center !important;
+}
+
+.table th {
+  text-align: center !important;
+}
+
+.btn-view-booking {
+  color: white !important;
+  border-radius: 20rem;
+  background: var(--theme-purple) !important;
+  border: none !important;
+}
+
+.btn-view-booking:hover {
+  background: var(--theme-dark-purple) !important;
+}

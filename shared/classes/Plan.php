@@ -22,7 +22,7 @@ class Plan {
     $this->conn = $conn;
   }
 
-  public function getFlightBookings($uid) {
+  public function getFlightBookings($uid, &$errors) {
     try {
       $query = "SELECT f1.*, (SELECT f.total_cost FROM flight_bookings f WHERE f.id = f1.booking_id) AS total_price, 
       (SELECT COUNT(*) FROM flight_bookings_customers f2 WHERE f2.booking_id = f1.booking_id) AS number_of_pax,
@@ -35,11 +35,12 @@ class Plan {
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
     } catch (Exception $e) {
+      $errors["execute_err"] = "Error occured";
       return;
     }
   }
 
-  public function getHotelBookings($uid) {
+  public function getHotelBookings($uid, &$errors) {
     try {
       $query = "SELECT * FROM hotel_bookings WHERE user_id = ?";
       $stmt = $this->conn->prepare($query);
@@ -48,6 +49,7 @@ class Plan {
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
     } catch (Exception $e) {
+      $errors["execute_err"] = "Error occured";
       return;
     }
   }
@@ -94,7 +96,7 @@ class Plan {
     $detail->addPlanDetails($details, $errors);
   }
 
-  public function getPlans($uid) {
+  public function getPlans($uid, &$errors) {
     try {
       $query = "SELECT * FROM plans WHERE user_id = ?";
       $stmt = $this->conn->prepare($query);
@@ -103,6 +105,7 @@ class Plan {
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
     } catch (Exception $e) {
+      $errors["execute_err"] = "Error occured";
       return;
     }
   }

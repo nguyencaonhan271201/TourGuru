@@ -33,7 +33,7 @@
               <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/hotels"><span>Hotels</span></a>
             </li>
             <li class="nav-item me-4 main-nav-item">
-              <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/attractions"
+              <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/attraction"
                 ><span>Attractions</span></a
               >
             </li>
@@ -68,7 +68,7 @@
 
               <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                 <li>
-                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/bookings"><i class="fa fa-th-list" aria-hidden="true"></i> My bookings</a>
+                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
                 </li>
                 <li>
                   <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
@@ -83,7 +83,7 @@
                 <div class="dropdown-divider"></div>
                 <div id="admin-header-block">
                   <li>
-                    <a class="dropdown-item" href="#"><i class="fas fa-chart-line"></i> Management</a>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/admin_dashboard"><i class="fas fa-chart-line"></i> Management</a>
                   </li>
                   <div class="dropdown-divider"></div>
                 </div>

@@ -150,4 +150,18 @@ class User {
             }
         }
     }
+
+    public function getVisitedLocations($uid, &$errors) {
+        try {
+            $query = "SELECT * FROM visited_locations WHERE user_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("s", $uid);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            return $result;
+          } catch (Exception $e) {
+            $errors["execute_err"] = "Error occured";
+            return;
+          }
+    }
 }
