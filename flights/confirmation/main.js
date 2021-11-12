@@ -1,3 +1,12 @@
+//DOM selectors
+let errorText = document.querySelector("#error-modal #modal-error-content");
+let btnBook = document.querySelector("#btn-book");
+let paxSelect = document.getElementById("pax");
+let changeFlight = document.getElementById("btn-confirm");
+let paxInputSection = document.getElementById("pax-input-section");
+let btnConfirm =  document.getElementById("btn-check");
+
+//Global variable
 let uid;
 let user_email;
 let departFlight = null;
@@ -5,16 +14,10 @@ let returnFlight = null;
 let singleFare = 0;
 let totalFare = 0;
 let numberOfPax = 1;
-let paxSelect;
-let changeFlight;
-let paxInputSection;
-let paxInfos = [];
-let btnConfirm;
 let isBtnConfirm = true;
-let errorText = document.querySelector("#error-modal #modal-error-content");
-let btnBook = document.querySelector("#btn-book");
 let usingCurrency = "USD";
 let currencyRate = 1;
+let paxInfos = [];
 
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -58,31 +61,25 @@ window.addEventListener("DOMContentLoaded", () => {
         if (user) {
             uid = user.uid;
             user_email = user.email;
+
+            loadDataToDisplay();
+ 
+            localStorage.setItem("flightPassengers", null);
+            
+            countDown("remaining-time", 10, 0);
+
+            initializeEventListener();
         } else {
             location.replace("./../../auth");
             return;
         }
     })
 
-
     //Not chosen any flight
     if (!localStorage.getItem("fromFlight") || localStorage.getItem("fromFlight") == "null") {
         location.replace("./../");
         return;
     }
-
-    paxSelect = document.getElementById("pax");
-    changeFlight = document.getElementById("btn-confirm");
-    paxInputSection = document.getElementById("pax-input-section")
-    btnConfirm = document.getElementById("btn-check");
-
-    loadDataToDisplay();
- 
-    localStorage.setItem("flightPassengers", null);
-    
-    countDown("remaining-time", 10, 0);
-
-    initializeEventListener();
 })
 
 const endSession = () => {
@@ -93,50 +90,52 @@ const endSession = () => {
 
 const loadDataToDisplay = () => {
     let getFlight = JSON.parse(localStorage.getItem("fromFlight"));
+    Object.setPrototypeOf(getFlight, Flight.prototype);
     departureFlight = getFlight;
     let getClass = getFlight.class;
-    usingCurrency = getFlight["currencyCode"];
+    usingCurrency = getFlight.formattedFare.currency;
     currencyRate = getFlight["currencyRate"];
 
-    singleFare = getFlight.fare * currencyRate;
+    singleFare = getFlight.formattedFare.value;
     totalFare = singleFare;
 
     //Update flight info
     document.getElementById("img-depart-airline").setAttribute("src", `http://pics.avs.io/40/40/${getFlight.airline.code}.png`);
-    document.querySelector(".depart-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.airline.code}${getFlight.flightnumber}`;
-    document.getElementById("depart-depart-time").innerText = `${getFlight.depart.substring(11, 16)}`;
-    document.getElementById("depart-depart-airport-code").innerText = `${getFlight.fromICAO}`;
-    document.getElementById("depart-arrive-time").innerText = `${getFlight.arrival.substring(11, 16)}`;
-    document.getElementById("depart-arrive-airport-code").innerText = `${getFlight.toICAO}`;
+    document.querySelector(".depart-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.getFlightNumberDisplay()}`;
+    document.getElementById("depart-depart-time").innerText = `${getFlight.getDepartTime()}`;
+    document.getElementById("depart-depart-airport-code").innerText = `${getFlight.icaos.from}`;
+    document.getElementById("depart-arrive-time").innerText = `${getFlight.getReturnTime()}`;
+    document.getElementById("depart-arrive-airport-code").innerText = `${getFlight.icaos.to}`;
     document.getElementById("depart-duration").innerText = `${timePrintFormat(getFlight.duration)}`;
     document.getElementById("depart-chosen").style.display = "initial";
     document.querySelector("#depart-aircraft").innerText = `${getFlight.aircraft} - ${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`;
 
     document.getElementById("depart-date").innerText = `${getDisplayDateFormat(true, getFlight.depart)}`;
-    document.getElementById("depart-summary-from").innerText = `${getFlight.from.city}`;
-    document.getElementById("depart-summary-to").innerText = `${getFlight.to.city}`;
+    document.getElementById("depart-summary-from").innerText = `${getFlight.locations.from.city}`;
+    document.getElementById("depart-summary-to").innerText = `${getFlight.locations.to.city}`;
 
     if (localStorage.getItem("toFlight") != "null") {
         let getFlight = JSON.parse(localStorage.getItem("toFlight"));
+        Object.setPrototypeOf(getFlight, Flight.prototype);
         returnFlight = getFlight;
-        singleFare += getFlight.fare * currencyRate;
+        singleFare += getFlight.formattedFare.value;
         totalFare = singleFare;
     
         //Update flight info
         document.getElementById("img-return-airline").setAttribute("src", `http://pics.avs.io/40/40/${getFlight.airline.code}.png`);
-        document.querySelector(".return-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.airline.code}${getFlight.flightnumber}`;
-        document.getElementById("return-depart-time").innerText = `${getFlight.depart.substring(11, 16)}`;
-        document.getElementById("return-depart-airport-code").innerText = `${getFlight.fromICAO}`;
-        document.getElementById("return-arrive-time").innerText = `${getFlight.arrival.substring(11, 16)}`;
-        document.getElementById("return-arrive-airport-code").innerText = `${getFlight.toICAO}`;
+        document.querySelector(".return-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.getFlightNumberDisplay()}`;
+        document.getElementById("return-depart-time").innerText = `${getFlight.getDepartTime()}`;
+        document.getElementById("return-depart-airport-code").innerText = `${getFlight.icaos.from}`;
+        document.getElementById("return-arrive-time").innerText = `${getFlight.getReturnTime()}`;
+        document.getElementById("return-arrive-airport-code").innerText = `${getFlight.icaos.to}`;
         document.getElementById("return-duration").innerText = `${timePrintFormat(getFlight.duration)}`;
         document.getElementById("return-chosen").style.display = "initial";
         document.querySelector("#return-aircraft").innerText = `${getFlight.aircraft} - ${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`;
 
 
         document.getElementById("return-date").innerText = `${getDisplayDateFormat(true, getFlight.depart)}`;
-        document.getElementById("return-summary-from").innerText = `${getFlight.from.city}`;
-        document.getElementById("return-summary-to").innerText = `${getFlight.to.city}`;
+        document.getElementById("return-summary-from").innerText = `${getFlight.locations.from.city}`;
+        document.getElementById("return-summary-to").innerText = `${getFlight.locations.to.city}`;
     } else {
         document.getElementById("return-sum").style.display = "none";
     }
@@ -270,14 +269,14 @@ const initializeEventListener = () => {
                     }
 
                     document.querySelector(".warning").style.display = "block";
-    
-                    let passenger = {
-                        "title": title,
-                        "dob": date.toISOString().slice(0,10),
-                        "first": first.toUpperCase(),
-                        "last": last.toUpperCase(),
-                        "passport": passport.toUpperCase()
-                    }
+
+                    let passenger = new Passenger(
+                        title,
+                        date.toISOString().slice(0,10),
+                        first.toUpperCase(),
+                        last.toUpperCase(),
+                        passport.toUpperCase()
+                    )
     
                     paxInfos.push(passenger);
                 }
@@ -295,7 +294,7 @@ const initializeEventListener = () => {
                 paxInputSection.innerHTML += `
                     <div class="pax-input mt-3 mb-3" data-pax-id="${i + 1}">
                         <h4 class="text-pink mb-4">passenger ${i + 1}</h4>
-                        <h4 class="text-purple">${pax.title} ${pax.first} ${pax.last}</h4>
+                        <h4 class="text-purple">${pax.getDisplayFull()}</h4>
                         <h5 class="text-purple">${getDisplayDateFormat(false, pax.dob)}</h5>
                         <h5 class="text-purple">passport: ${pax.passport}</h5>
                     </div>
@@ -409,7 +408,6 @@ const sendBookingInfo = () => {
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            console.log(xhr.responseText);
             let bookingID = parseInt(xhr.responseText);
             sendBookingIterations(bookingID);
         } else {
@@ -437,41 +435,14 @@ const sendBookingIterations = (bookingID) => {
     )
 
     let sendData = [];
-    // 	id 	booking_id 	origin_code 	dest_code 	origin 	destination 	departure 	arrival 	class 	aircraft 	airline 	flight_number 	
     let getFlight = JSON.parse(localStorage.getItem("fromFlight"));
+    Object.setPrototypeOf(getFlight, Flight.prototype);
     let getClass = getFlight.class;
-    let flight = {
-        "booking_id": bookingID,
-        "origin_code": `${getFlight.fromICAO}`,
-        "dest_code": `${getFlight.toICAO}`,
-        "origin": `${getFlight.from.name}`,
-        "destination": `${getFlight.to.name}`,
-        "departure": `${getFlight.depart.substring(11, 16)}`,
-        "arrival": `${getFlight.arrival.substring(11, 16)}`,
-        "date": `${getFlight.depart.substring(0, 10)}`,
-        "class": `${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`,
-        "aircraft": `${getFlight.aircraft}`,
-        "airline": getFlight.airline.name,
-        "flight_number": `${getFlight.airline.code}${getFlight.flightnumber}`,
-    }
-    sendData.push(flight);
+    sendData.push(getFlight.buildObjectForSend(getClass, bookingID));
     if (localStorage.getItem("toFlight") != "null") {
         getFlight = JSON.parse(localStorage.getItem("toFlight"));
-        flight = {
-            "booking_id": bookingID,
-            "origin_code": `${getFlight.fromICAO}`,
-            "dest_code": `${getFlight.toICAO}`,
-            "origin": `${getFlight.from.name}`,
-            "destination": `${getFlight.to.name}`,
-            "departure": `${getFlight.depart.substring(11, 16)}`,
-            "arrival": `${getFlight.arrival.substring(11, 16)}`,
-            "date": `${getFlight.depart.substring(0, 10)}`,
-            "class": `${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`,
-            "aircraft": `${getFlight.aircraft}`,
-            "airline": getFlight.airline.name,
-            "flight_number": `${getFlight.airline.code}${getFlight.flightnumber}`,
-        }
-        sendData.push(flight);
+        Object.setPrototypeOf(getFlight, Flight.prototype);
+        sendData.push(getFlight.buildObjectForSend(getClass, bookingID));
     }
 
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -504,17 +475,8 @@ const sendPassengerInfos = (bookingID) => {
 
     let sendData = [];
     paxInfos.forEach(pax => {
-        let passenger = {
-            "booking_id": bookingID,
-            "title": pax.title,
-            "display_name": `${pax.first} ${pax.last}`,
-            "dob": pax.dob,
-            "passport": pax.passport
-        }
-
-        sendData.push(passenger)
+        sendData.push(pax.buildObjectForSend(bookingID))
     })
-    
 
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
@@ -549,23 +511,23 @@ const sendBookingConfirmationEmail = () => {
                     <div class="flight-detail">
                         <div>
                             <img src="http://pics.avs.io/80/40/${forwardFlight.airline.code}.png" alt="">
-                            <span>${forwardFlight.airline.name} - ${forwardFlight.airline.code}${forwardFlight.flightnumber}</span>
+                            <span>${forwardFlight.airline.name} - ${forwardFlight.getFlightNumberDisplay()}</span>
                         </div>
                         <p class="m-0">${forwardFlight.aircraft}</p>
                         <p class="m-0">${getDisplayDateFormat(true, forwardFlight.depart)}</p>
                         <div class="d-flex justify-content-between">
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${forwardFlight.depart.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${forwardFlight.from.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${forwardFlight.fromICAO})</p>
+                                <p class="mt-1 mb-1">${forwardFlight.getDepartTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${forwardFlight.locations.from.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${forwardFlight.icaos.from})</p>
                             </div>
                             <div class="d-flex align-items-center justify-content-center">
                                 <span><i class="fas fa-plane"></i></span>    
                             </div>
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${forwardFlight.arrival.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${forwardFlight.to.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${forwardFlight.toICAO})</p>
+                                <p class="mt-1 mb-1">${forwardFlight.getReturnTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${forwardFlight.locations.to.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${forwardFlight.icaos.to})</p>
                             </div>
                             <div class="mr-2">
                                 <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(forwardFlight.duration)}</p>
@@ -575,7 +537,7 @@ const sendBookingConfirmationEmail = () => {
                     </div>
                     <div class="pax-detail">
                         <h3 class="pax-class">${getClassString}</h3>
-                        <h3>${pax.title} ${pax.first} ${pax.last}</h3>
+                        <h3>${pax.getDisplayFull()}</h3>
                         <h3>DOB: ${getDisplayDateFormat(false, pax.dob)}</h3>
                         <h3>Passport: ${pax.passport}</h3>
                     </div>
@@ -593,23 +555,23 @@ const sendBookingConfirmationEmail = () => {
                     <div class="flight-detail">
                         <div>
                             <img src="http://pics.avs.io/80/40/${returnFlight.airline.code}.png" alt="">
-                            <span>${returnFlight.airline.name} - ${returnFlight.airline.code}${returnFlight.flightnumber}</span>
+                            <span>${returnFlight.airline.name} - ${returnFlight.getFlightNumberDisplay()}</span>
                         </div>
                         <p class="m-0">${returnFlight.aircraft}</p>
                         <p class="m-0">${getDisplayDateFormat(true, returnFlight.depart)}</p>
                         <div class="d-flex justify-content-between">
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${returnFlight.depart.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${returnFlight.from.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${returnFlight.fromICAO})</p>
+                                <p class="mt-1 mb-1">${returnFlight.getDepartTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${returnFlight.locations.from.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${returnFlight.icaos.from})</p>
                             </div>
                             <div class="d-flex align-items-center justify-content-center">
                                 <span><i class="fas fa-plane"></i></span>    
                             </div>
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${returnFlight.arrival.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${returnFlight.to.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${returnFlight.toICAO})</p>
+                                <p class="mt-1 mb-1">${returnFlight.getReturnTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${returnFlight.locations.to.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${returnFlight.icaos.to})</p>
                             </div>
                             <div class="mr-2">
                                 <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(returnFlight.duration)}</p>
@@ -619,7 +581,7 @@ const sendBookingConfirmationEmail = () => {
                     </div>
                     <div class="pax-detail">
                         <h3 class="pax-class">${getClassString}</h3>
-                        <h3>${pax.title} ${pax.first} ${pax.last}</h3>
+                        <h3>${pax.getDisplayFull()}</h3>
                         <h3>DOB: ${getDisplayDateFormat(false, pax.dob)}</h3>
                         <h3>Passport: ${pax.passport}</h3>
                     </div>

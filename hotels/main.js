@@ -1,11 +1,14 @@
+//DOM selectors
+let locationSearch = document.getElementById("location");
+let searchButton = document.getElementById("btn-search");
+
+//Global variables
 let ratesList = null;
 let choosingCurrency = "USD";
-let locationSearch = document.getElementById("location");
 let selectedLocationID = "";
 let isPrintedHotel = false;
 let starQuery = "";
 let sortBy = "BEST_SELLER";
-let searchButton = document.getElementById("btn-search");
 let currentPageNumber = 1;
 let numberOfNights = 1;
 let newlySearch = false;
@@ -36,11 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let checkOutPicker = document.getElementById('check-out');
     let picker = new Litepicker({
         element: checkInPicker,
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
     });
     let picker2 = new Litepicker({
         element: checkOutPicker,
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
     });
 })
 
@@ -503,15 +508,24 @@ const checkStarInput = () => {
 }
 
 const getHotelInfo = (hotelURL, hotelID, price) => {
-    let hotelInfo = {};
-    hotelInfo["currencyCode"] = choosingCurrency;
-    hotelInfo["currencyRate"] = ratesList[choosingCurrency];
-    hotelInfo["hotelID"] = hotelID; 
-    hotelInfo["hotelImageURL"] = hotelURL;
-    hotelInfo["checkIn"] = checkIn;
-    hotelInfo["checkOut"] = checkOut;
-    hotelInfo["numberOfNights"] = numberOfNights;
-    hotelInfo["singleNight"] = price;
+    let hotelInfo = new HotelBookingInfo(
+        choosingCurrency,
+        ratesList[choosingCurrency],
+        hotelID,
+        hotelURL,
+        checkIn,
+        checkOut,
+        numberOfNights,
+        price
+    );
+    // hotelInfo["currencyCode"] = choosingCurrency;
+    // hotelInfo["currencyRate"] = ratesList[choosingCurrency];
+    // hotelInfo["hotelID"] = hotelID; 
+    // hotelInfo["hotelImageURL"] = hotelURL;
+    // hotelInfo["checkIn"] = checkIn;
+    // hotelInfo["checkOut"] = checkOut;
+    // hotelInfo["numberOfNights"] = numberOfNights;
+    // hotelInfo["singleNight"] = price;
     localStorage.setItem("hotelInfo", JSON.stringify(hotelInfo));
     window.location.replace(`info?hotel=${hotelID}`)
 }

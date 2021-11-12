@@ -28,6 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     info = JSON.parse(localStorage.getItem("hotelInfo"));
+    Object.setPrototypeOf(info, HotelBookingInfo.prototype)
 
     printToDisplay();
 
@@ -51,29 +52,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
 const printToDisplay = () => {
     //Modify the URL
-    let hotelImageURL = info.hotelImageURL;
+    let hotelImageURL = info.hotel.imageURL;
     hotelImageURL = hotelImageURL.substring(0, hotelImageURL.indexOf("_"))
     hotelImageURL += "_w.jpg";
 
     document.getElementById("hotel-image").setAttribute("src", hotelImageURL)
 
-    document.getElementById("hotel-name").innerText = info.hotelName;
-    document.getElementById("hotel-name-span").innerText = info.hotelName;
-    document.getElementById("hotel-stars").innerHTML = returnStar(info.stars);
-    document.getElementById("hotel-address").innerText = info.address;
+    document.getElementById("hotel-name").innerText = info.hotel.name;
+    document.getElementById("hotel-name-span").innerText = info.hotel.name;
+    document.getElementById("hotel-stars").innerHTML = returnStar(info.hotel.stars);
+    document.getElementById("hotel-address").innerText = info.hotel.address;
 
-    document.querySelector(".check-in-date").innerText = getDatePart(info.checkIn, "date")
-    document.querySelector(".check-in-month").innerText = getDatePart(info.checkIn, "monthYear")
-    document.querySelector(".check-in-weekday").innerText = getDatePart(info.checkIn, "weekDay")
+    document.querySelector(".check-in-date").innerText = getDatePart(info.date.checkIn, "date")
+    document.querySelector(".check-in-month").innerText = getDatePart(info.date.checkIn, "monthYear")
+    document.querySelector(".check-in-weekday").innerText = getDatePart(info.date.checkIn, "weekDay")
 
-    document.querySelector(".check-out-date").innerText = getDatePart(info.checkOut, "date")
-    document.querySelector(".check-out-month").innerText = getDatePart(info.checkOut, "monthYear")
-    document.querySelector(".check-out-weekday").innerText = getDatePart(info.checkOut, "weekDay")
+    document.querySelector(".check-out-date").innerText = getDatePart(info.date.checkOut, "date")
+    document.querySelector(".check-out-month").innerText = getDatePart(info.date.checkOut, "monthYear")
+    document.querySelector(".check-out-weekday").innerText = getDatePart(info.date.checkOut, "weekDay")
 
     document.querySelector(".room-count").innerText = info.numberOfRooms;
     document.querySelector(".night-count").innerText = info.numberOfNights;
 
-    document.getElementById("total-price").innerText = info.totalCost;
+    document.getElementById("total-price").innerText = info.buildCostString();
 }
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {

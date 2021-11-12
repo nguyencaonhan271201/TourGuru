@@ -50,8 +50,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
 const printToDisplay = () => {
     let paxList = JSON.parse(localStorage.getItem("flightPassengers"));
+    paxList.forEach(pax => {
+        Object.setPrototypeOf(pax, Passenger.prototype);
+    })
+    
     //Forward flight
     let forwardFlight = JSON.parse(localStorage.getItem("fromFlight"));
+    Object.setPrototypeOf(forwardFlight, Flight.prototype);
+
+    console.log(forwardFlight);
     forwardDiv.innerHTML = `<h4 class="text-purple">Forward Flight</h4>`;
 
     let getClass = forwardFlight.class;
@@ -62,23 +69,23 @@ const printToDisplay = () => {
                 <div class="flight-detail">
                     <div>
                         <img src="http://pics.avs.io/80/40/${forwardFlight.airline.code}.png" alt="">
-                        <span>${forwardFlight.airline.name} - ${forwardFlight.airline.code}${forwardFlight.flightnumber}</span>
+                        <span>${forwardFlight.airline.name} - ${forwardFlight.getFlightNumberDisplay()}</span>
                     </div>
                     <p class="m-0">${forwardFlight.aircraft}</p>
                     <p class="m-0">${getDisplayDateFormat(true, forwardFlight.depart)}</p>
                     <div class="d-flex justify-content-between">
                         <div class="text-left mr-2">
-                            <p class="mt-1 mb-1">${forwardFlight.depart.substring(11, 16)}</p>
-                            <p class="text-gray mt-1 mb-0">${forwardFlight.from.name}</p>
-                            <p class="text-gray mb-1 mt-0">(${forwardFlight.fromICAO})</p>
+                            <p class="mt-1 mb-1">${forwardFlight.getDepartTime()}</p>
+                            <p class="text-gray mt-1 mb-0">${forwardFlight.locations.from.name}</p>
+                            <p class="text-gray mb-1 mt-0">(${forwardFlight.icaos.from})</p>
                         </div>
                         <div class="d-flex align-items-center justify-content-center">
                             <span><i class="fas fa-plane"></i></span>    
                         </div>
                         <div class="text-left mr-2">
-                            <p class="mt-1 mb-1">${forwardFlight.arrival.substring(11, 16)}</p>
-                            <p class="text-gray mt-1 mb-0">${forwardFlight.to.name}</p>
-                            <p class="text-gray mb-1 mt-0">(${forwardFlight.toICAO})</p>
+                            <p class="mt-1 mb-1">${forwardFlight.getReturnTime()}</p>
+                            <p class="text-gray mt-1 mb-0">${forwardFlight.locations.to.name}</p>
+                            <p class="text-gray mb-1 mt-0">(${forwardFlight.icaos.to})</p>
                         </div>
                         <div class="mr-2 d-flex flex-column align-items-center justify-content-start">
                             <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(forwardFlight.duration)}</p>
@@ -88,7 +95,7 @@ const printToDisplay = () => {
                 </div>
                 <div class="pax-detail">
                     <h3 class="pax-class">${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}</h3>
-                    <h5>${pax.title} ${pax.first} ${pax.last}</h5>
+                    <h5>${pax.getDisplayFull()}</h5>
                     <h5>DOB: ${getDisplayDateFormat(false, pax.dob)}</h5>
                     <h5>Passport: ${pax.passport}</h5>
                 </div>
@@ -101,6 +108,7 @@ const printToDisplay = () => {
         returnDiv.innerHTML = ``;
     } else {
         let returnFlight = JSON.parse(localStorage.getItem("toFlight"));
+        Object.setPrototypeOf(returnFlight, Flight.prototype);
         returnDiv.innerHTML = `<h4 class="text-purple">Return Flight</h4>`;
         paxList.forEach(pax => {
             returnDiv.innerHTML += `
@@ -108,23 +116,23 @@ const printToDisplay = () => {
                     <div class="flight-detail">
                         <div>
                             <img src="http://pics.avs.io/80/40/${returnFlight.airline.code}.png" alt="">
-                            <span>${returnFlight.airline.name} - ${returnFlight.airline.code}${returnFlight.flightnumber}</span>
+                            <span>${returnFlight.airline.name} - ${returnFlight.getFlightNumberDisplay()}</span>
                         </div>
                         <p class="m-0">${returnFlight.aircraft}</p>
                         <p class="m-0">${getDisplayDateFormat(true, returnFlight.depart)}</p>
                         <div class="d-flex justify-content-between">
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${returnFlight.depart.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${returnFlight.from.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${returnFlight.fromICAO})</p>
+                                <p class="mt-1 mb-1">${returnFlight.getDepartTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${returnFlight.locations.from.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${returnFlight.icaos.from})</p>
                             </div>
                             <div class="d-flex align-items-center justify-content-center">
                                 <span><i class="fas fa-plane"></i></span>    
                             </div>
                             <div class="text-left mr-2">
-                                <p class="mt-1 mb-1">${returnFlight.arrival.substring(11, 16)}</p>
-                                <p class="text-gray mt-1 mb-0">${returnFlight.to.name}</p>
-                                <p class="text-gray mb-1 mt-0">(${returnFlight.toICAO})</p>
+                                <p class="mt-1 mb-1">${returnFlight.getReturnTime()}</p>
+                                <p class="text-gray mt-1 mb-0">${returnFlight.locations.to.name}</p>
+                                <p class="text-gray mb-1 mt-0">(${returnFlight.icaos.to})</p>
                             </div>
                             <div class="mr-2 d-flex flex-column align-items-center justify-content-start">
                                 <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(returnFlight.duration)}</p>
@@ -134,7 +142,7 @@ const printToDisplay = () => {
                     </div>
                     <div class="pax-detail">
                         <h3 class="pax-class">${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}</h3>
-                        <h5>${pax.title} ${pax.first} ${pax.last}</h5>
+                        <h5>${pax.getDisplayFull()}</h5>
                         <h5>DOB: ${getDisplayDateFormat(false, pax.dob)}</h5>
                         <h5>Passport: ${pax.passport}</h5>
                     </div>

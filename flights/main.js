@@ -1,12 +1,16 @@
+//DOM Selectors
 let flightTypeInput = document.getElementById('flight-type');
 let returnTimeInput = document.getElementById('arrival');
 let fromSearch = document.getElementById("from");
 let toSearch = document.getElementById("to");
 let swapButton = document.getElementById("btn-exchange");
-let fromID = "";
-let toID = "";
 let searchButton = document.getElementById("btn-search");
 let errorText = document.querySelector("#error-modal #modal-error-content");
+let enterButton = document.getElementById("btn-confirm");
+
+//Global variables
+let fromID = "";
+let toID = "";
 let isOneWay = true;
 let departSearchResult = [];
 let returnSearchResult = [];
@@ -14,19 +18,16 @@ let isPrintedFlight = false;
 let totalFare = 0;
 let departFare = 0;
 let returnFare = 0;
-let enterButton = document.getElementById("btn-confirm");
 let fromFlightObject = null;
 let toFlightObject = null;
+
 let ratesList = null;
 let choosingCurrency = "USD";
-
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 document.addEventListener("DOMContentLoaded", () => {
     if (window.location.search.includes("session_ended")) {
-        //errorText.innerHTML = "Your session is expired. Please try again";
-        //$('#error-modal').modal("show");
         Swal.fire({
             icon: 'error',
             text: "Your session is expired. Please try again."
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initializeEventListener();
     getCurrencyInfo();
+
     document.querySelector(".search-result-div").style.display = "none";
     document.getElementById("carousel").style.display = "initial";
 
@@ -50,10 +52,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     enterButton.addEventListener("click", () => {
         fromFlightObject["class"] = document.getElementById("class").value;
-        fromFlightObject["currencyCode"] = choosingCurrency;
         fromFlightObject["currencyRate"] = ratesList[choosingCurrency];
+
         localStorage.setItem("fromFlight", JSON.stringify(fromFlightObject));
         localStorage.setItem("toFlight", toFlightObject? JSON.stringify(toFlightObject) : null);
+        
         //Check if signed in      
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
@@ -69,11 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let checkOutPicker = document.getElementById('arrival');
     let picker = new Litepicker({
         element: checkInPicker,
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
     });
     let picker2 = new Litepicker({
         element: checkOutPicker,
-        format: 'YYYY-MM-DD'
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
     });
 })
 
@@ -99,7 +104,7 @@ const getCurrencyInfo = () => {
     }
 
     xhr.setRequestHeader("x-rapidapi-host", "exchangerate-api.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -327,7 +332,7 @@ const getSearchInfo = (searchQuery, isFrom) => {
 
     xhr.open("GET", `https://priceline-com-provider.p.rapidapi.com/v1/flights/locations?name=${searchQuery}`);
     xhr.setRequestHeader("x-rapidapi-host", "priceline-com-provider.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -397,8 +402,6 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
                 text: "Error occured. Please try again later"
             });
         }
-
-        //$("#loading-modal").modal("hide");
     }
 
     let url = `https://priceline-com-provider.p.rapidapi.com/v1/flights/search?sort_order=${sort_order}&` + 
@@ -408,7 +411,7 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
 
     xhr.open("GET", url);
     xhr.setRequestHeader("x-rapidapi-host", "priceline-com-provider.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -517,28 +520,28 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
             fare = calculateFare.toString() + " " + choosingCurrency;
             let getSlice = slicesDict[itinerary.slice[0].uniqueSliceId]["segment"][0]["uniqueSegId"];
             let segment = segmentsDict[getSlice]
-            
-            // console.log(slicesDict);
-            // console.log(itinerary.slice[0].uniqueSliceId);
-            // console.log(getSlice);
-            // console.log(segment);
 
             if (segment !== undefined) {
                 segment.fare = itinerary.pricingInfo.totalFare;
                 segment.fromICAO = from;
                 segment.toICAO = to;
+                segment.formattedFare = {
+                    value: calculateFare,
+                    currency: choosingCurrency
+                }
+
+                flight = new Flight(segment);
+
                 let id = -1;
-                let buttonClass = "";
                 if (isDepart) {
-                    departSearchResult.push(segment);
+                    departSearchResult.push(flight);
                     id = departSearchResult.length - 1;
                     buttonClass = "btn-depart";
                 } else {
-                    returnSearchResult.push(segment);
+                    returnSearchResult.push(flight);
                     id = returnSearchResult.length - 1;
                     buttonClass = "btn-return";
                 }
-
 
                 if (id == 0) {
                     if (isDepart) {
@@ -549,53 +552,11 @@ const printFlights = (from, to, date, airlines, airport, equipment, pricedItiner
                         document.getElementById("return-summary-to").innerText = `${segment.to.city}`;
                     }
                 }
-
-                let functionCallString = isDepart? `departSelect(event, ${id})` : `returnSelect(event, ${id})`;
-
-                container.innerHTML += `
-                    <div class="flight-option-box">
-                        <div>
-                            <img src="http://pics.avs.io/40/40/${segment.airline.code}.png" alt="">
-                            <span>${segment.airline.name} - ${segment.airline.code}${segment.flightnumber}</span>
-                        </div>
-                        <p>${segment.aircraft}</p>
-                        <div class="row">
-                            <div class="col-md-9 col-sm-12">
-                                <div class="d-flex justify-content-between">
-                                    <div class="text-left mr-2">
-                                        <p class="mt-1 mb-1">${segment.depart.substring(11, 16)}</p>
-                                        <p class="text-gray mt-1 mb-0">${segment.from.name}</p>
-                                        <p class="text-gray mb-1 mt-0">(${from})</p>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <span><i class="fas fa-plane"></i></span>    
-                                    </div>
-                                    <div class="text-left mr-2">
-                                        <p class="mt-1 mb-1">${segment.arrival.substring(11, 16)}</p>
-                                        <p class="text-gray mt-1 mb-0">${segment.to.name}</p>
-                                        <p class="text-gray mb-1 mt-0">(${to})</p>
-                                    </div>
-                                    <div class="mr-2 d-flex flex-column align-items-center justify-content-start">
-                                        <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(segment.duration)}</p>
-                                        <p class="mt-1 mb-1">Direct</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-12 d-flex align-items-end flex-column justify-content-sm-end justify-content-md-center">
-                                <div class="text-right">
-                                    <p class="total-price mb-0 mt-0">${fare}</p>
-                                    <p class="mt-0 mb-0" id="container-total-price">/pax</p>
-                                </div>
-                                <button class="btn-full button-choose mt-2 ${buttonClass}" onclick="javascript:${functionCallString}">
-                                    choose
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `
             }
         }
     });
+
+    executePrintSearchResult(container, isDepart);
 }
 
 const departSelect = (e, id) => {
@@ -605,18 +566,20 @@ const departSelect = (e, id) => {
     e.target.classList.add("chosen");
 
     let getFlight = departSearchResult[id];
-    departFare = getFlight.fare * ratesList[choosingCurrency];
+    departFare = getFlight.formattedFare.value;
     totalFare = departFare + returnFare;
+
     document.getElementById("total-price").innerText = `${Math.round(totalFare * 100) / 100} ${choosingCurrency}`;
     let getClass = document.getElementById("class").value;
+    
     //Update flight info
     document.getElementById("img-depart-airline").setAttribute("src", `http://pics.avs.io/40/40/${getFlight.airline.code}.png`);
-    document.querySelector(".depart-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.airline.code}${getFlight.flightnumber}`;
+    document.querySelector(".depart-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.getFlightNumberDisplay()}`;
     document.querySelector("#depart-aircraft").innerText = `${getFlight.aircraft} - ${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`;
-    document.getElementById("depart-depart-time").innerText = `${getFlight.depart.substring(11, 16)}`;
-    document.getElementById("depart-depart-airport-code").innerText = `${getFlight.fromICAO}`;
-    document.getElementById("depart-arrive-time").innerText = `${getFlight.arrival.substring(11, 16)}`;
-    document.getElementById("depart-arrive-airport-code").innerText = `${getFlight.toICAO}`;
+    document.getElementById("depart-depart-time").innerText = `${getFlight.getDepartTime()}`;
+    document.getElementById("depart-depart-airport-code").innerText = `${getFlight.icaos.from}`;
+    document.getElementById("depart-arrive-time").innerText = `${getFlight.getReturnTime()}`;
+    document.getElementById("depart-arrive-airport-code").innerText = `${getFlight.icaos.to}`;
     document.getElementById("depart-duration").innerText = `${timePrintFormat(getFlight.duration)}`;
     document.getElementById("depart-chosen").style.display = "initial";
 
@@ -633,19 +596,21 @@ const returnSelect = (e, id) => {
     })
     e.target.classList.add("chosen");
     let getClass = document.getElementById("class").value;
+
     let getFlight = returnSearchResult[id];
-    returnFare = getFlight.fare * ratesList[choosingCurrency];
+    returnFare = getFlight.formattedFare.value;
     totalFare = departFare + returnFare;
+
     document.getElementById("total-price").innerText = `${Math.round(totalFare * 100) / 100} ${choosingCurrency}`;
 
     //Update flight info
     document.getElementById("img-return-airline").setAttribute("src", `http://pics.avs.io/40/40/${getFlight.airline.code}.png`);
-    document.querySelector(".return-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.airline.code}${getFlight.flightnumber}`;
+    document.querySelector(".return-airline-name").innerText = `${getFlight.airline.name} - ${getFlight.getFlightNumberDisplay()}`;
     document.querySelector("#return-aircraft").innerText = `${getFlight.aircraft} - ${getClass == "Y"? "ECONOMY" : getClass == "J"? "BUSINESS" : getClass == "F"? "FIRST" : "PREMIUM ECONOMY"}`;
-    document.getElementById("return-depart-time").innerText = `${getFlight.depart.substring(11, 16)}`;
-    document.getElementById("return-depart-airport-code").innerText = `${getFlight.fromICAO}`;
-    document.getElementById("return-arrive-time").innerText = `${getFlight.arrival.substring(11, 16)}`;
-    document.getElementById("return-arrive-airport-code").innerText = `${getFlight.toICAO}`;
+    document.getElementById("return-depart-time").innerText = `${getFlight.getDepartTime()}`;
+    document.getElementById("return-depart-airport-code").innerText = `${getFlight.icaos.from}`;
+    document.getElementById("return-arrive-time").innerText = `${getFlight.getReturnTime()}`;
+    document.getElementById("return-arrive-airport-code").innerText = `${getFlight.icaos.to}`;
     document.getElementById("return-duration").innerText = `${timePrintFormat(getFlight.duration)}`;
     document.getElementById("return-chosen").style.display = "initial";
 
@@ -679,4 +644,62 @@ const getDisplayDateFormat = (isWeekDay, ISODate) => {
     const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
     // console.log(dateTemplate)
     return dateTemplate;
+}
+
+const executePrintSearchResult = (container, isFrom) => {
+    let listOfFlights = isFrom? departSearchResult : returnSearchResult;
+
+    listOfFlights.forEach((flight, id) => {      
+        let buttonClass = "";
+        if (isFrom) {
+            buttonClass = "btn-depart";
+        } else {
+            buttonClass = "btn-return";
+        }
+        
+        let functionCallString = isFrom? `departSelect(event, ${id})` : `returnSelect(event, ${id})`;
+
+        container.innerHTML += `
+        <div class="flight-option-box">
+            <div>
+                <img src="http://pics.avs.io/40/40/${flight.airline.code}.png" alt="">
+                <span>${flight.airline.name} - ${flight.getFlightNumberDisplay()}</span>
+            </div>
+            <p>${flight.aircraft}</p>
+            <div class="row">
+                <div class="col-md-9 col-sm-12">
+                    <div class="d-flex justify-content-between">
+                        <div class="text-left mr-2">
+                            <p class="mt-1 mb-1">${flight.getDepartTime()}</p>
+                            <p class="text-gray mt-1 mb-0">${flight.locations.from.name}</p>
+                            <p class="text-gray mb-1 mt-0">(${flight.icaos.from})</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <span><i class="fas fa-plane"></i></span>    
+                        </div>
+                        <div class="text-left mr-2">
+                            <p class="mt-1 mb-1">${flight.getReturnTime()}</p>
+                            <p class="text-gray mt-1 mb-0">${flight.locations.to.name}</p>
+                            <p class="text-gray mb-1 mt-0">(${flight.icaos.to})</p>
+                        </div>
+                        <div class="mr-2 d-flex flex-column align-items-center justify-content-start">
+                            <p id="return-duration" class="mt-1 mb-1">${timePrintFormat(flight.duration)}</p>
+                            <p class="mt-1 mb-1">Direct</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12 d-flex align-items-end flex-column justify-content-sm-end justify-content-md-center">
+                    <div class="text-right">
+                        <p class="total-price mb-0 mt-0">${flight.getFareString()}</p>
+                        <p class="mt-0 mb-0" id="container-total-price">/pax</p>
+                    </div>
+                    <button class="btn-full button-choose mt-2 ${buttonClass}" onclick="javascript:${functionCallString}">
+                        choose
+                    </button>
+                </div>
+            </div>
+        </div>
+        `
+    })
+    
 }

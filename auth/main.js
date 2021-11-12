@@ -532,22 +532,22 @@ const getInfoFromServer = async() => {
         Swal.close();
         if (xhr.status === 200 && xhr.readyState === 4) {
            //Nhận thông tin và in ra các ô input
-           let result = JSON.parse(xhr.responseText); 
-           localStorage.setItem("headerInfo", JSON.stringify({
-               "isAdmin": result.isAdmin,
-               "image": result.image
-           }));
-           if (localStorage.getItem("fromFlight") != "null")
+            let result = JSON.parse(xhr.responseText); 
+            localStorage.setItem("headerInfo", JSON.stringify({
+                "isAdmin": result.isAdmin,
+                "image": result.image
+            }));
+            if (localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
-            location.replace("./../");
+            else location.replace("./../");
         } else {
             if (localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
-            location.replace("./../");
+            else location.replace("./../");
         }
     }
     xhr.send();

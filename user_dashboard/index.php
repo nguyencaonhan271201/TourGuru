@@ -164,6 +164,7 @@
 
         <!-- Project JavaScript -->
         <script src="./../shared/js/firebase.js"></script>
+        <script src="./../shared/js/classes/Booking.js"></script>
         <script src="./main.js"></script>
     </body>
 </html>

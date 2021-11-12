@@ -136,6 +136,16 @@ const loadBookings = () => {
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     }
                })
+
+               flightBookingFactory = new FlightBookingFactory();
+               //OOP Refragment
+               newObject = {};
+               Object.keys(availableBookings.flights).forEach(key => {
+                   newObject[key] = flightBookingFactory.create(availableBookings.flights[key], key); 
+               })
+
+               availableBookings.flights = newObject;
+
                getAvailableHotelBookings();
             } else {
                 Swal.fire({
@@ -161,7 +171,13 @@ const loadBookings = () => {
             if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
-                availableBookings.hotels = result;
+                
+                hotelBookingFactory = new HotelBookingFactory();
+                availableBookings.hotels = [];
+                result.forEach(booking => {
+                    availableBookings.hotels.push(hotelBookingFactory.create(booking, booking.id));
+                })
+
                 getVisitedLocations();
                 
             } else {
@@ -315,18 +331,20 @@ const loadToTables = () => {
     Object.keys(availableBookings.flights).forEach(key => {
         let bookingDetail = availableBookings.flights[key];
         let iterationDiv = ``;
-        if (bookingDetail.length === 2) {
+        if (bookingDetail.iterations.length === 2) {
             iterationDiv = `
                 <div>
                     <div>
-                        <img src="http://pics.avs.io/50/30/${bookingDetail[0]["flight_number"].substring(0, 2)}.png">
-                        ${bookingDetail[0]["flight_number"]}: ${bookingDetail[0]["origin_code"]} - ${bookingDetail[0]["dest_code"]} 
-                        (${bookingDetail[0]["departure"]} - ${bookingDetail[0]["arrival"]}) 
+                        <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[0].flightNumber.substring(0, 2)}.png">
+                        ${bookingDetail.iterations[0].flightNumber}: ${bookingDetail.iterations[0].locations.from.code} - 
+                        ${bookingDetail.iterations[0].locations.to.code} 
+                        (${bookingDetail.iterations[0].time.departure} - ${bookingDetail.iterations[0].time.arrival}) 
                     </div>
                     <div>
-                        <img src="http://pics.avs.io/50/30/${bookingDetail[1]["flight_number"].substring(0, 2)}.png">
-                        ${bookingDetail[1]["flight_number"]}: ${bookingDetail[1]["origin_code"]} - ${bookingDetail[1]["dest_code"]} 
-                        (${bookingDetail[1]["departure"]} - ${bookingDetail[1]["arrival"]}) 
+                        <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[1].flightNumber.substring(0, 2)}.png">
+                        ${bookingDetail.iterations[1].flightNumber}: ${bookingDetail.iterations[1].locations.from.code} - 
+                        ${bookingDetail.iterations[1].locations.to.code} 
+                        (${bookingDetail.iterations[1].time.departure} - ${bookingDetail.iterations[1].time.arrival}) 
                     </div>
                 </div>
             `
@@ -334,9 +352,10 @@ const loadToTables = () => {
             iterationDiv = `
             <div>
                 <div>
-                    <img src="http://pics.avs.io/50/30/${bookingDetail[0]["flight_number"].substring(0, 2)}.png">
-                    ${bookingDetail[0]["flight_number"]}: ${bookingDetail[0]["origin_code"]} - ${bookingDetail[0]["dest_code"]} 
-                    (${bookingDetail[0]["departure"]} - ${bookingDetail[0]["arrival"]}) 
+                    <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[0].flightNumber.substring(0, 2)}.png">
+                    ${bookingDetail.iterations[0].flightNumber}: ${bookingDetail.iterations[0].locations.from.code} - 
+                    ${bookingDetail.iterations[0].locations.to.code} 
+                    (${bookingDetail.iterations[0].time.departure} - ${bookingDetail.iterations[0].time.arrival}) 
                 </div>
             </div>
         `
@@ -344,25 +363,25 @@ const loadToTables = () => {
         html += `
             <tr>
                 <td>
-                    ${getDisplayDateFormat(false, bookingDetail[0]["date"])}
+                    ${getDisplayDateFormat(false, bookingDetail.date)}
                 </td>
                 <td>
                     ${iterationDiv}
                 </td>
                 <td>
-                    ${bookingDetail[0]["class"]}
+                    ${bookingDetail.class}
                 </td>
                 <td>
-                    ${bookingDetail[0]["number_of_pax"]}
+                    ${bookingDetail.numberOfPax}
                 </td>
                 <td>
-                    ${bookingDetail[0]["total_price"]}
+                    ${bookingDetail.totalPrice}
                 </td>
                 <td>
-                    ${getDisplayDateFormatAdd7Hours(bookingDetail[0]["date_booked"])}
+                    ${getDisplayDateFormatAdd7Hours(bookingDetail.date_booked)}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${bookingDetail[0]["booking_id"]}>View</a>
+                    <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${bookingDetail.booking_id}>View</a>
                 </td>
             </tr>
         `
@@ -371,33 +390,32 @@ const loadToTables = () => {
 
     html = '';
     availableBookings.hotels.forEach(booking => {
-        let nightOrNights = booking.number_of_nights == 1? "night" : "nights";
         html += `
             <tr>
                 <td>
-                    ${getShortDisplayDateFormat(booking.date_start)} - ${getShortDisplayDateFormat(booking.date_end)}
+                    ${getShortDisplayDateFormat(booking.dates.from)} - ${getShortDisplayDateFormat(booking.dates.to)}
                     <br>
-                    (${booking.number_of_nights} ${nightOrNights})
+                    (${booking.buildDurationString()})
                 </td>
                 <td>
-                    ${booking.number_of_beds}
+                    ${booking.quantityInfo.rooms}
                 </td>
                 <td>
                     <div>
                         <img style="max-height: 100px; max-width: 100px; object-fit: contain;" alt="" 
-                        src="${booking.hotel_image_url}">
+                        src="${booking.hotel.url}">
                         <br>
-                        ${booking.hotel_name}
+                        ${booking.hotel.name}
                     </div>
                 </td>
                 <td>
-                    ${booking.total_cost}
+                    ${booking.totalCost}
                 </td>
                 <td>
                     ${getDisplayDateFormatAdd7Hours(booking.date_booked)}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-view-booking btn-view-booking-hotel" data-booking-id=${booking.id}>View</a>
+                    <a type="button" class="btn btn-view-booking btn-view-booking-hotel" data-booking-id=${booking.booking_id}>View</a>
                 </td>
             </tr>
         `

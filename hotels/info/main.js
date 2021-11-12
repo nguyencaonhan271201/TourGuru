@@ -1,7 +1,12 @@
-let hotelInfo = {}
-let cloneHotelInfo = {}
+//DOM selectors
+let btnBook = document.querySelector("#btn-book");
+
+//To store hotel info gathered from API
+let hotelInfo = {};
+
 let uid;
 let user_email;
+
 let hotelChoosingInfo = {}
 let hotelImages = [];
 let usingCurrency = "USD";
@@ -11,11 +16,14 @@ let numberOfRoom = 1;
 let roomSelect;
 let totalRoomPrice = 0;
 let hotelName = "";
-let btnBook = document.querySelector("#btn-book");
+
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let ratesList = null;
 let choosingCurrency = "USD";
+
+//For case not chosen info about booking dates
+let cloneHotelInfo = {}
 let tmpSingleNight = 0;
 
 //For local storage
@@ -23,7 +31,6 @@ let stars;
 let address;
 
 document.addEventListener("DOMContentLoaded", () => {
-
     document.querySelector(".main-container").style.opacity = 0;
     Swal.fire({
         title: 'Loading...',
@@ -57,11 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
         let checkOutPicker = document.getElementById('check-out');
         let picker = new Litepicker({
             element: checkInPicker,
-            format: 'YYYY-MM-DD'
+            format: 'YYYY-MM-DD',
+            minDate: new Date()
         });
         let picker2 = new Litepicker({
             element: checkOutPicker,
-            format: 'YYYY-MM-DD'
+            format: 'YYYY-MM-DD',
+            minDate: new Date()
         });
 
         document.getElementById('btn-search-form').addEventListener("click", (e) => {
@@ -147,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     } else {
         //Check for the correct hotel
-        if (JSON.parse(localStorage.getItem("hotelInfo")).hotelID !== urlParams.get("hotel").toString()) {
+        if (JSON.parse(localStorage.getItem("hotelInfo")).hotel.ID !== urlParams.get("hotel").toString()) {
             location.replace("./../");
             return;
         } else {
@@ -155,14 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector(".booking-hide").style.display = "none";
 
             hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
-            usingCurrency = hotelChoosingInfo["currencyCode"];
-            currencyRate = hotelChoosingInfo["currencyRate"];
-            singleNightPrice = hotelChoosingInfo["singleNight"];
+            Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
+            usingCurrency = hotelChoosingInfo.currency.code;
+            currencyRate = hotelChoosingInfo.currency.rate;
+            singleNightPrice = hotelChoosingInfo.singleNight;
             totalRoomPrice = singleNightPrice;
             document.getElementById("total-price").innerText = `${Math.round(singleNightPrice * 100) / 100} ${usingCurrency}`;
-            let nightOrNights = hotelChoosingInfo["numberOfNights"] == 1 ? "night" : "nights";
-            document.getElementById("nights-count").innerText = `${hotelChoosingInfo["numberOfNights"]} ${nightOrNights}`;
-            document.getElementById("nights-range").innerText = `${getDisplayDateFormat(false, hotelChoosingInfo["checkIn"])} - ${getDisplayDateFormat(false, hotelChoosingInfo["checkOut"])}`;
+            document.getElementById("nights-count").innerText = `${hotelChoosingInfo.displayNightFullString()}`;
+            document.getElementById("nights-range").innerText = `${getDisplayDateFormat(false, hotelChoosingInfo.date.checkIn)} - ${getDisplayDateFormat(false, hotelChoosingInfo.date.checkOut)}`;
         
             roomSelect = document.getElementById("rooms");
             roomSelect.addEventListener("change", () => {
@@ -476,45 +485,33 @@ const performBook = () => {
         if (user) {
             uid = user.uid;
             user_email = user.email;
+
+            Swal.fire({
+                title: 'Are you sure want to book?',
+                text: "Please check your information carefully. Further modifications may require an additional fee.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#028a0f',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'The booking is being processed...',
+                    html: 'Please wait...',
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                      Swal.showLoading()
+                    }
+                  });
+            
+                sendBookingInfo();
+            }});
         } else {
             location.replace("./../../auth/login.php?hotel_confirmation");
             return;
         }
-    })
-
-    Swal.fire({
-        title: 'Are you sure want to book?',
-        text: "Please check your information carefully. Further modifications may require an additional fee.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#028a0f',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes!'
-    }).then((result) => {
-    if (result.isConfirmed) {
-        Swal.fire({
-            title: 'The booking is being processed...',
-            html: 'Please wait...',
-            allowEscapeKey: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-              Swal.showLoading()
-            }
-          });
-    
-        sendBookingInfo();
-        //sendBookingConfirmationEmail();
-
-        // let totalRoomPriceReformatted = Math.round(totalRoomPrice * 100) / 100
-        // let totalCostString = `${totalRoomPriceReformatted} ${usingCurrency}`
-        // hotelChoosingInfo["hotelName"] = hotelName;
-        // hotelChoosingInfo["numberOfRooms"] = numberOfRoom;
-        // hotelChoosingInfo["totalCost"] = totalCostString;
-        // hotelChoosingInfo["stars"] = stars;
-        // hotelChoosingInfo["address"] = address;
-        // localStorage.setItem("hotelInfo", JSON.stringify(hotelChoosingInfo))
-        // location.replace("./../booking-detail");
-    }
     })
 }
 
@@ -525,23 +522,14 @@ const sendBookingInfo = () => {
     csrf = document.getElementById("csrf-hotel-info").innerText;
 
     let totalRoomPriceReformatted = Math.round(totalRoomPrice * 100) / 100
-    let totalCostString = `${totalRoomPriceReformatted} ${usingCurrency}`
 
-    let reformattedImageURL = hotelChoosingInfo["hotelImageURL"].indexOf("?") != -1? 
-    hotelChoosingInfo["hotelImageURL"].substring(0, hotelChoosingInfo["hotelImageURL"].indexOf("?"))
-    : hotelChoosingInfo["hotelImageURL"];
-
-    let sendData = {
-        "user_id": `${uid}`,
-        "date_start": `${hotelChoosingInfo["checkIn"]}`,
-        "date_end": `${hotelChoosingInfo["checkOut"]}`,
-        "number_of_nights": `${hotelChoosingInfo["numberOfNights"]}`,
-        "hotel_id": `${hotelChoosingInfo["hotelID"]}`,
-        "hotel_name": `${hotelName}`,
-        "hotel_image_url": `${reformattedImageURL}`,
-        "number_of_beds": `${numberOfRoom}`,
-        "total_cost": `${totalCostString}`,
-    }
+    hotelChoosingInfo.hotel.name = hotelName;
+    hotelChoosingInfo.numberOfRooms = numberOfRoom;
+    hotelChoosingInfo.totalCost = totalRoomPriceReformatted;
+    hotelChoosingInfo.hotel.stars = stars;
+    hotelChoosingInfo.hotel.address = address;
+    
+    let sendData = hotelChoosingInfo.buildObjectForSend(uid);
 
     let xhr = new XMLHttpRequest();
     xhr.open(
@@ -552,11 +540,6 @@ const sendBookingInfo = () => {
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            hotelChoosingInfo["hotelName"] = hotelName;
-            hotelChoosingInfo["numberOfRooms"] = numberOfRoom;
-            hotelChoosingInfo["totalCost"] = totalCostString;
-            hotelChoosingInfo["stars"] = stars;
-            hotelChoosingInfo["address"] = address;
             localStorage.setItem("hotelInfo", JSON.stringify(hotelChoosingInfo))
             sendBookingConfirmationEmail();
         } else {
@@ -571,12 +554,7 @@ const sendBookingInfo = () => {
     xhr.send(`bookingInfo&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
 }
 
-const sendBookingConfirmationEmail = () => {    
-    let roomOrRooms = numberOfRoom == 1? "room" : "rooms";
-    let nightOrNights = hotelChoosingInfo["numberOfNights"] == 1 ? "night" : "nights"
-
-    let totalRoomPriceReformatted = Math.round(totalRoomPrice * 100) / 100
-    
+const sendBookingConfirmationEmail = () => {        
     let htmlContent = `
         <html>
             <head>
@@ -593,47 +571,47 @@ const sendBookingConfirmationEmail = () => {
                         <h4 class="text-purple mt-3 mb-3 text-center" style="color: #a082af">Hotel Booking Confirmation</h4>
                         <div id="main-div">
                             <div class="hotel-info">
-                                <h1 id="hotel-name" class="text-pink" style="color: #c95998">${hotelName}</h1>
-                                <h4 id="hotel-stars" style="color: rgb(223, 167, 25)">${returnStarForMail(stars)}</h4>
-                                <p id="hotel-address" class="text-gray" style="color: gray">${address}</p>
+                                <h1 id="hotel-name" class="text-pink" style="color: #c95998">${hotelChoosingInfo.hotel.name}</h1>
+                                <h4 id="hotel-stars" style="color: rgb(223, 167, 25)">${returnStarForMail(hotelChoosingInfo.hotel.stars)}</h4>
+                                <p id="hotel-address" class="text-gray" style="color: gray">${hotelChoosingInfo.hotel.address}</p>
                             </div>
                         </div>
                         <div class="date-info">
                             <div class="check-in text-center">
                                 <h4 class="text-pink" style="color: #c95998">check-in</h4>
                                 <h2>
-                                    <span class="text-purple check-in-date" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkIn, "date")}</span>
-                                    <span class="text-purple check-in-month" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkIn, "monthYear")}</span>
-                                    <span class="text-purple check-in-weekday" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkIn, "weekDay")}</span>
+                                    <span class="text-purple check-in-date" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkIn, "date")}</span>
+                                    <span class="text-purple check-in-month" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkIn, "monthYear")}</span>
+                                    <span class="text-purple check-in-weekday" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkIn, "weekDay")}</span>
                                 </h2>
                                 
                             </div>
                             <div class="check-out text-center">
                                 <h4 class="text-pink" style="color: #c95998">check-out</h4>
                                 <h2>
-                                    <span class="text-purple check-out-date" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkOut, "date")}</span>
-                                    <span class="text-purple check-out-month" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkOut, "monthYear")}</span>
-                                    <span class="text-purple check-out-weekday" style="color: #a082af">${getDatePart(hotelChoosingInfo.checkOut, "weekDay")}</span>
+                                    <span class="text-purple check-out-date" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkOut, "date")}</span>
+                                    <span class="text-purple check-out-month" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkOut, "monthYear")}</span>
+                                    <span class="text-purple check-out-weekday" style="color: #a082af">${getDatePart(hotelChoosingInfo.date.checkOut, "weekDay")}</span>
                                 </h2>
                             </div>
                             <div class="room-night text-center">
                                 <div class="room">
                                     <h2 class="text-pink" style="color: #c95998">
-                                        <span class="text-purple room-count" style="color: #a082af">${numberOfRoom} ${roomOrRooms}</span>
+                                        <span class="text-purple room-count" style="color: #a082af">${hotelChoosingInfo.displayRoomString()}</span>
                                         -
-                                        <span class="text-purple night-count" style="color: #a082af">${hotelChoosingInfo["numberOfNights"]} ${nightOrNights}</span>
+                                        <span class="text-purple night-count" style="color: #a082af">${hotelChoosingInfo.displayNightFullString()}</span>
                                     </h2>                                    
                                 </div>
                             </div>
                         </div>
                         <hr>
                         <h4 class="text-pink" style="color: #c95998">total price</h4>
-                        <h3 id="container-total-price"><h2 id="total-price" style="color: #a082af">${totalRoomPriceReformatted} ${usingCurrency}</h2></h3>
+                        <h3 id="container-total-price"><h2 id="total-price" style="color: #a082af">${hotelChoosingInfo.buildCostString()}</h2></h3>
 
                         <hr>
                         <h4 class="text-pink" style="color: #c95998">payment info</h4>
                         <p class="payment-content">
-                            <b id="hotel-name-span">${hotelName}</b> handles all the payment processes required.
+                            <b id="hotel-name-span">${hotelChoosingInfo.hotel.name}</b> handles all the payment processes required.
                         </p>
                         <p class="payment-content">
                             payment methods accepted: American Express, Visa, Mastercard, Diners Club, JCB, Maestro, Discover, Bankcard, UnionPay Debit, UnionPay Credit
@@ -649,7 +627,7 @@ const sendBookingConfirmationEmail = () => {
         </html>
     `
     
-    let subject = `CONFIRMATION FOR YOUR ${hotelChoosingInfo["numberOfNights"]}-NIGHT HOTEL BOOKING ON ${getDisplayDateFormat(false, hotelChoosingInfo["checkIn"]).toUpperCase()}`;
+    let subject = `CONFIRMATION FOR YOUR ${hotelChoosingInfo["numberOfNights"]}-NIGHT HOTEL BOOKING ON ${getDisplayDateFormat(false, hotelChoosingInfo.date.checkIn).toUpperCase()}`;
 
     let csrf = "";
     csrf = document.getElementById("csrf-hotel-info").innerText;

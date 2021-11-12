@@ -136,7 +136,7 @@
                     <h3 class="hotel-option-name">booking</h3>
                     <div class="booking-summary">
                         <div class="row">
-                            <div class="col-md-6 col-sm-12 pr-md-6 pr-0">
+                            <div class="col-md-6 col-sm-12 pr-md-6 pr-0 d-flex align-items-center justify-content-center">
                                 <img src="" alt="" id="booking-summary-img">
                             </div>
                             <div class="col-md-6 col-sm-12 d-flex align-items-center pl-md-6 pr-0">
@@ -207,6 +207,7 @@
         <!-- Project JavaScript -->
         <script src="./../../shared/js/firebase.js"></script>
         <script src="./email.js"></script>
+        <script src="./../../shared/js/classes/Hotel.js"></script>
         <script src="./main.js"></script>
 
     </body>

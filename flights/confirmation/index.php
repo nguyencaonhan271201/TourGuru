@@ -227,6 +227,7 @@
         <!-- Project JavaScript -->
         <script src="./../../shared/js/firebase.js"></script>
         <script src="./email.js"></script>
+        <script src="./../../shared/js/classes/Flight.js"></script>
         <script src="./main.js"></script>
     </body>
 </html>
