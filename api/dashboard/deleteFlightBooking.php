@@ -6,6 +6,6 @@
         $userID = $_POST['userID'];
         $delete = new flights($conn, $bookingID);
 
-        return json_encode($delete->deleteBooking($userID));
-    } else return false;//chua set du lieu 
+        echo json_encode($delete->deleteBooking($userID));
+    } else echo false;//chua set du lieu 
 ?>

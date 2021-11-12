@@ -40,7 +40,9 @@ class User{
             $stmt->bind_param("i", $offset);
             $stmt->execute();
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            return array_slice($result, -10);//get last 10 elements of result ()
+            var_dump($result);
+            if (sizeof($result) < $offset - 9) return [];
+            return array_slice($result, -(sizeof($result)-($offset - 10)));//keep exp last elements
     }
 }
 ?>
