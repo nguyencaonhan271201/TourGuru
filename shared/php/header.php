@@ -1,6 +1,7 @@
 <?php 
   putenv("ROOT=/TourGuru");
 ?>
+    <link rel="icon" href="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg">
     <link href="<?php echo getenv('ROOT')?>/shared/css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -27,13 +28,13 @@
         <div class="collapse navbar-collapse" id="collapsibleNavId">
           <ul class="navbar-nav mr-auto mt-lg-0">
             <li class="nav-item me-4 main-nav-item">
-              <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/flights"><span>Flights</span></a>
+              <a class="nav-link" id="nav-flight" aria-current="page" href="<?php echo getenv('ROOT')?>/flights"><span>Flights</span></a>
             </li>
             <li class="nav-item me-4 main-nav-item">
-              <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/hotels"><span>Hotels</span></a>
+              <a class="nav-link" id="nav-hotel" aria-current="page" href="<?php echo getenv('ROOT')?>/hotels"><span>Hotels</span></a>
             </li>
             <li class="nav-item me-4 main-nav-item">
-              <a class="nav-link" aria-current="page" href="<?php echo getenv('ROOT')?>/attraction"
+              <a class="nav-link" id="nav-attraction" aria-current="page" href="<?php echo getenv('ROOT')?>/attraction"
                 ><span>Attractions</span></a
               >
             </li>
@@ -47,7 +48,7 @@
                 
           <ul class="navbar-nav float-lg-right" id="header-logged-in">
             <!-- Avatar -->
-            <li class="nav-item dropdown dropdown-menu-right">
+            <li class="nav-item dropdown dropdown-menu-right dropdown-menu-end">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -66,7 +67,7 @@
                 />
               </a>
 
-              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+              <ul class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                 <li>
                   <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
                 </li>

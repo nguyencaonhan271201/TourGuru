@@ -50,6 +50,51 @@
       } else {
         echo json_encode($info);
       }
+    } else if (isset($_GET["getFlightsInfoAdmin"])) {
+      $booking = new FlightBooking($conn);
+      if (!isset($_GET["user_id"]) || !isset($_GET["booking_id"]) || !isset($_GET["isAdmin"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $info = $booking->getFlightBookingInfoAdmin($_GET["user_id"], $_GET["booking_id"]);
+
+      if (empty($info)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($info);
+      }
+    } else if (isset($_GET["getFlightsPaxAdmin"])) {
+      $booking = new FlightBooking($conn);
+      if (!isset($_GET["user_id"]) || !isset($_GET["booking_id"]) || !isset($_GET["isAdmin"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $pax = $booking->getFlightBookingPaxAdmin($_GET["user_id"], $_GET["booking_id"]);
+
+      if (empty($pax)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($pax);
+      }
+    } else if (isset($_GET["getHotelsInfoAdmin"])) {
+      $booking = new HotelBooking($conn);
+      if (!isset($_GET["user_id"]) || !isset($_GET["booking_id"]) || !isset($_GET["isAdmin"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $info = $booking->getHotelBookingInfoAdmin($_GET["user_id"], $_GET["booking_id"]);
+
+      if (empty($info)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($info);
+      }
     } 
   } else if (isset($_POST["csrf"]) && ($_POST["csrf"] == $_SESSION["csrf"])) {
     if (isset($_POST["deleteFlightBooking"])) {

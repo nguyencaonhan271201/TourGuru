@@ -1,0 +1,42 @@
+.summary .row {
+  padding: 5px;
+}
+
+.summary .col-md-4 {
+  background-color: var(--purple-1);
+  box-sizing: border-box;
+  border: 5px solid white;
+  border-radius: 30px;
+}
+
+.summary h5 {
+  font-size: 15px;
+}
+
+.summary h1 {
+  color: var(--white);
+}
+
+.btn-outline-primary {
+  border-color: var(--purple-1) !important;
+  color: var(--purple-1) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: rgba(160, 130, 175, 0.2) !important;
+}
+
+.btn-check:checked + .btn-outline-primary {
+  background-color: rgba(160, 130, 175, 0.8) !important;
+  color: var(--white) !important;
+  box-shadow: none !important;
+}
+
+.see_more_row {
+  cursor: pointer;
+}
+
+#labelradio1 {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}

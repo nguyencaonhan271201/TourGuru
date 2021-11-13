@@ -1,4 +1,5 @@
 let root = "/TourGuru"
+let isAdmin;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem("headerInfo") || localStorage.getItem("headerInfo") == "null") {
@@ -14,10 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     location.replace(`${root}` + "/logout.php");
   })
+
+  if (window.location.pathname.includes("/flights")) {
+    document.getElementById("nav-flight").classList.add("active");
+  } else if (window.location.pathname.includes("/hotels")) {
+    document.getElementById("nav-hotel").classList.add("active");
+  } else if (window.location.pathname.includes("/attraction")) {
+    document.getElementById("nav-attraction").classList.add("active");
+  }
 })
 
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
+  isAdmin = userInfo.isAdmin;
   if (userInfo.isAdmin) {
     document.getElementById("admin-header-block").style.display = "block";
   } else {

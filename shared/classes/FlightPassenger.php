@@ -53,4 +53,18 @@ class FlightPassenger {
       return;
     }
   }
+
+  public function getPassengersAdmin() {
+    try {
+      $query = "SELECT * FROM flight_bookings_customers WHERE booking_id IN 
+      (SELECT id from flight_bookings WHERE id = ? AND status = 1)";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $this->booking_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
 }

@@ -1,0 +1,100 @@
+@font-face {
+  font-family: "attraction";
+  src: url("Glamour.otf");
+}
+
+html {
+  scroll-snap-type: y mandatory;
+}
+
+.scrollsnap {
+  scroll-snap-align: start;
+}
+
+.fadein {
+  opacity: 0;
+}
+
+.billboard .background {
+  z-index: -5;
+}
+
+.background img {
+  object-fit: cover;
+  object-position: center;
+  z-index: -2;
+}
+
+.background .overlay {
+  background: rgba(50, 53, 69, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: -1;
+}
+
+.window {
+  border: 2px solid black;
+  z-index: 0;
+  width: 95%;
+  height: 95%;
+}
+
+.billboard h1 {
+  font-family: "attraction";
+  font-size: 10em;
+  max-width: 100vw;
+}
+
+.circle {
+  width: 500px !important;
+  height: 500px !important;
+  -webkit-animation: spin 120s infinite linear;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.TGI_div,
+.visted_div {
+  width: 200px;
+  height: 200px;
+}
+
+.visted_div .logo {
+  width: 80px;
+  transform: rotate(45deg);
+}
+
+.TGI,
+.visited {
+  width: 200px !important;
+  height: 200px !important;
+  -webkit-animation: spin2 120s infinite linear;
+}
+
+.visited:hover {
+  scale: 110%;
+  cursor: pointer;
+}
+
+@-webkit-keyframes spin2 {
+  0% {
+    -webkit-transform: rotate(360deg);
+  }
+  100% {
+    -webkit-transform: rotate(0deg);
+  }
+}
+
+.gallery_img {
+  min-width: 50vw;
+}
+
+.gallery_img:hover {
+  scale: 120%;
+}

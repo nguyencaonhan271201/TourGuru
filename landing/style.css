@@ -1,0 +1,106 @@
+.billboard {
+  width: 100vw;
+  height: 80vh !important;
+  overflow: hidden;
+}
+
+.billboard h1 {
+  color: var(--white) !important;
+}
+
+.rounded-pill-left {
+  border-top-left-radius: 50rem !important;
+  border-bottom-left-radius: 50rem !important;
+}
+.rounded-pill-right {
+  border-top-right-radius: 50rem !important;
+  border-bottom-right-radius: 50rem !important;
+}
+
+.billboard button,
+.billboard input {
+  background-color: var(--white);
+}
+
+.billboard button i {
+  color: var(--purple-1);
+}
+
+.carousel {
+  filter: brightness(80%);
+}
+
+.carousel img {
+  max-height: 80vh !important;
+  min-width: 100vw !important;
+  object-fit: cover;
+  object-position: top;
+}
+
+.top_location_cards {
+  height: 260px;
+}
+
+.top_location.card {
+  background-color: var(--purple-1);
+  padding: 20px;
+  min-width: 500px;
+  max-height: 240px;
+}
+
+.top_location.card img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-title {
+  color: var(--white);
+  text-transform: capitalize;
+}
+
+#carouselFlight,
+#carouselFlight .carousel-inner,
+#carouselFlight .carousel-item,
+#carouselHotel,
+#carouselHotel .carousel-inner,
+#carouselHotel .carousel-item {
+  height: 90vh !important;
+}
+
+#carouselFlight,
+#carouselFlight .carousel-item,
+#carouselFlight .carousel-item img,
+#carouselHotel,
+#carouselHotel .carousel-item,
+#carouselHotel .carousel-item img {
+  height: 100% !important;
+  width: 100%;
+  max-height: 90vh !important;
+  object-fit: cover;
+  object-position: center center;
+}
+
+@media screen and (max-width: 576px) {
+  #carouselFlight,
+  #carouselFlight .carousel-inner,
+  #carouselFlight .carousel-item,
+  #carouselHotel,
+  #carouselHotel .carousel-inner,
+  #carouselHotel .carousel-item {
+    height: 100vh !important;
+  }
+
+  #carouselFlight,
+  #carouselFlight .carousel-item,
+  #carouselFlight .carousel-item img,
+  #carouselHotel,
+  #carouselHotel .carousel-item,
+  #carouselHotel .carousel-item img {
+    height: 100% !important;
+    width: 100%;
+    max-height: 100vh !important;
+    object-fit: cover;
+    object-position: center center;
+  }
+}

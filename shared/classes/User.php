@@ -164,4 +164,39 @@ class User {
             return;
           }
     }
+
+    public function deleteUser($userID){
+        $sql = "DELETE FROM users WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $userID);
+        $stmt->execute();
+        
+        if($stmt->affected_rows == 1){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function getUserForDashboard($offset){
+        $offset *= 10;
+            $sql = 
+            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated
+            FROM users
+            ORDER BY date_created DESC
+            LIMIT ?  ";
+
+            //userID,userName, mail, timeCreated
+
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("i", $offset);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+            
+            if (count($result) >= ($offset - 10)) {
+                return array_slice($result, $offset - 10, 10);
+            } else {
+                return [];
+            }
+    }
 }

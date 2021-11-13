@@ -79,6 +79,29 @@ class HotelBooking {
     }
   }
 
+  public function getHotelBookingInfoAdmin($user_id, $booking_id) {
+    try {
+      $query = "SELECT * FROM users WHERE user_id = ? AND role = 0";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("s", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+      if (count($result) != 1) {
+        return;
+      }
+
+      $query = "SELECT * FROM hotel_bookings WHERE id = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $booking_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_assoc();
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
+
   public function deleteBooking($uid, $booking_id, &$errors) {
     $sql = "DELETE FROM hotel_bookings WHERE user_id = ? AND id = ?";
     $stmt = $this->conn->prepare($sql);

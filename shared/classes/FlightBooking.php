@@ -83,6 +83,47 @@ class FlightBooking {
     return $passenger->getPassengers($user_id);
   }
 
+  public function getFlightBookingInfoAdmin($user_id, $booking_id) {
+    try {
+      $query = "SELECT * FROM users WHERE user_id = ? AND role = 0";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("s", $user_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+      if (count($result) != 1) {
+        return;
+      }
+
+      $query = "SELECT f1.*, (SELECT f.total_cost FROM flight_bookings f WHERE f.id = f1.booking_id) AS total_price, 
+      (SELECT COUNT(*) FROM flight_bookings_customers f2 WHERE f2.booking_id = f1.booking_id) AS number_of_pax,
+      (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked FROM flight_bookings_iterations f1 
+      WHERE booking_id IN (SELECT id FROM flight_bookings WHERE status = 1 AND id = ?)";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i");
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+      return $result;
+    } catch (Exception $e) {
+      return;
+    }
+  }
+
+  public function getFlightBookingPaxAdmin($user_id, $booking_id) {
+    $query = "SELECT * FROM users WHERE user_id = ? AND role = 0";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("s", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    if (count($result) != 1) {
+      return;
+    }
+
+    $passenger = new FlightPassenger($this->conn, $booking_id);
+    return $passenger->getPassengersAdmin();
+  }
+
   public function deleteBooking($uid, $booking_id, &$errors) {
     $sql = "DELETE FROM flight_bookings WHERE user_id = ? AND id = ?";
     $stmt = $this->conn->prepare($sql);
