@@ -1,0 +1,252 @@
+:root {
+  --white: #f8f7f7;
+  --purple-1: #a082af;
+  --purple-2: #c95998;
+  --purple-3: #6763a8;
+  --green: #00c2b1;
+  --black: #323545;
+}
+
+@font-face {
+  font-family: "medium";
+  src: url("../assets/fonts/header.ttf");
+}
+
+@font-face {
+  font-family: "regular";
+  src: url("../assets/fonts/body.ttf");
+}
+
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+::-webkit-sadcrollbar {
+  width: 0px;
+  background: transparent;
+  display: none;
+}
+
+body * {
+  transition: all 0.3s ease;
+}
+
+h1 {
+  font-family: "medium";
+  color: var(--purple-1);
+  font-size: 60px;
+}
+
+h2 {
+  font-family: "medium";
+  color: var(--purple-3);
+  font-size: 50px;
+}
+
+h5 {
+  font-family: "regular";
+  color: var(--white);
+  font-size: 20px;
+}
+
+h6 {
+  font-family: "regular";
+  font-size: 8px !important;
+}
+
+p {
+  font-family: "regular";
+  color: var(--black);
+  font-size: 17px;
+}
+
+th,
+td {
+  font-family: "regular";
+  color: var(--black);
+}
+
+th {
+  color: var(--purple-1);
+}
+
+.bordered_1 {
+  border-radius: 30px !important;
+  border-color: transparent;
+}
+
+.bordered_2 {
+  border-radius: 20px !important;
+  border-color: transparent;
+}
+.outline-1 {
+  color: var(--white);
+  text-shadow: 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1),
+    0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1);
+}
+
+.navbar {
+  background-image: linear-gradient(
+    to bottom,
+    hsla(0, 0%, 0%, 0.8) 0%,
+    hsla(0, 0%, 0%, 0.79) 4.5%,
+    hsla(0, 0%, 0%, 0.761) 9.3%,
+    hsla(0, 0%, 0%, 0.717) 14.3%,
+    hsla(0, 0%, 0%, 0.66) 19.7%,
+    hsla(0, 0%, 0%, 0.593) 25.3%,
+    hsla(0, 0%, 0%, 0.518) 31.2%,
+    hsla(0, 0%, 0%, 0.44) 37.4%,
+    hsla(0, 0%, 0%, 0.36) 43.9%,
+    hsla(0, 0%, 0%, 0.282) 50.8%,
+    hsla(0, 0%, 0%, 0.207) 58.1%,
+    hsla(0, 0%, 0%, 0.14) 65.7%,
+    hsla(0, 0%, 0%, 0.083) 73.7%,
+    hsla(0, 0%, 0%, 0.039) 82%,
+    hsla(0, 0%, 0%, 0.01) 90.8%,
+    hsla(0, 0%, 0%, 0) 100%
+  );
+}
+
+#logo {
+  width: 30px;
+}
+
+.navbar a {
+  font-family: "regular";
+  text-transform: lowercase;
+  font-size: 20px;
+}
+
+.navbar a.active {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--purple-1);
+  text-decoration-thickness: 2.5px;
+}
+
+.navbar {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.main-nav-item a span {
+  color: var(--white);
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: 0% 100%;
+  background-size: 0% 2px;
+  margin-left: 20px;
+  font-weight: 500;
+  animation: sectionNavReverse ease 300ms forwards;
+}
+
+.main-nav-item:hover a span {
+  background-image: linear-gradient(
+    to left,
+    transparent 0%,
+    var(--purple-1) 0%
+  ) !important;
+  animation: sectionNavAnimation ease 300ms forwards !important;
+  background-repeat: no-repeat !important;
+  background-position: 0% 100% !important;
+  transition: font-weight 300ms, color 300ms !important;
+  /* color: var(--purple-1) !important; */
+}
+
+@keyframes sectionNavAnimation {
+  0% {
+    background-size: 0% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+  100% {
+    background-size: 100% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+}
+
+@keyframes sectionNavReverse {
+  0% {
+    background-size: 100% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+  100% {
+    background-size: 0% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+}
+
+.nav-item.dropdown {
+  position: absolute;
+  right: 20px;
+}
+
+.dropdown-item {
+  color: #212529 !important;
+}
+
+.rounded-circle {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+}
+
+.sign-in {
+  color: white !important;
+}
+
+.nav-item.dropdown {
+  top: 10px;
+}
+
+@media screen and (max-width: 575px) {
+  .navbar {
+    background: #f8f9fa !important;
+  }
+
+  .main-nav-item a span {
+    color: black;
+    margin-left: 0px;
+  }
+
+  .sign-in {
+    color: black !important;
+  }
+
+  .nav-item.dropdown {
+    position: relative;
+    margin-left: 20px;
+    margin-top: -10px;
+  }
+}
