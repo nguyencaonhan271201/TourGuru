@@ -37,8 +37,8 @@
   <body>
     <div class="context-menu-container" id="context-menu-items">
       <ul>
-        <li>View</li>
-        <li>Delete</li>
+        <li data-choice="view">View</li>
+        <li  data-choice="delete">Delete</li>
       </ul>
     </div>
 
@@ -75,7 +75,7 @@
               <h1 class="outline-1">booking trends</h1>
             </div>
             <div
-              class="btn-group"
+              class="btn-group booking_trends_chart_options"
               role="group"
               aria-label="Basic radio toggle button group"
             >
@@ -85,6 +85,7 @@
                 name="btnradio"
                 id="btnradio1"
                 autocomplete="off"
+                data-period="Y"
               />
               <label class="btn btn-outline-primary" for="btnradio1"
                 >Year</label
@@ -96,6 +97,7 @@
                 name="btnradio"
                 id="btnradio2"
                 autocomplete="off"
+                data-period="Q"
               />
               <label class="btn btn-outline-primary" for="btnradio2"
                 >Quarter</label
@@ -107,6 +109,7 @@
                 name="btnradio"
                 id="btnradio3"
                 autocomplete="off"
+                data-period="M"
               />
               <label class="btn btn-outline-primary" for="btnradio3"
                 >Month</label
@@ -118,6 +121,8 @@
                 name="btnradio"
                 id="btnradio4"
                 autocomplete="off"
+                data-period="W"
+                checked
               />
               <label class="btn btn-outline-primary" for="btnradio4"
                 >Week</label
@@ -148,8 +153,6 @@
               <th scope="col">Booking No.</th>
               <th scope="col">From</th>
               <th scope="col">To</th>
-              <th scope="col">Mail</th>
-              <th scope="col">Depature</th>
               <th scope="col">Time booked</th>
               <th></th>
             </tr>
@@ -168,7 +171,6 @@
               <th scope="col">hotel name</th>
               <th scope="col">From</th>
               <th scope="col">To</th>
-              <th scope="col">Mail</th>
               <th scope="col">Time booked</th>
               <th></th>
             </tr>
@@ -201,7 +203,14 @@
   referrerpolicy="no-referrer"
 ></script>
 <script src="context-menu.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript" src="temp.js" charset="utf-8"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.2/tinycolor.min.js"
+    integrity="sha512-+aXA9mgbUvFe0ToTlbt8/3vT7+nOgUmFw29wfFCsGoh8AZMRSU0p4WtOvC1vkF2JBrndPN2TuNZsHPAKPPxe8Q=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
 <script
   type="text/javascript"
   src="admin_dashboard.js"

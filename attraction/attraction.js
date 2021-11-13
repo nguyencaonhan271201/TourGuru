@@ -1,4 +1,5 @@
 let colorThief = new ColorThief();
+const userID = 1;
 
 $(window).scroll(function () {
   /*fades background gradually*/
@@ -23,6 +24,8 @@ $(window).scroll(function () {
 $(".background img").on("load", function () {
   let bgColor = colorThief.getColor(this);
 
+  // let mainColor = tinycolor(`rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`);
+
   let mainColor = tinycolor("#6763A8");
   let compColor = mainColor.complement().saturate(100);
 
@@ -37,8 +40,50 @@ $(".background img").on("load", function () {
   }
 });
 
+$(window).on("load", function () {
+  checkVisited(geoID);
+  $(".visted_div").click(function () {
+    sendVisited(geoID);
+  });
+});
+
 function setColor(obj, prop, color) {
   obj.css(prop, `rgb(${color.r},${color.g},${color.b})`);
+}
+
+function checkVisited(geoID) {
+  const xhr = new XMLHttpRequest();
+
+  xhr.onload = function () {
+    console.log(this.responseText);
+    if (this.status == 200) {
+      if (this.responseText == "0") $("#visited_svg").load("visited~.svg");
+      else if (this.responseText == "1") $("#visited_svg").load("visited.svg");
+    } else {
+      console.log("");
+    }
+  };
+
+  xhr.open(
+    "GET",
+    `../api/attraction/visited.php?userID=${userID}&geoID=${geoID}`
+  );
+  xhr.send();
+}
+
+function sendVisited(geoID) {
+  $("#visited_svg").load("visited.svg");
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    if (this.status == 200) {
+      checkVisited(geoID);
+    }
+  };
+  xhr.open(
+    "POST",
+    `../api/attraction/visiting.php?userID=${userID}&geoID=${geoID}`
+  );
+  xhr.send();
 }
 
 function getDetailOfAttractions(geoID) {
@@ -46,7 +91,17 @@ function getDetailOfAttractions(geoID) {
 
   xhr.onload = function () {
     if (this.status == 200) {
-      console.log(this.responseText);
+      let results = JSON.parse(this.responseText);
+      console.log(results);
+
+      loadDetails(results);
+
+      getPhotosOfLocation(geoID);
+
+      getAttractionsOfGeo(geoID, {
+        lng: parseFloat(results.longitude),
+        lat: parseFloat(results.latitude),
+      });
     } else {
       console.log("Not found");
     }
@@ -66,32 +121,6 @@ function getDetailOfAttractions(geoID) {
   xhr.send();
 }
 
-function getAttractionsOfGeo(geoID, name) {
-  const xhr = new XMLHttpRequest();
-
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let results = JSON.parse(this.responseText);
-      console.log(results);
-    } else {
-      console.log("Not found");
-    }
-  };
-
-  xhr.open(
-    "GET",
-    `https://travel-advisor.p.rapidapi.com/attractions/list?location_id=${geoID}&geo_type=narrow`
-  );
-
-  xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
-  xhr.setRequestHeader(
-    "x-rapidapi-key",
-    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
-  );
-
-  xhr.send();
-}
-
 function getPhotosOfLocation(geoID) {
   const xhr = new XMLHttpRequest();
 
@@ -99,6 +128,11 @@ function getPhotosOfLocation(geoID) {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
       console.log(results);
+      loadGallery(
+        results.data
+          .filter((photo) => photo.images.original)
+          .map((photo) => photo.images.original.url)
+      );
     } else {
       return null;
     }
@@ -118,13 +152,55 @@ function getPhotosOfLocation(geoID) {
   xhr.send();
 }
 
+function getAttractionsOfGeo(geoID, center) {
+  const xhr = new XMLHttpRequest();
+
+  xhr.onload = function () {
+    if (this.status == 200) {
+      let results = JSON.parse(this.responseText);
+      console.log(results);
+      if (results.errors) loadMap(center);
+      else
+        loadMap(
+          center,
+          results.data
+            .filter((attraction) => attraction.name)
+            .map((attraction) => ({
+              position: {
+                lng: parseFloat(attraction.longitude),
+                lat: parseFloat(attraction.latitude),
+              },
+              name: attraction.name,
+            }))
+        );
+    } else {
+      console.log("Not found");
+    }
+  };
+
+  xhr.open(
+    "GET",
+    `https://travel-advisor.p.rapidapi.com/attractions/list?location_id=${geoID}&geo_type=narrow`
+  );
+
+  xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
+  xhr.setRequestHeader(
+    "x-rapidapi-key",
+    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
+  );
+
+  xhr.send();
+}
+
 function loadDetails(result) {
   $(".background img").attr("src", result.photo.images.original.url);
   $(".long").text(result.longitude);
   $(".lat").text(result.latitude);
-  $(".region").text(result.parent_display_name);
+  $(".region").text(result.timezone.split("/")[0]);
   $(".title").text(result.name);
-  $(".description").text(result.geo_description);
+  $(".description").text(
+    result.geo_description ? result.geo_description : result.description
+  );
 }
 
 function loadGallery(imgURLs) {
@@ -139,8 +215,7 @@ function loadGallery(imgURLs) {
   });
 }
 
-// Initialize and add the map
-function initMap(center, attractions) {
+function loadMap(center, attractions = []) {
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 14,
     center: center,
@@ -166,22 +241,29 @@ function initMap(center, attractions) {
   });
 }
 
+let zone;
+const geoID = new URL(window.location.href).searchParams.get("id");
+console.log(geoID);
+
 console.log(temp, tempAttractions, tempPhotos);
+
 loadDetails(temp);
 loadGallery(
   tempPhotos.data
     .filter((photo) => photo.images.original)
     .map((photo) => photo.images.original.url)
 );
-initMap(
-  { lng: parseFloat(temp.longitude), lat: parseFloat(temp.latitude) },
-  tempAttractions.data
-    .filter((attraction) => attraction.name)
-    .map((attraction) => ({
-      position: {
-        lng: parseFloat(attraction.longitude),
-        lat: parseFloat(attraction.latitude),
-      },
-      name: attraction.name,
-    }))
-);
+// loadMap(
+//   { lng: parseFloat(temp.longitude), lat: parseFloat(temp.latitude) },
+//   tempAttractions.data
+//     .filter((attraction) => attraction.name)
+//     .map((attraction) => ({
+//       position: {
+//         lng: parseFloat(attraction.longitude),
+//         lat: parseFloat(attraction.latitude),
+//       },
+//       name: attraction.name,
+//     }))
+// );
+
+//getDetailOfAttractions(geoID);

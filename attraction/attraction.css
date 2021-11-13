@@ -79,6 +79,7 @@ html {
 
 .visited:hover {
   scale: 110%;
+  cursor: pointer;
 }
 
 @-webkit-keyframes spin2 {

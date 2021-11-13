@@ -47,10 +47,12 @@ h2 {
   font-size: 50px;
 }
 
+a,
 h5 {
-  font-family: "regular";
-  color: var(--white);
-  font-size: 20px;
+  font-family: "regular" !important;
+  color: var(--white) !important;
+  font-size: 20px !important;
+  text-decoration: none !important;
 }
 
 h6 {

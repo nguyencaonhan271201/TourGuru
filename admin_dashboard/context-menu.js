@@ -38,7 +38,7 @@ function ContextMenu(contextContainerID, menuItemClickCallback, options) {
       top: e.pageY + 10,
     };
 
-    console.log(menuPos);
+    // console.log(menuPos);
 
     contextMenu.css({
       top: menuPos.top,
