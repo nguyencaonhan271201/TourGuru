@@ -537,15 +537,15 @@ const getInfoFromServer = async() => {
                 "isAdmin": result.isAdmin,
                 "image": result.image
             }));
-            if (localStorage.getItem("fromFlight") != "null")
+            if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            else if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
             else location.replace("./../");
         } else {
-            if (localStorage.getItem("fromFlight") != "null")
+            if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            else if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
             else location.replace("./../");
         }

@@ -23,7 +23,8 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     //Not chosen any flight
-    if (localStorage.getItem("fromFlight") == "null" || localStorage.getItem("flightPassengers") == "null") {
+    if (localStorage.getItem("fromFlight") == "null" || localStorage.getItem("flightPassengers") == "null"
+        || !localStorage.getItem("fromFlight") || !localStorage.getItem("flightPassengers")) {
         location.replace("./../");
         return;
     }
@@ -104,7 +105,7 @@ const printToDisplay = () => {
     })
 
 
-    if (localStorage.getItem("toFlight") == "null") {
+    if (!localStorage.getItem("toFlight") ||localStorage.getItem("toFlight") == "null") {
         returnDiv.innerHTML = ``;
     } else {
         let returnFlight = JSON.parse(localStorage.getItem("toFlight"));
