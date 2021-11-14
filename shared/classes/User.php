@@ -127,22 +127,25 @@ class User {
             }        
         }
 
+
         if (empty($errors)) {
             //Check info
             if ($displayName == "" || !filter_var($displayName, FILTER_SANITIZE_STRING)) {
                 $errors["displayName"] = "Display name is not valid.";
                 return;
             }
+
+            $filter_name = htmlspecialchars($displayName);
             
             if ($image["tmp_name"] != '') {
                 $query = "UPDATE users SET display_name = ?, image = ? WHERE user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("sss", htmlspecialchars($displayName), $newURL, $id);
+                $stmt->bind_param("sss", $filter_name, $newURL, $id);
                 $stmt->execute();
             } else {
                 $query = "UPDATE users SET display_name = ? WHERE user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("ss", htmlspecialchars($displayName), $id);
+                $stmt->bind_param("ss", $filter_name, $id);
                 $stmt->execute();
             }
             if ($stmt->affected_rows == -1 || $stmt->errno > 0) {

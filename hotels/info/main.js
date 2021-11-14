@@ -24,7 +24,9 @@ let choosingCurrency = "USD";
 
 //For case not chosen info about booking dates
 let cloneHotelInfo = {}
+let cloneImageURL;
 let tmpSingleNight = 0;
+let numberOfNights;
 
 //For local storage
 let stars;
@@ -49,7 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         getHotelInfo(urlParams.get("hotel"))
         getHotelImages(urlParams.get("hotel"))
     } else {
-        location.replace("./../");
+        //location.replace("./../");
+        console.log("4");
     } 
 
     //Not chosen any hotel
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let urlParams = new URLSearchParams(window.location.search);
             //Initiate the rooms list
-            cloneHotelInfo["hotelID"] = urlParams.get("hotel");
+            //cloneHotelInfo["hotel"].id = urlParams.get("hotel");
 
             Swal.fire({
                 title: 'Loading...',
@@ -124,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             } else {
                 let Difference_In_Time = toDate.getTime() - fromDate.getTime();
-                let numberOfNights = Difference_In_Time / (1000 * 3600 * 24);
-                cloneHotelInfo["numberOfNights"] = numberOfNights;
+                numberOfNights = Difference_In_Time / (1000 * 3600 * 24);
+                //cloneHotelInfo["numberOfNights"] = numberOfNights;
 
                 if (numberOfNights == 0) {
                     swal.close();
@@ -141,23 +144,35 @@ document.addEventListener("DOMContentLoaded", () => {
             let checkIn = fromDate.toISOString().split('T')[0];
             let checkOut = toDate.toISOString().split('T')[0];
 
-            cloneHotelInfo["checkIn"] = checkIn;
-            cloneHotelInfo["checkOut"] = checkOut;
+            //cloneHotelInfo["date"]["checkIn"] = checkIn;
+            //cloneHotelInfo["date"]["checkOut"] = checkOut;
 
-            cloneHotelInfo["currencyCode"] = choosingCurrency;
-            cloneHotelInfo["currencyRate"] = ratesList[choosingCurrency];
+            //cloneHotelInfo["currency"]["code"] = choosingCurrency;
+            //cloneHotelInfo["currency"]["rate"] = ratesList[choosingCurrency];
 
-            let calculateFare = tmpSingleNight * ratesList[choosingCurrency] * cloneHotelInfo["numberOfNights"];
+            let calculateFare = tmpSingleNight * ratesList[choosingCurrency] * numberOfNights;
             calculateFare = Math.round(calculateFare * 100) / 100
-            cloneHotelInfo["singleNight"] = calculateFare;
+            //cloneHotelInfo["singleNight"] = calculateFare;
 
-            localStorage.setItem("hotelInfo", JSON.stringify(cloneHotelInfo));
+            let hotelInfo = new HotelBookingInfo(
+                choosingCurrency,
+                ratesList[choosingCurrency],
+                urlParams.get("hotel"),
+                cloneImageURL,
+                checkIn,
+                checkOut,
+                numberOfNights,
+                calculateFare
+            );
+
+            localStorage.setItem("hotelInfo", JSON.stringify(hotelInfo));
             location.reload();
         })
     } else {
         //Check for the correct hotel
-        if (JSON.parse(localStorage.getItem("hotelInfo")).hotel.ID !== urlParams.get("hotel").toString()) {
-            location.replace("./../");
+        if (!localStorage.getItem("hotelInfo") || JSON.parse(localStorage.getItem("hotelInfo")).hotel.ID !== urlParams.get("hotel").toString()) {
+            //location.replace("./../");
+            console.log("2");
             return;
         } else {
             document.querySelector(".booking").style.display = "initial";
@@ -213,7 +228,7 @@ const getCurrencyInfo = () => {
     }
 
     xhr.setRequestHeader("x-rapidapi-host", "exchangerate-api.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -229,7 +244,8 @@ const getHotelInfo = (hotelID) => {
                 updateHotelInfo(hotelInfo);
             }
             catch (e) {
-                location.replace("./../");
+                console.log(e);
+                //location.replace("./../");
                 return;
             }
         }
@@ -237,7 +253,7 @@ const getHotelInfo = (hotelID) => {
 
     xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-details?id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -261,7 +277,8 @@ const getHotelImages = (hotelID) => {
                 updateImages();
             }
             catch (e) {
-                location.replace("./../");
+                //location.replace("./../");
+                console.log("1");
                 return;
             }
         }
@@ -269,7 +286,7 @@ const getHotelImages = (hotelID) => {
 
     xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-hotel-photos?id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }
@@ -411,7 +428,7 @@ const updateHotelInfo = (hotelInfo) => {
     tmpSingleNight = hotelInfo.propertyDescription.featuredPrice.currentPrice.plain;
 
     if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
-        cloneHotelInfo["hotelImageURL"] = document.querySelector(".head-img-right img").getAttribute("src"); 
+        cloneImageURL = document.querySelector(".head-img-right img").getAttribute("src"); 
     }
 }
 

@@ -147,7 +147,7 @@ const getHotelInfo = () => {
 
     xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-details?id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
 
     xhr.send();
 }

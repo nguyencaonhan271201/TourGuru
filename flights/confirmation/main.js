@@ -114,7 +114,7 @@ const loadDataToDisplay = () => {
     document.getElementById("depart-summary-from").innerText = `${getFlight.locations.from.city}`;
     document.getElementById("depart-summary-to").innerText = `${getFlight.locations.to.city}`;
 
-    if (localStorage.getItem("toFlight") != "null") {
+    if (localStorage.getItem("toFlight") && localStorage.getItem("toFlight") != "null") {
         let getFlight = JSON.parse(localStorage.getItem("toFlight"));
         Object.setPrototypeOf(getFlight, Flight.prototype);
         returnFlight = getFlight;
@@ -439,7 +439,7 @@ const sendBookingIterations = (bookingID) => {
     Object.setPrototypeOf(getFlight, Flight.prototype);
     let getClass = getFlight.class;
     sendData.push(getFlight.buildObjectForSend(getClass, bookingID));
-    if (localStorage.getItem("toFlight") != "null") {
+    if (localStorage.getItem("toFlight") && localStorage.getItem("toFlight") != "null") {
         getFlight = JSON.parse(localStorage.getItem("toFlight"));
         Object.setPrototypeOf(getFlight, Flight.prototype);
         sendData.push(getFlight.buildObjectForSend(getClass, bookingID));
