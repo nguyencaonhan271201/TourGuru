@@ -372,7 +372,7 @@ const initializeEventListeners = () => {
             signInWithGoogle(res)
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             if (errorText != null) {
                 Swal.fire({
                     icon: 'error',

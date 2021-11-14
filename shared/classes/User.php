@@ -181,10 +181,13 @@ class User {
     public function getUserForDashboard($offset){
         $offset *= 10;
             $sql = 
-            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated
+            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated,
+            image, (SELECT COUNT(*) FROM flight_bookings WHERE user_id = users.user_id) AS numberOfFlights,
+            (SELECT COUNT(*) FROM hotel_bookings WHERE user_id = users.user_id) AS numberOfHotels,
+            (SELECT COUNT(*) FROM visited_locations WHERE user_id = users.user_id) AS numberOfLocations
             FROM users
             ORDER BY date_created DESC
-            LIMIT ?  ";
+            LIMIT ?";
 
             //userID,userName, mail, timeCreated
 

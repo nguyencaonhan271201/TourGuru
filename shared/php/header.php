@@ -17,6 +17,14 @@
       integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
       crossorigin="anonymous"
     ></script>
+    
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+      integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    
     <nav class="navbar navbar-expand-sm navbar-light">
         <a class="nav-link active" aria-current="page" href="<?php echo getenv('ROOT')?>"
           ><img src="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg" id="logo"

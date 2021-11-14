@@ -31,7 +31,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script type="text/javascript" src="../shared/js/main.js" charset="utf-8"></script>
+    <!-- <script type="text/javascript" src="../shared/js/main.js" charset="utf-8"></script> -->
     <nav></nav>
   </head>
   <body>
@@ -141,6 +141,7 @@
     <div class="map scrollsnap vw-100 vh-100">
       <div id="map" class="w-100 h-100"></div>
     </div>
+
   </body>
 
   <script
@@ -162,3 +163,4 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>
   <script type="text/javascript" src="attraction.js" charset="utf-8"></script>
 </html>
+

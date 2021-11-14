@@ -33,6 +33,7 @@ html {
 
 .window {
   border: 2px solid black;
+  border-top: none;
   z-index: 0;
   width: 95%;
   height: 95%;

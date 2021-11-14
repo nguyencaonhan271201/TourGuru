@@ -59,6 +59,16 @@
   text-transform: capitalize;
 }
 
+.carousel-anchor {
+  font-family: "regular" !important;
+  color: var(--white) !important;
+  font-size: 20px !important;
+  text-decoration: none !important;
+  position: absolute;
+  bottom: 0;
+  right: 1.5rem;
+}
+
 #carouselFlight,
 #carouselFlight .carousel-inner,
 #carouselFlight .carousel-item,

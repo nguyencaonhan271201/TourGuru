@@ -58,7 +58,7 @@ const printToDisplay = () => {
     let forwardFlight = JSON.parse(localStorage.getItem("fromFlight"));
     Object.setPrototypeOf(forwardFlight, Flight.prototype);
 
-    console.log(forwardFlight);
+    //console.log(forwardFlight);
     forwardDiv.innerHTML = `<h4 class="text-purple">Forward Flight</h4>`;
 
     let getClass = forwardFlight.class;
