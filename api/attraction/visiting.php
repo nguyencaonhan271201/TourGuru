@@ -3,7 +3,7 @@
     include "../../shared/classes/location.php";
     if(isset($_POST['userID']) && isset($_POST['geoID'])
     && isset($_POST['long']) && isset($_POST['lat'])
-    && isset($_POST['region'])){
+    && isset($_POST['region']) && isset($_POST['title'])){
         $userID = $_POST['userID'];
         $locID = $_POST['geoID'];
         $long = $_POST['long'];
