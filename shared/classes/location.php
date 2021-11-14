@@ -15,19 +15,19 @@ class location{
         $stmt->execute();
         $result = $stmt->get_result();
         if($result->num_rows == 0){
-            return 1;//chua den
+            return 1;
         }
-        else return 0;//da den
+        else return 0;
     }
 
-    public function addVisited($userID, $geoID){
-        $sql = "INSERT INTO visited_locations(user_id, location_id) VALUES(?,?)";
+    public function addVisited($userID, $geoID, $long, $lat, $region, $title){
+        $sql = "INSERT INTO visited_locations(user_id, location_id, longitude, latitude, region, location_title) VALUES(?,?,?,?,?,?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $userID, $geoID);
+        $stmt->bind_param("ssddss", $userID, $geoID, $long, $lat, $region, $title);
         $stmt->execute();
         if($stmt->affected_rows == 1){
-            return 0; //add thanh cong
-        } else return 1; //add khong thanh cong
+            return 0;
+        } else return 1;
     }
 
     public function removeVisited($userID, $geoID){

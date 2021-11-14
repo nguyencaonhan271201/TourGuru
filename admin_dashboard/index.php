@@ -199,7 +199,7 @@
       </div>
     </div>
     <?php 
-      include '../shared/php/header.php';
+      include '../shared/php/footer.php';
     ?>
   </body>
 </html>

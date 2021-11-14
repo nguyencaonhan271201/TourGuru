@@ -38,8 +38,6 @@ function getBookingTrendsChartDatas(period = "W") {
             borderColor: "#6763a8",
           },
         ];
-        bookingChart.update();
-
         getHotels();
       } else {
       }

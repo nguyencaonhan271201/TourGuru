@@ -349,7 +349,7 @@ const printDetails = () => {
                     <p class="ml-2 mb-0">
                         <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
                         <span class="d-flex align-items-center" style="display: inline-flex !important">
-                            <a target="_blank" href="/attraction/attraction.php?id=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
+                            <a target="_blank" href="../../attraction/attraction.php?id=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
                         </span>
                     </p>
                 `
