@@ -1,6 +1,8 @@
 //html
 <div id="map" class="w-100 h-100"></div>;
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>;
+
 //hàm load map
 function loadMap(center, attractions = []) {
   const map = new google.maps.Map(document.getElementById("map"), {
