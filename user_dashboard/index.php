@@ -40,38 +40,42 @@
                 </ul>
                 <div class="flights-bookings mt-3" style="display: none;">
                     <h3 class="text-pink text-center mb-3">flight bookings</h3>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Iterations</th>
-                                <th scope="col">Class</th>
-                                <th scope="col">Number of pax</th>
-                                <th scope="col">Total price</th>
-                                <th scope="col">Booked at</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Iterations</th>
+                                    <th scope="col">Class</th>
+                                    <th scope="col">Number of pax</th>
+                                    <th scope="col">Total price</th>
+                                    <th scope="col">Booked at</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="hotels-bookings mt-3" style="display: none;">
                     <h3 class="text-pink text-center mb-3">hotel bookings</h3>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Number of Rooms</th>
-                                <th scope="col">Hotel</th>
-                                <th scope="col">Total price</th>
-                                <th scope="col">Booked at</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Number of Rooms</th>
+                                    <th scope="col">Hotel</th>
+                                    <th scope="col">Total price</th>
+                                    <th scope="col">Booked at</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="visited-location-div mt-3" style="display: none;">
                     <h3 class="text-pink text-center mb-3">visited attractions</h3>
