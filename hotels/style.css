@@ -1,0 +1,393 @@
+@font-face {
+  font-family: "header";
+  src: url("../shared/assets/fonts/header.TTF") format("truetype");
+}
+
+@font-face {
+  font-family: "body";
+  src: url("../shared/assets/fonts/body.TTF") format("truetype");
+}
+
+p,
+span,
+button,
+h5,
+input {
+  font-family: "body";
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "header";
+}
+
+:root {
+  --theme-purple: #a082af;
+  --theme-dark-purple: #876897;
+  --theme-text-dark-purple: rgb(103, 99, 168);
+  --theme-text-dark-purple-hover: rgb(82, 79, 139);
+  --theme-invalid: #e5b7d1;
+  --theme-dark-border: #818181;
+  --theme-light-border: #cccccc;
+  --theme-input-border: rgb(229, 229, 229);
+  --theme-text-light-grey: rgb(127, 127, 127);
+  --theme-text-lighter: rgb(204, 198, 198);
+  --theme-link: #00c2b1;
+  --theme-link-hover: rgb(1, 163, 150);
+  --theme-pink: #c95998;
+  --theme-dark-pink: #a03d75;
+}
+
+.carousel {
+  position: absolute !important;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#main-container {
+  min-height: 100vh;
+}
+
+#carousel-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255);
+  opacity: 0.5;
+  z-index: -2;
+  backdrop-filter: blur(20px);
+}
+
+.carousel-inner,
+.carousel-item,
+.carousel-item img {
+  height: 100% !important;
+  width: 100%;
+  object-fit: cover;
+  z-index: -3;
+}
+
+.carousel-item img {
+  opacity: 0.65;
+}
+
+#flight-search-form {
+  background: rgb(255, 255, 255, 0.65);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+#horizontal-upper-form-div select {
+  background: none !important;
+  border: none !important;
+  margin-right: 10px;
+}
+
+#main-search-form {
+  border: 2px solid var(--theme-purple);
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 2em;
+}
+
+#main-search-form .d-flex,
+#main-search-form .d-flex .input-block {
+  height: 100%;
+  width: 100%;
+}
+
+#main-search-form .d-flex .input-block,
+#main-search-form .d-flex .input-block-m {
+  background: white;
+  margin-right: 5px;
+  border-radius: 2em;
+}
+
+.input-block input,
+.input-block-active input {
+  border: none;
+  background: none;
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.input-block input:focus,
+.input-block-m button:focus {
+  outline: none !important;
+  border: none;
+}
+
+input[type="date"]:after {
+  content: attr(placeholder);
+}
+
+.input-block {
+  flex-grow: 1;
+}
+
+.input-block-active {
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4) !important;
+  border-radius: 20rem !important;
+}
+
+#btn-search {
+  height: 100%;
+  width: 100%;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.btn-search-block {
+  background: var(--theme-pink) !important;
+  border-radius: 5px;
+  margin-right: 0px !important;
+  transition: background 300ms;
+}
+
+.btn-search-block:hover {
+  background: var(--theme-dark-pink) !important;
+}
+
+.col-md-5.col-sm-12.d-flex.pr-0 {
+  height: 100%;
+}
+
+.search-div {
+  height: 70vh;
+  transition: height 300ms;
+}
+
+.header-search-result {
+  position: absolute;
+  max-height: 200px;
+  height: auto;
+  min-height: 40px;
+  background: white;
+  width: 95%;
+  margin-left: 5%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: none;
+  flex-direction: column;
+  z-index: 10;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.header-search-result:hover {
+  display: flex;
+  opacity: 1;
+}
+
+.header-search:focus + .header-search-result {
+  display: flex;
+}
+
+.header-search-result * {
+  text-decoration: none;
+}
+
+.input-block-abs {
+  position: relative;
+}
+
+.search-result {
+  padding: 5px;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.search-result:hover {
+  background: lightgrey;
+  cursor: pointer;
+}
+
+.search-div-found {
+  height: auto;
+  margin-bottom: 30px;
+  margin-top: 70px;
+}
+
+.highlighted {
+  background: lightblue;
+}
+
+#location-title-h2 {
+  color: var(--theme-pink);
+  margin-bottom: 30px;
+}
+
+.hotel-option-box {
+  border: 2px solid var(--theme-pink);
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin: 20px 0px;
+  position: relative;
+}
+
+.button-choose {
+  border-radius: 2em;
+  padding: 5px;
+  color: white;
+  border: none;
+  background: darkgrey;
+  transition: background 300ms;
+}
+
+.button-choose:hover {
+  background: var(--theme-pink);
+}
+
+.chosen {
+  background: var(--theme-dark-pink);
+}
+
+.btn-full {
+  width: 100%;
+  height: auto;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.hotel-option-image {
+  width: 175px;
+  height: 175px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-right: 20px;
+  border: 1px solid grey;
+}
+
+.hotel-option-name {
+  color: var(--theme-purple);
+  font-size: 1.5rem;
+}
+
+.text-gray {
+  color: gray;
+  font-size: 0.8em;
+}
+
+.total-price {
+  color: var(--theme-pink) !important;
+  font-size: 1.5rem;
+}
+
+.hotel-option-star {
+  font-size: 1rem;
+}
+
+.rating-star {
+  color: rgb(223, 167, 25);
+}
+
+.hotel-option-rating {
+  background: var(--theme-pink);
+  color: white;
+  padding: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.page-item.active .page-link {
+  background-color: var(--theme-purple) !important;
+  border-color: var(--theme-purple) !important;
+  color: white !important;
+}
+
+.page-link {
+  color: var(--theme-purple) !important;
+}
+
+#sort {
+  background: none !important;
+  border: none !important;
+  margin-right: 10px;
+}
+
+.summary-box {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  padding: 15px;
+  border-radius: 5px;
+  border: none;
+  height: fit-content;
+}
+
+.overlap-hr {
+  margin: 10px -15px;
+}
+
+.star-checkbox {
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+  margin-bottom: 0px;
+}
+
+.filter-star {
+  color: rgb(223, 167, 25);
+  font-size: 19px;
+}
+
+.text-purple {
+  color: var(--theme-dark-purple);
+}
+
+.hotel-search-div {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+@media screen and (max-width: 768px) {
+  #main-search-form {
+    height: 180px;
+  }
+
+  #main-search-form .d-flex,
+  #main-search-form .d-flex .input-block {
+    height: 50px;
+  }
+
+  .right-most {
+    margin-right: 0px !important;
+  }
+
+  .hotel-option-image {
+    width: 150px;
+    height: 150px;
+  }
+
+  .hotel-option-rating {
+    position: relative;
+    right: 0;
+    width: fit-content;
+  }
+
+  .btn-full {
+    position: relative;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 100% !important;
+  }
+}

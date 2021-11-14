@@ -1,5 +1,5 @@
 <?php
-    include "../../db.php";
+    include "../db.php";
     include "../../shared/classes/location.php";
     if(isset($_GET['userID']) && isset($_GET['GeoID'])){
         $userID = $_GET['userID'];

@@ -20,46 +20,60 @@ let visitedChart = new Chart(ctx2, {
 });
 
 function getBookingTrendsChartDatas(period = "W") {
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let result = JSON.parse(this.responseText).reverse();
-      bookingChart.data.labels = result.map((data) => {
-        if (data.year) return `${data.month}/${data.year}`;
-        else if (data.week) return `W${data.week}/${data.month}`;
-        else return `${data.day}/${data.month}`;
-      });
-      bookingChart.data.datasets = [
-        {
-          label: "Flights bookings",
-          data: result.map((data) => data.sum),
-          backgroundColor: "#6763a8",
-          borderColor: "#6763a8",
-        },
-      ];
-      bookingChart.update();
-    } else {
-    }
-  };
-  xhr.open("GET", `../api/dashboard/totalFlightsBooking.php?period=${period}`);
-  xhr.send();
+  const getFlights = () => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      if (this.status == 200) {
+        let result = JSON.parse(this.responseText).reverse();
+        bookingChart.data.labels = result.map((data) => {
+          if (data.year) return `${data.month}/${data.year}`;
+          else if (data.week) return `W${data.week}/${data.month}`;
+          else return `${data.day}/${data.month}`;
+        });
+        bookingChart.data.datasets = [
+          {
+            label: "Flights bookings",
+            data: result.map((data) => data.sum),
+            backgroundColor: "#6763a8",
+            borderColor: "#6763a8",
+          },
+        ];
+        bookingChart.update();
 
-  const xhr2 = new XMLHttpRequest();
-  xhr2.onload = function () {
-    if (this.status == 200) {
-      let result = JSON.parse(this.responseText).reverse();
-      bookingChart.data.datasets.push({
-        label: "Hotels bookings",
-        data: result.map((data) => data.sum),
-        backgroundColor: tinycolor("#6763a8").complement().toHexString(),
-        borderColor: tinycolor("#6763a8").complement().toHexString(),
-      });
-      bookingChart.update();
-    } else {
-    }
+        getHotels();
+      } else {
+      }
+    };
+    xhr.open(
+      "GET",
+      `../api/dashboard/totalFlightsBooking.php?period=${period}`
+    );
+    xhr.send();
   };
-  xhr2.open("GET", `../api/dashboard/totalFlightsBooking.php?period=${period}`);
-  xhr2.send();
+
+  const getHotels = () => {
+    const xhr2 = new XMLHttpRequest();
+    xhr2.onload = function () {
+      if (this.status == 200) {
+        let result = JSON.parse(this.responseText).reverse();
+        bookingChart.data.datasets.push({
+          label: "Hotels bookings",
+          data: result.map((data) => data.sum),
+          backgroundColor: tinycolor("#6763a8").complement().toHexString(),
+          borderColor: tinycolor("#6763a8").complement().toHexString(),
+        });
+        bookingChart.update();
+      } else {
+      }
+    };
+    xhr2.open(
+      "GET",
+      `../api/dashboard/totalHotelsBooking.php?period=${period}`
+    );
+    xhr2.send();
+  };
+
+  getFlights();
 }
 
 function getVisitedTrendsChartDatas(period = "W") {
@@ -104,7 +118,6 @@ function getFlightTableDatas(offset = 1) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
       if (results.length == 0) $(".flight_table tbody .see_more_row").remove();
       else loadFlightTable(results);
       cacthTable();
@@ -119,7 +132,9 @@ function getHotelTableDatas(offset = 1) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
     if (this.status == 200) {
-      loadHotelTable(JSON.parse(this.responseText));
+      let results = JSON.parse(this.responseText);
+      if (results.length == 0) $(".hotel_table tbody .see_more_row").remove();
+      else loadHotelTable(results);
       cacthTable();
     } else {
     }
@@ -132,8 +147,11 @@ function getUserTableDatas(offset = 1) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
     if (this.status == 200) {
-      loadUserTable(JSON.parse(this.responseText));
+      let results = JSON.parse(this.responseText);
+      if (results.length == 0) $(".user_table tbody .see_more_row").remove();
+      else loadUserTable(results);
       cacthTable();
+      Swal.close();
     } else {
     }
   };
@@ -145,9 +163,6 @@ function cacthTable() {
   let tableContextMenu = new ContextMenu(
     `context-menu-items`,
     (menu_item, parent) => {
-      console.log(parent.data());
-      console.log(menu_item.data().choice);
-
       if (menu_item.data().choice == "view") {
         getSpecific(parent.data());
       } else if (menu_item.data().choice == "delete") {
@@ -171,8 +186,10 @@ function loadFlightTable(flights) {
             <td>${flight.bookingNo}</td>
             <td>${flight.from}</td>
             <td>${flight.to}</td>
-            <td>${flight.timeBooked}</td>
-            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${flight.bookingNo}" data-user-id="${flight.userID}"></td>
+            <td>${new Date(flight.timeBooked).addHours(7).toLocaleString()}</td>
+            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${
+              flight.bookingNo
+            }" data-user-id="${flight.userID}"></td>
         </tr>
     `);
   });
@@ -185,6 +202,7 @@ function loadFlightTable(flights) {
 }
 
 function loadHotelTable(hotels) {
+  console.log("hotel catched");
   hotels.forEach((hotel) => {
     $(".hotel_table tbody").append(`
           <tr>
@@ -192,11 +210,16 @@ function loadHotelTable(hotels) {
               <td>${hotel.hotelName}</td>
               <td>${hotel.from}</td>
               <td>${hotel.to}</td>
-              <td>${hotel.timeBooked}</td>              
-              <td class="context-menu" data-container-id="context-menu-items" data-row-type="Hotel" data-row-id="${hotel.bookingNo}" data-user-id="${hotel.userID}"></td>
+              <td>${new Date(hotel.timeBooked)
+                .addHours(7)
+                .toLocaleString()}</td>              
+              <td class="context-menu" data-container-id="context-menu-items" data-row-type="Hotel" data-row-id="${
+                hotel.bookingNo
+              }" data-user-id="${hotel.userID}"></td>
           </tr>
       `);
   });
+
   if ($(".hotel_table tbody .see_more_row").length)
     $(".hotel_table tbody .see_more_row").remove();
   $(".hotel_table tbody").append(
@@ -210,8 +233,12 @@ function loadUserTable(users) {
       <tr>
           <td>${user.userName}</td>
           <td>${user.mail}</td>
-          <td>${user.timeCreated}</td>                  
-          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User" data-row-id="${user.userID}"></td>
+          <td>${new Date(user.timeCreated)
+            .addHours(7)
+            .toLocaleString()}</td>                  
+          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User" data-row-id="${
+            user.userID
+          }"></td>
       </tr>
     `);
   });
@@ -250,24 +277,15 @@ function disError() {
 }
 
 function getSpecific(type, id) {
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let result = JSON.parse(this.responseText);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Something went wrong!",
-        showCloseButton: true,
-      });
-    }
-  };
-  xhr.open("GET", `???`);
-  xhr.send();
+  if (type.rowType === "Flight") {
+    location.replace(`./flight?id=${type.rowId}`);
+  } else if (type.rowType === "Hotel") {
+    location.replace(`./hotel?id=${type.rowId}`);
+  }
 }
 
 function deleteSpecific({ rowType: type, userId, rowId: Id }) {
+  console.log(type);
   Swal.fire({
     title: `Confirm delete ${type.toLowerCase()} #${Id} ?`,
     icon: "warning",
@@ -279,35 +297,96 @@ function deleteSpecific({ rowType: type, userId, rowId: Id }) {
   }).then((result) => {
     if (result.isConfirmed) {
       const xhr = new XMLHttpRequest();
+      xhr.open(
+        "POST",
+        `../api/dashboard/delete${
+          type == "User" ? type : type + "Booking"
+        }.php`,
+        true
+      );
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       xhr.onload = function () {
         if (this.status == 200) {
-          if (this.responseText) {
+          if (this.responseText === "1") {
             $(`.${type.toLowerCase()}_table td[data-row-id="${Id}"]`)
               .parent()
               .remove();
           } else disError();
         } else disError();
       };
-      xhr.open(
-        "POST",
-        `../api/dashboard/delete${
-          type == "user" ? type : type + "Booking"
-        }.php?userID=${userId}&ID=${Id}`
-      );
-      xhr.send();
+      xhr.send(`userID=${userId}&ID=${Id}`);
     }
   });
 }
 
-getBookingTrendsChartDatas();
-getVisitedTrendsChartDatas();
+document.addEventListener("DOMContentLoaded", () => {
+  Swal.fire({
+    title: "Loading...",
+    html: "Please wait...",
+    allowEscapeKey: false,
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    },
+  });
 
-$(".booking_trends_chart_options input[type=radio]").on("change", function () {
-  const { period } = $(this).data();
-  getBookingTrendsChartDatas(period);
-  getVisitedTrendsChartDatas(period);
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      if (isAdmin) {
+        loadBasicInfo(user.uid);
+        getBookingTrendsChartDatas();
+        getVisitedTrendsChartDatas();
+
+        $(".booking_trends_chart_options input[type=radio]").on(
+          "change",
+          function () {
+            const { period } = $(this).data();
+            getBookingTrendsChartDatas(period);
+            getVisitedTrendsChartDatas(period);
+          }
+        );
+
+        getFlightTableDatas();
+        getHotelTableDatas();
+        getUserTableDatas();
+      } else {
+        location.replace("./../auth/login.php");
+      }
+    } else {
+      location.replace("./../auth/login.php");
+      return;
+    }
+  });
 });
 
-getFlightTableDatas();
-getHotelTableDatas();
-getUserTableDatas();
+const loadBasicInfo = (uid) => {
+  let xhr = new XMLHttpRequest();
+  xhr.open(
+    "GET",
+    `../api/dashboard/generalInfo.php?user_id=${uid}&isAdmin=${isAdmin}`,
+    true
+  );
+  xhr.onload = () => {
+    swal.close();
+    if (xhr.status === 200 && xhr.readyState === 4) {
+      //Nhận thông tin và lưu vào danh mục
+      let result = JSON.parse(xhr.responseText);
+      document.getElementById("total-flight").innerHTML = result.flight;
+      document.getElementById("total-hotel").innerHTML = result.hotel;
+      document.getElementById("total-visited").innerHTML = result.visited;
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: "Error occured.",
+      }).then(() => {
+        //location.replace("./../");
+      });
+    }
+  };
+  xhr.send();
+};
+
+Date.prototype.addHours = function (h) {
+  this.setTime(this.getTime() + h * 60 * 60 * 1000);
+  return this;
+};

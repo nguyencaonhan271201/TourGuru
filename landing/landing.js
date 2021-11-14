@@ -1,79 +1,3 @@
-$(".attraction_search")
-  .selectize({
-    valueField: "location_id",
-    labelField: "name",
-    searchField: "name",
-    create: false,
-    render: {
-      option: function (item, escape) {
-        return `<div class="search_result">
-        <div class="d-flex align-items-center m-3">
-          <img src="${item.photo.images.thumbnail.url}" class="me-3">
-          <h2>${item.name}</h2>
-        </div>
-      </div>`;
-      },
-    },
-    load: function (query, callback) {
-      if (!query.length) return callback();
-      $.ajax({
-        url: `https://travel-advisor.p.rapidapi.com/locations/search?query=${query}&limit=10&offset=0`,
-        type: "GET",
-        beforeSend: function (request) {
-          request.setRequestHeader(
-            "x-rapidapi-host",
-            "travel-advisor.p.rapidapi.com"
-          );
-          request.setRequestHeader(
-            "x-rapidapi-key",
-            "10ab83fc29mshe06091597dcf6bap1ad11ajsn261f28be7f22"
-          );
-        },
-        error: function () {
-          callback();
-        },
-        success: function (res) {
-          console.log(res.data.map((opt) => opt.result_object));
-          callback(res.data.map((opt) => opt.result_object));
-        },
-      });
-    },
-  })
-  .on("change", function () {
-    window.location.href = `attraction.html?id=${$(this).val()}`;
-  });
-
-//Hàm tìm kiếm từ query (tìm thành phố, quốc gia)
-function getSearchInfo(searchQuery, limit = 10, offset = 0) {
-  const xhr = new XMLHttpRequest();
-
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let results = JSON.parse(this.responseText);
-      //LoadCarousel(results.data);
-      console.log(results);
-    } else {
-      console.log("Not found");
-    }
-  };
-
-  xhr.open(
-    "GET",
-    `https://travel-advisor.p.rapidapi.com/locations/search?query=${searchQuery}&limit=${limit}&offset=${offset}`
-  );
-  xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
-  xhr.setRequestHeader(
-    "x-rapidapi-key",
-    "10ab83fc29mshe06091597dcf6bap1ad11ajsn261f28be7f22"
-  );
-
-  xhr.send();
-}
-
-function getRndInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
 //Get top tourist attractions
 function getTop20TouristAttractions() {
   let dataRetrieve = [];
@@ -101,15 +25,6 @@ function getTop20TouristAttractions() {
           }
         }
       }
-
-      /*let randomIndex = [];
-      while (randomIndex.length != 20) {
-        let random = Math.floor(Math.random() * (resultArray.length + 1));
-        if (randomIndex.indexOf(random) == -1) {
-          randomIndex.push(random);
-          result.push(resultArray[random]);
-        }
-      }*/
 
       let result = resultArray
         .map((value) => ({ value, sort: Math.random() }))
@@ -156,7 +71,7 @@ function getTop20TouristAttractions() {
 
 function loadCarousel(results) {
   console.log(results);
-  let carousel = $(".carousel-inner");
+  let carousel = $("#carouselAttraction .carousel-inner");
   let active = false;
 
   results.forEach((result) => {

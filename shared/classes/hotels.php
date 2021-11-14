@@ -24,17 +24,24 @@
 
         public function getBookingInfo($offset){
             $offset *= 10;
+
             $sql = 
             "SELECT id as bookingNo, hotel_name as hotelName, hotel_id, date_start as 'from', date_end as 'to', user_id as userID, date_booked as timeBooked 
             FROM hotel_bookings 
             ORDER BY date_booked DESC
-            LIMIT ?  ";
+            LIMIT ?";
 
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("i", $offset);
             $stmt->execute();
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            return array_slice($result, -10);//get last 10 elements of result ()
+
+            if (count($result) >= ($offset - 10)) {
+                return array_slice($result, $offset - 10, 10);
+            } else {
+                return [];
+            }
+            //return array_slice($result, -10);//get last 10 elements of result ()
         }
 
         public function deleteBooking($userID){
@@ -45,8 +52,8 @@
             $stmt->bind_param("is", $this->bookingID, $userID);
             $stmt->execute();
             if($stmt->affected_rows == 1){
-                return 0; //xoa thanh cong
-            } else return 1; //xoa khong thanh cong
+                return 1;
+            } else return 0;
         }
     }
 ?>

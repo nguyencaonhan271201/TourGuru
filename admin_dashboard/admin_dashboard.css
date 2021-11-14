@@ -35,3 +35,8 @@
 .see_more_row {
   cursor: pointer;
 }
+
+#labelradio1 {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}

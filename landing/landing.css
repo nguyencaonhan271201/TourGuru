@@ -31,13 +31,22 @@ div.selectize-input {
   filter: brightness(70%);
 }
 
+.carousel,
+.carousel-item,
 .carousel img {
   min-height: 80vh !important;
   max-height: 80vh !important;
   min-width: 100vw !important;
   max-width: 100vw !important;
+}
+.carousel img {
   object-fit: cover;
   object-position: center;
+}
+
+.carousel a {
+  color: var(--white) !important;
+  text-decoration: none !important;
 }
 
 .top_location_cards {
@@ -69,4 +78,17 @@ div.selectize-input {
 
 .search_result img {
   border-radius: 50%;
+}
+
+#carouselFlight,
+.carousel-inner,
+.carousel-item {
+  height: 100vh;
+  width: 100% !important;
+}
+
+#carouselFlight .carousel-inner .carousel-item img {
+  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
 }

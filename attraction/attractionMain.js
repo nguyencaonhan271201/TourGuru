@@ -40,7 +40,7 @@ $(".attraction_search")
     },
   })
   .on("change", function () {
-    window.location.href = `attraction.html?id=${$(this).val()}`;
+    window.location.href = `attraction.php?id=${$(this).val()}`;
   });
 
 //Hàm tìm kiếm từ query (tìm thành phố, quốc gia)
@@ -165,7 +165,7 @@ function loadCarousel(results) {
         src="${result.imgURL}"
         class="d-block"
       />
-      <a class="position-absolute bottom-0 end-0 me-2" href="../attraction/attraction.html?id=${
+      <a class="carousel-anchor" href="../attraction/attraction.php?id=${
         result.locaId
       }">
       ${result.city ? result.city + ", " + result.country : result.country}
@@ -217,7 +217,7 @@ function loadTopLocationsCards(results) {
   });
 
   $(".top_location.card").click(function () {
-    window.location.href = `../attraction/attraction.html?id=${
+    window.location.href = `../attraction/attraction.php?id=${
       $(this).data().geoid
     }`;
   });

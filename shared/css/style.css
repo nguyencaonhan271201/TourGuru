@@ -9,12 +9,12 @@
 
 @font-face {
   font-family: "medium";
-  src: url("../assets/fonts/Medium.ttf");
+  src: url("../assets/fonts/header.ttf");
 }
 
 @font-face {
   font-family: "regular";
-  src: url("../assets/fonts/Regular.ttf");
+  src: url("../assets/fonts/body.ttf");
 }
 
 html {
@@ -35,24 +35,20 @@ body * {
 
 h1 {
   font-family: "medium";
-  text-transform: lowercase;
   color: var(--purple-1);
   font-size: 60px;
 }
 
 h2 {
   font-family: "medium";
-  text-transform: lowercase;
   color: var(--purple-3);
   font-size: 50px;
 }
 
-a,
 h5 {
-  font-family: "regular" !important;
-  color: var(--white) !important;
-  font-size: 20px !important;
-  text-decoration: none !important;
+  font-family: "regular";
+  color: var(--white);
+  font-size: 20px;
 }
 
 h6 {
@@ -102,7 +98,7 @@ th {
     0 0 1px var(--purple-1), 0 0 1px var(--purple-1), 0 0 1px var(--purple-1);
 }
 
-nav {
+.navbar {
   background-image: linear-gradient(
     to bottom,
     hsla(0, 0%, 0%, 0.8) 0%,
@@ -125,19 +121,145 @@ nav {
 }
 
 #logo {
-  width: 20px;
+  width: 30px;
 }
 
-nav a {
+.navbar a {
   font-family: "regular";
   text-transform: lowercase;
-  color: var(--white) !important;
   font-size: 20px;
 }
 
-nav a.active {
+.navbar a.active {
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: var(--purple-1);
   text-decoration-thickness: 2.5px;
+}
+
+.navbar {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.main-nav-item a span {
+  color: var(--white);
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: 0% 100%;
+  background-size: 0% 2px;
+  margin-left: 20px;
+  font-weight: 500;
+  animation: sectionNavReverse ease 300ms forwards;
+}
+
+.main-nav-item:hover a span {
+  background-image: linear-gradient(
+    to left,
+    transparent 0%,
+    var(--purple-1) 0%
+  ) !important;
+  animation: sectionNavAnimation ease 300ms forwards !important;
+  background-repeat: no-repeat !important;
+  background-position: 0% 100% !important;
+  transition: font-weight 300ms, color 300ms !important;
+  /* color: var(--purple-1) !important; */
+}
+
+@keyframes sectionNavAnimation {
+  0% {
+    background-size: 0% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+  100% {
+    background-size: 100% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+}
+
+@keyframes sectionNavReverse {
+  0% {
+    background-size: 100% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+  100% {
+    background-size: 0% 2px;
+    background-image: linear-gradient(
+      to left,
+      transparent 0%,
+      var(--purple-1) 0%
+    );
+  }
+}
+
+.nav-item.dropdown {
+  position: absolute;
+  right: 20px;
+}
+
+.dropdown-item {
+  color: #212529 !important;
+}
+
+.rounded-circle {
+  width: 35px;
+  height: 35px;
+  object-fit: cover;
+}
+
+.sign-in {
+  color: white !important;
+}
+
+.nav-item.dropdown {
+  top: 10px;
+}
+
+@media screen and (max-width: 575px) {
+  .navbar {
+    background: #f8f9fa !important;
+  }
+
+  .main-nav-item a span {
+    color: black;
+    margin-left: 0px;
+  }
+
+  .sign-in {
+    color: black !important;
+  }
+
+  .nav-item.dropdown {
+    position: relative;
+    margin-left: 20px;
+    margin-top: -10px;
+  }
+}
+
+footer {
+  height: 20px;
+}
+
+footer h6 {
+  color: var(--purple-1);
+}
+
+footer a {
+  color: var(--green) !important;
+  text-decoration: none !important;
 }

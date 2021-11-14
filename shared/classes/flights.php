@@ -35,7 +35,12 @@
             $stmt->bind_param("i", $offset);
             $stmt->execute();
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            return array_slice($result, -10);//get last 10 elements of result ()
+            
+            if (count($result) >= ($offset - 10)) {
+                return array_slice($result, $offset - 10, 10);
+            } else {
+                return [];
+            }
         }
 
         public function deleteBooking($userID){
@@ -46,8 +51,8 @@
             $stmt->bind_param("is", $this->bookingID, $userID);
             $stmt->execute();
             if($stmt->affected_rows == 1){
-                return 0; //xoa thanh cong
-            } else return 1; //xoa khong thanh cong
+                return 1; //xoa thanh cong
+            } else return 0; //xoa khong thanh cong
         }
     }
 ?>

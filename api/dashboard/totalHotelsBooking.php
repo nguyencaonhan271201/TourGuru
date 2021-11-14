@@ -1,5 +1,5 @@
 <?php
-    include "../../db.php";
+    include "../db.php";
     include "../../shared/classes/hotels.php";
     if(isset($_GET['period'])){
         $period = $_GET['period'];
