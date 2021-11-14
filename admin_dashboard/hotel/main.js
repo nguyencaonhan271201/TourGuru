@@ -147,7 +147,7 @@ const getHotelBookingInfo = () => {
                 //Nhận thông tin và lưu vào danh mục
                 let result = JSON.parse(xhr.responseText); 
                 bookingInfo = result;
-                console.log(result);
+                //console.log(result);
                 hotelID = bookingInfo.hotel_id;
                 getHotelInfo();
             } else {

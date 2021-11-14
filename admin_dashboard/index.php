@@ -198,6 +198,9 @@
         </div>
       </div>
     </div>
+    <?php 
+      include '../shared/php/header.php';
+    ?>
   </body>
 </html>
 <script

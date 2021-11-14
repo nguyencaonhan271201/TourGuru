@@ -1,8 +1,11 @@
-let root = "/TourGuru"
+let root = "/TourGuru";
 let isAdmin;
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!localStorage.getItem("headerInfo") || localStorage.getItem("headerInfo") == "null") {
+  if (
+    !localStorage.getItem("headerInfo") ||
+    localStorage.getItem("headerInfo") == "null"
+  ) {
     document.getElementById("header-logged-in").style.display = "none";
     document.getElementById("header-not-logged-in").style.display = "initial";
   } else {
@@ -11,10 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInfo();
   }
 
-  document.getElementById("log-out").addEventListener("click", e => {
+  document.getElementById("log-out").addEventListener("click", (e) => {
     e.preventDefault();
     location.replace(`${root}` + "/logout.php");
-  })
+  });
 
   if (window.location.pathname.includes("/flights")) {
     document.getElementById("nav-flight").classList.add("active");
@@ -23,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (window.location.pathname.includes("/attraction")) {
     document.getElementById("nav-attraction").classList.add("active");
   }
-})
+});
 
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
@@ -39,5 +42,4 @@ const updateInfo = () => {
   if (profileImage.includes("../../"))
     profileImage = root + "/" + profileImage.substring(6, profileImage.length);
   document.getElementById("profile-img").setAttribute("src", profileImage);
-}
-
+};

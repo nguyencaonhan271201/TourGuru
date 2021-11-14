@@ -65,7 +65,7 @@
                 </p>
             </div>
         </div>
-
+        
         <!-- CSRF Token -->
         <p id="csrf" style="display: none"><?php echo $_SESSION['csrf']; ?></p>
 

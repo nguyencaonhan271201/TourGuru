@@ -44,10 +44,13 @@ function getBookingTrendsChartDatas(period = "W") {
       } else {
       }
     };
-    xhr.open("GET", `../api/dashboard/totalFlightsBooking.php?period=${period}`);
+    xhr.open(
+      "GET",
+      `../api/dashboard/totalFlightsBooking.php?period=${period}`
+    );
     xhr.send();
-  }
-  
+  };
+
   const getHotels = () => {
     const xhr2 = new XMLHttpRequest();
     xhr2.onload = function () {
@@ -63,48 +66,48 @@ function getBookingTrendsChartDatas(period = "W") {
       } else {
       }
     };
-    xhr2.open("GET", `../api/dashboard/totalHotelsBooking.php?period=${period}`);
+    xhr2.open(
+      "GET",
+      `../api/dashboard/totalHotelsBooking.php?period=${period}`
+    );
     xhr2.send();
-  }
-  
+  };
+
   getFlights();
 }
 
 function getVisitedTrendsChartDatas(period = "W") {
   let tempV;
-  switch (period) {
-    case "W": {
-      tempV = tempVW;
-      break;
-    }
-    case "M": {
-      tempV = tempVM;
-      break;
-    }
-    case "Q": {
-      tempV = tempVQ;
-      break;
-    }
-    case "Y": {
-      tempV = tempVY;
-      break;
-    }
-  }
 
-  visitedChart.data = {
-    labels: tempV.map((data) => data.zone),
-    datasets: [
-      {
-        data: tempV.map((data) => data.sum),
-        backgroundColor: tinycolor("#6763a8")
-          .tetrad()
-          .map((color) => color.toHexString()),
-        hoverOffset: 10,
-      },
-    ],
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    if (this.status == 200) {
+      let result = JSON.parse(this.responseText);
+
+      tempV = result;
+    
+      visitedChart.data = {
+        labels: tempV.map((data) => data.zone),
+        datasets: [
+          {
+            data: tempV.map((data) => data.sum),
+            backgroundColor: tinycolor("#6763a8")
+              .tetrad()
+              .map((color) => color.toHexString()),
+            hoverOffset: 10,
+          },
+        ],
+      };
+    
+      visitedChart.update();
+    } else {
+    }
   };
-
-  visitedChart.update();
+  xhr.open(
+    "GET",
+    `../api/dashboard/visitedLocations.php?period=${period}`
+  );
+  xhr.send();
 }
 
 function getFlightTableDatas(offset = 1) {
@@ -126,7 +129,9 @@ function getHotelTableDatas(offset = 1) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
     if (this.status == 200) {
-      loadHotelTable(JSON.parse(this.responseText));
+      let results = JSON.parse(this.responseText);
+      if (results.length == 0) $(".hotel_table tbody .see_more_row").remove();
+      else loadHotelTable(results);
       cacthTable();
     } else {
     }
@@ -139,7 +144,9 @@ function getUserTableDatas(offset = 1) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
     if (this.status == 200) {
-      loadUserTable(JSON.parse(this.responseText));
+      let results = JSON.parse(this.responseText);
+      if (results.length == 0) $(".user_table tbody .see_more_row").remove();
+      else loadUserTable(results);
       cacthTable();
       Swal.close();
     } else {
@@ -164,7 +171,6 @@ function cacthTable() {
   $(".see_more_row")
     .off("click")
     .on("click", function () {
-      console.log($(this).data().type);
       loadTableMore($(this).data().type);
     });
 }
@@ -177,7 +183,9 @@ function loadFlightTable(flights) {
             <td>${flight.from}</td>
             <td>${flight.to}</td>
             <td>${new Date(flight.timeBooked).addHours(7).toLocaleString()}</td>
-            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${flight.bookingNo}" data-user-id="${flight.userID}"></td>
+            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${
+              flight.bookingNo
+            }" data-user-id="${flight.userID}"></td>
         </tr>
     `);
   });
@@ -197,8 +205,12 @@ function loadHotelTable(hotels) {
               <td>${hotel.hotelName}</td>
               <td>${hotel.from}</td>
               <td>${hotel.to}</td>
-              <td>${new Date(hotel.timeBooked).addHours(7).toLocaleString()}</td>              
-              <td class="context-menu" data-container-id="context-menu-items" data-row-type="Hotel" data-row-id="${hotel.bookingNo}" data-user-id="${hotel.userID}"></td>
+              <td>${new Date(hotel.timeBooked)
+                .addHours(7)
+                .toLocaleString()}</td>              
+              <td class="context-menu" data-container-id="context-menu-items" data-row-type="Hotel" data-row-id="${
+                hotel.bookingNo
+              }" data-user-id="${hotel.userID}"></td>
           </tr>
       `);
   });
@@ -216,8 +228,17 @@ function loadUserTable(users) {
       <tr>
           <td>${user.userName}</td>
           <td>${user.mail}</td>
-          <td>${new Date(user.timeCreated).addHours(7).toLocaleString()}</td>                  
-          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User" data-row-id="${user.userID}"></td>
+          <td>${new Date(user.timeCreated)
+            .addHours(7)
+            .toLocaleString()}</td>                  
+          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User"
+          data-hotel=${user.numberOfHotels} data-flight=${user.numberOfFlights} data-location=${user.numberOfLocations} 
+          data-image=${user.image.replace("../../", "../")} data-name="${user.userName}" 
+          data-email="${user.mail}" data-created="${new Date(user.timeCreated)
+            .addHours(7)
+            .toLocaleString()}" data-row-id="${
+            user.userID
+          }"></td>
       </tr>
     `);
   });
@@ -255,16 +276,32 @@ function disError() {
   });
 }
 
-function getSpecific(type, id) {
+function getSpecific(type) {
   if (type.rowType === "Flight") {
     location.replace(`./flight?id=${type.rowId}`);
   } else if (type.rowType === "Hotel") {
     location.replace(`./hotel?id=${type.rowId}`);
+  } else if (type.rowType === "User") {
+    Swal.fire({
+      title: `${type.name}`,
+      html:
+          `
+          <div>
+            <img alt="" src="${type.image}" class="view-user-img" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+            <div class="text-left mt-4" style="margin: 0 auto;">
+              <h5 style="color: black; width: fit-content;">Email: ${type.email}</h5>
+              <h5 style="color: black; width: fit-content;">Created: ${type.created}</h5>
+              <h5 style="color: black; width: fit-content;">Flight Bookings: ${type.flight}</h5>
+              <h5 style="color: black; width: fit-content;">Hotel Bookings: ${type.hotel}</h5>
+              <h5 style="color: black; width: fit-content;">Visited Locations: ${type.location}</h4>
+            </div>
+          </div>
+          `,
+    })
   }
 }
 
 function deleteSpecific({ rowType: type, userId, rowId: Id }) {
-  console.log(type)
   Swal.fire({
     title: `Confirm delete ${type.toLowerCase()} #${Id} ?`,
     icon: "warning",
@@ -300,70 +337,72 @@ function deleteSpecific({ rowType: type, userId, rowId: Id }) {
 
 document.addEventListener("DOMContentLoaded", () => {
   Swal.fire({
-    title: 'Loading...',
-    html: 'Please wait...',
+    title: "Loading...",
+    html: "Please wait...",
     allowEscapeKey: false,
     allowOutsideClick: false,
     didOpen: () => {
-      Swal.showLoading()
-    }
+      Swal.showLoading();
+    },
   });
 
-  firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-          if (isAdmin) {
-            loadBasicInfo(user.uid);
-            getBookingTrendsChartDatas();
-            getVisitedTrendsChartDatas();
-  
-            $(".booking_trends_chart_options input[type=radio]").on("change", function () {
-              const { period } = $(this).data();
-              getBookingTrendsChartDatas(period);
-              getVisitedTrendsChartDatas(period);
-            });
-  
-            getFlightTableDatas();
-            getHotelTableDatas();
-            getUserTableDatas();
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      if (isAdmin) {
+        loadBasicInfo(user.uid);
+        getBookingTrendsChartDatas();
+        getVisitedTrendsChartDatas();
+
+        $(".booking_trends_chart_options input[type=radio]").on(
+          "change",
+          function () {
+            const { period } = $(this).data();
+            getBookingTrendsChartDatas(period);
+            getVisitedTrendsChartDatas(period);
           }
-          else {
-            location.replace("./../auth/login.php");
-          }  
+        );
+
+        getFlightTableDatas();
+        getHotelTableDatas();
+        getUserTableDatas();
       } else {
-          location.replace("./../auth/login.php");
-          return;
+        location.replace("./../auth/login.php");
       }
-  })
-})
+    } else {
+      location.replace("./../auth/login.php");
+      return;
+    }
+  });
+});
 
 const loadBasicInfo = (uid) => {
   let xhr = new XMLHttpRequest();
   xhr.open(
-      "GET",
-      `../api/dashboard/generalInfo.php?user_id=${uid}&isAdmin=${isAdmin}`,
-      true
-  )
+    "GET",
+    `../api/dashboard/generalInfo.php?user_id=${uid}&isAdmin=${isAdmin}`,
+    true
+  );
   xhr.onload = () => {
-      swal.close();
-      if (xhr.status === 200 && xhr.readyState === 4) {
-          //Nhận thông tin và lưu vào danh mục
-          let result = JSON.parse(xhr.responseText); 
-          document.getElementById("total-flight").innerHTML = result.flight;
-          document.getElementById("total-hotel").innerHTML = result.hotel;
-          document.getElementById("total-visited").innerHTML = result.visited;
-      } else {
-          Swal.fire({
-              icon: "error",
-              text: "Error occured."
-          }).then(() => {
-              //location.replace("./../");
-          })
-      }
-  }
+    swal.close();
+    if (xhr.status === 200 && xhr.readyState === 4) {
+      //Nhận thông tin và lưu vào danh mục
+      let result = JSON.parse(xhr.responseText);
+      document.getElementById("total-flight").innerHTML = result.flight;
+      document.getElementById("total-hotel").innerHTML = result.hotel;
+      document.getElementById("total-visited").innerHTML = result.visited;
+    } else {
+      Swal.fire({
+        icon: "error",
+        text: "Error occured.",
+      }).then(() => {
+        location.replace("./../");
+      });
+    }
+  };
   xhr.send();
-}
+};
 
-Date.prototype.addHours = function(h) {
-  this.setTime(this.getTime() + (h*60*60*1000));
+Date.prototype.addHours = function (h) {
+  this.setTime(this.getTime() + h * 60 * 60 * 1000);
   return this;
-}
+};

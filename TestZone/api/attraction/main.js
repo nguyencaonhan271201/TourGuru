@@ -34,7 +34,7 @@ function getAttractionsOfGeo(geoID, name) {
     xhr.onload = function() {
         if(this.status == 200) {
             let results = JSON.parse(xhr.responseText);
-            console.log(results);
+            (results);
             printAttractionsOfPlace(results.data, name)
         } else {
             console.log("Not found");

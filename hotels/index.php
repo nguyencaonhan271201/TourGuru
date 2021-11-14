@@ -203,6 +203,11 @@
         <script src="./../shared/js/firebase.js"></script>
         <script src="./../shared/js/classes/Hotel.js"></script>
         <script src="./main.js"></script>
+
+    <?php 
+      include "../shared/php/footer.php";
+    ?>
+
     </body>
 </html>
 

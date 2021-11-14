@@ -29,10 +29,10 @@
                 <h1 class="text-purple text-center mb-3">my dashboard</h1>
                 <ul class="nav nav-tabs d-flex align-items-center justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#" id="nav-flight">flights</a>
+                        <a class="nav-link" aria-current="page" href="#" id="nav-subpart-flight">flights</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="nav-hotel">hotels</a>
+                        <a class="nav-link" href="#" id="nav-subpart-hotel">hotels</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="nav-visited">visited</a>
@@ -53,38 +53,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr>
-                                <td>
-                                    18 Nov 2021
-                                </td>
-                                <td>
-                                    <div>
-                                        <div>
-                                            <img src="http://pics.avs.io/50/30/BA.png">
-                                            BA551: FCO - LHR (07:30 - 09:30) 
-                                        </div>
-                                        <div>
-                                            <img src="http://pics.avs.io/50/30/AZ.png">
-                                            AZ201: LHR - FCO (07:25 - 10:55) 
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    BUSINESS
-                                </td>
-                                <td>
-                                    2
-                                </td>
-                                <td>
-                                    1114.542 EUR
-                                </td>
-                                <td>
-                                    22:12 - 03/11/2021
-                                </td>
-                                <td>
-                                    <a type="button" class="btn btn-info btn-view-booking">View</a>
-                                </td>
-                            </tr> -->
                         </tbody>
                     </table>
                 </div>
@@ -102,37 +70,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr>
-                                <td>
-                                    18/11/2021 - 20/11/2021
-                                    <br>
-                                    (2 nights)
-                                </td>
-                                <td>
-                                    2
-                                </td>
-                                <td>
-                                    <div>
-                                        <img style="max-height: 100px; max-width: 100px; object-fit: contain;" alt="" src="https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768">
-                                        <br>
-                                        Bulgari Hotel London
-                                    </div>
-                                </td>
-                                <td>
-                                    2646.12 EUR
-                                </td>
-                                <td>
-                                    22:12 - 03/11/2021
-                                </td>
-                                <td>
-                                    <a type="button" class="btn btn-info btn-view-booking">View</a>
-                                </td>
-                            </tr> -->
                         </tbody>
                     </table>
                 </div>
                 <div class="visited-location-div mt-3" style="display: none;">
                     <h3 class="text-pink text-center mb-3">visited attractions</h3>
+
+                    <div id="map" class="w-100 h-100"></div>
+
                 </div>
             </div>
         </div>
@@ -160,7 +105,8 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <!-- Google Map -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>
+        <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script> -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDejsjipkOQWWhjeMzWc0otSPqcNTNkqZs&libraries=&v=weekly&channel=2"></script>
 
         <!-- Project JavaScript -->
         <script src="./../shared/js/firebase.js"></script>

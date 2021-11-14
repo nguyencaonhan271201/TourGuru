@@ -296,6 +296,11 @@
         <!-- Module imports  -->
         <script src="./../shared/js/classes/Flight.js"></script>
         <script src="./main.js"></script>
+
+    <?php 
+      include "../shared/php/footer.php";
+    ?>
+
     </body>
 </html>
 

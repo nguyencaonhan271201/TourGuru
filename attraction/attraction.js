@@ -55,7 +55,6 @@ function checkVisited(geoID) {
   const xhr = new XMLHttpRequest();
 
   xhr.onload = function () {
-    console.log(this.responseText);
     if (this.status == 200) {
       if (this.responseText == "0") $("#visited_svg").load("visited~.svg");
       else if (this.responseText == "1") $("#visited_svg").load("visited.svg");
@@ -92,7 +91,7 @@ function getDetailOfAttractions(geoID) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
 
       loadDetails(results);
 
@@ -127,7 +126,7 @@ function getPhotosOfLocation(geoID) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
       loadGallery(
         results.data
           .filter((photo) => photo.images.original)
@@ -158,7 +157,7 @@ function getAttractionsOfGeo(geoID, center) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
       if (results.errors) loadMap(center);
       else
         loadMap(
@@ -243,9 +242,9 @@ function loadMap(center, attractions = []) {
 
 let zone;
 const geoID = new URL(window.location.href).searchParams.get("id");
-console.log(geoID);
+//console.log(geoID);
 
-console.log(temp, tempAttractions, tempPhotos);
+//console.log(temp, tempAttractions, tempPhotos);
 
 loadDetails(temp);
 loadGallery(
