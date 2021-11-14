@@ -133,3 +133,13 @@ h4,
 .btn-view-booking:hover {
   background: var(--theme-dark-purple) !important;
 }
+
+#map {
+  height: 80vh !important;
+}
+
+@media screen and (max-width: 576px) {
+  #map {
+    height: 100vh !important;
+  }
+}

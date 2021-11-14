@@ -9,12 +9,12 @@
 
 @font-face {
   font-family: "medium";
-  src: url("../assets/fonts/header.ttf");
+  src: url("../assets/fonts/header.TTF");
 }
 
 @font-face {
   font-family: "regular";
-  src: url("../assets/fonts/body.ttf");
+  src: url("../assets/fonts/body.TTF");
 }
 
 html {
@@ -262,4 +262,9 @@ footer h6 {
 footer a {
   color: var(--green) !important;
   text-decoration: none !important;
+}
+
+#header-logged-in,
+#header-not-logged-in {
+  display: none;
 }

@@ -202,7 +202,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/litepicker/2.0.11/litepicker.js"></script>
         
         <!-- Google Maps -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBL9TVw2Kc5YxiB1-gLThdttgvhcYP1Mtg&libraries=&v=weekly&channel=2"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDejsjipkOQWWhjeMzWc0otSPqcNTNkqZs&libraries=&v=weekly&channel=2"></script>
 
         <!-- Project JavaScript -->
         <script src="./../../shared/js/firebase.js"></script>

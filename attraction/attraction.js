@@ -1,5 +1,6 @@
 let colorThief = new ColorThief();
-const userID = 1;
+let userID;
+let infoToSend = {};
 
 $(window).scroll(function () {
   /*fades background gradually*/
@@ -41,10 +42,18 @@ $(".background img").on("load", function () {
 });
 
 $(window).on("load", function () {
-  checkVisited(geoID);
-  $(".visted_div").click(function () {
-    sendVisited(geoID);
-  });
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      userID = user.uid;
+      checkVisited(geoID);
+      $(".visted_div").click(function () {
+        sendVisited(geoID);
+      });
+    } else {
+        location.replace("./../auth/login.php");
+        return;
+    }
+  })
 });
 
 function setColor(obj, prop, color) {
@@ -73,16 +82,17 @@ function checkVisited(geoID) {
 function sendVisited(geoID) {
   $("#visited_svg").load("visited.svg");
   const xhr = new XMLHttpRequest();
+  xhr.open(
+    "POST",
+    `../api/attraction/visiting.php`
+  );
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.onload = function () {
     if (this.status == 200) {
       checkVisited(geoID);
     }
   };
-  xhr.open(
-    "POST",
-    `../api/attraction/visiting.php?userID=${userID}&geoID=${geoID}`
-  );
-  xhr.send();
+  xhr.send(`userID=${userID}&geoID=${geoID}&long=${infoToSend.longitude}&lat=${infoToSend.latitude}&region=${infoToSend.region}&title=${infoToSend.title}`);
 }
 
 function getDetailOfAttractions(geoID) {
@@ -192,14 +202,22 @@ function getAttractionsOfGeo(geoID, center) {
 }
 
 function loadDetails(result) {
-  $(".background img").attr("src", result.photo.images.original.url);
-  $(".long").text(result.longitude);
-  $(".lat").text(result.latitude);
-  $(".region").text(result.timezone.split("/")[0]);
-  $(".title").text(result.name);
-  $(".description").text(
-    result.geo_description ? result.geo_description : result.description
-  );
+    $(".background img").attr("src", result.photo.images.original.url);
+    $(".long").text(result.longitude);
+    $(".lat").text(result.latitude);
+    $(".region").text(result.timezone.split("/")[0]);
+    $(".title").text(result.name);
+    $(".description").text(
+      result.geo_description ? result.geo_description : result.description
+    );
+
+    //Store results for visiting request send
+    infoToSend = {
+      title: result.name,
+      longitude: parseFloat(result.longitude),
+      latitude: parseFloat(result.latitude),
+      region: result.timezone.split('/')[0]
+    };
 }
 
 function loadGallery(imgURLs) {
@@ -266,3 +284,6 @@ loadGallery(
 // );
 
 //getDetailOfAttractions(geoID);
+window.addEventListener("DOMContentLoaded", () => {
+  
+})

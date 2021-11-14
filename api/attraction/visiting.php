@@ -1,16 +1,20 @@
 <?php
     include "../db.php";
     include "../../shared/classes/location.php";
-    if(isset($_POST['userID']) && isset($_POST['GeoID'])){
+    if(isset($_POST['userID']) && isset($_POST['geoID'])
+    && isset($_POST['long']) && isset($_POST['lat'])
+    && isset($_POST['region'])){
         $userID = $_POST['userID'];
-        $locID = $_POST['GeoID'];
+        $locID = $_POST['geoID'];
+        $long = $_POST['long'];
+        $lat = $_POST['lat'];
+        $region = $_POST['region'];
+        $title = $_POST['title'];
         $location = new location($conn);
-        //var_dump($locaction->addVisited($userID, $locID));
         if($location->checkVisited($userID, $locID)){
-            return $location->addVisited($userID, $locID);
+            echo $location->addVisited($userID, $locID, $long, $lat, $region, $title);
         } else{
-            return $locaction->removeVisited($userID, $locID);
-            //2 xoa thanh cong
+            echo $location->removeVisited($userID, $locID);
         }
-    } else return 3;//chua set du lieu 
+    } else echo 3;
 ?>
