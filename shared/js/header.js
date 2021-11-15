@@ -44,10 +44,10 @@ const updateInfo = () => {
   document.getElementById("profile-img").setAttribute("src", profileImage);
 };
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   //Hide 000webhost panel
   let getPanel = document.querySelector("div[style*='z-index:9999999;']");
   if (getPanel != null) {
-      getPanel.style = "display: none;"
+    getPanel.style = "display: none;";
   }
-})
+});

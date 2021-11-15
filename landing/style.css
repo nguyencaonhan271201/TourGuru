@@ -8,15 +8,6 @@
   color: var(--white) !important;
 }
 
-.rounded-pill-left {
-  border-top-left-radius: 50rem !important;
-  border-bottom-left-radius: 50rem !important;
-}
-.rounded-pill-right {
-  border-top-right-radius: 50rem !important;
-  border-bottom-right-radius: 50rem !important;
-}
-
 .billboard button,
 .billboard input {
   background-color: var(--white);
@@ -26,15 +17,22 @@
   color: var(--purple-1);
 }
 
-.carousel {
-  filter: brightness(80%);
-}
-
+.carousel,
+.carousel-item,
 .carousel img {
+  min-height: 80vh !important;
   max-height: 80vh !important;
   min-width: 100vw !important;
+  max-width: 100vw !important;
+}
+.carousel img {
   object-fit: cover;
-  object-position: top;
+  object-position: center;
+}
+
+.carousel a {
+  color: var(--white) !important;
+  text-decoration: none !important;
 }
 
 .top_location_cards {
@@ -48,6 +46,11 @@
   max-height: 240px;
 }
 
+.top_location.card:hover {
+  cursor: pointer;
+  scale: 105%;
+}
+
 .top_location.card img {
   width: 200px;
   height: 200px;
@@ -57,16 +60,7 @@
 .card-title {
   color: var(--white);
   text-transform: capitalize;
-}
-
-.carousel-anchor {
-  font-family: "regular" !important;
-  color: var(--white) !important;
-  font-size: 20px !important;
-  text-decoration: none !important;
-  position: absolute;
-  bottom: 0;
-  right: 1.5rem;
+  font-size: 30px !important;
 }
 
 #carouselFlight,

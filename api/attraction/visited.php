@@ -6,5 +6,5 @@
         $locID = $_GET['geoID'];
         $location = new location($conn);
         echo $location->checkVisited($userID, $locID);
-    } else return 2;
+    } else echo 2;
 ?>

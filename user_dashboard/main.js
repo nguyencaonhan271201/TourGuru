@@ -484,8 +484,6 @@ const loadVisitedLocationsToMap = () => {
 }
 
 function loadMap(center, attractions = []) {
-    console.log(attractions);
-
     const map = new google.maps.Map(document.getElementById("map"), {
       zoom: 2,
       center: center,

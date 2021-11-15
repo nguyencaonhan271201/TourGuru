@@ -80,7 +80,7 @@ function loadCarousel(results) {
         src="${result.imgURL}"
         class="d-block"
       />
-      <a class="carousel-anchor" href="../attraction/attraction.html?id=${
+      <a class="position-absolute bottom-0 end-0 me-2" href="attraction/attraction.php?id=${
         result.locaId
       }">
       ${result.city ? result.city + ", " + result.country : result.country}
@@ -132,7 +132,7 @@ function loadTopLocationsCards(results) {
   });
 
   $(".top_location.card").click(function () {
-    window.location.href = `../attraction/attraction.html?id=${
+    window.location.href = `attraction/attraction.php?id=${
       $(this).data().geoid
     }`;
   });
