@@ -15,9 +15,9 @@ class location{
         $stmt->execute();
         $result = $stmt->get_result();
         if($result->num_rows == 0){
-            return 1;
+            return 0;
         }
-        else return 0;
+        else return 1;
     }
 
     public function addVisited($userID, $geoID, $long, $lat, $region, $title){
@@ -31,7 +31,7 @@ class location{
     }
 
     public function removeVisited($userID, $geoID){
-        $sql = "DELETE FROM visited_locations(user_id, location_id) VALUES(?,?)";
+        $sql = "DELETE FROM visited_locations WHERE user_id = ? AND location_id = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("ss", $userID, $geoID);
         $stmt->execute();

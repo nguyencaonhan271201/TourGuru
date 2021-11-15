@@ -11,7 +11,7 @@
         $region = $_POST['region'];
         $title = $_POST['title'];
         $location = new location($conn);
-        if($location->checkVisited($userID, $locID)){
+        if($location->checkVisited($userID, $locID) == 0){
             echo $location->addVisited($userID, $locID, $long, $lat, $region, $title);
         } else{
             echo $location->removeVisited($userID, $locID);

@@ -31,13 +31,21 @@ div.selectize-input {
   filter: brightness(70%);
 }
 
+.carousel,
+.carousel-item,
 .carousel img {
   min-height: 80vh !important;
   max-height: 80vh !important;
   min-width: 100vw !important;
   max-width: 100vw !important;
+}
+.carousel img {
   object-fit: cover;
   object-position: center;
+}
+.carousel a {
+  color: var(--white) !important;
+  text-decoration: none !important;
 }
 
 .top_location_cards {

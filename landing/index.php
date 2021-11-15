@@ -40,6 +40,7 @@
     ?>
 
     <div class="billboard position-relative">
+      
       <div
         id="carouselAttraction"
         class="carousel slide position-absolute"

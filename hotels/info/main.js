@@ -688,7 +688,7 @@ const returnStarForMail = (star) => {
         result += `★`
 
     if (star > Math.floor(star))
-        result += `&#11240;`
+        result += `<span style="color: rgba(223, 167, 25, .5)">★</span>`
 
     return result;
 }
