@@ -27,7 +27,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="align-items-center justify-content-center col-md-6 col-sm-0 d-md-flex d-none" id="sign-in-left-col"> 
-                    <img class="left-col-logo" alt="" src="./../shared/assets/images/logo-tilted.svg">
+                    <img class="left-col-logo" alt="" src="login.svg">
                 </div>
 
                 <div class="col-md-6 col-sm-0" id="sign-in-main-col"> 
