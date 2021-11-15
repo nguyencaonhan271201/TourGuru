@@ -104,3 +104,11 @@
     </nav>
 
     <script src="<?php echo getenv('ROOT')?>/shared/js/header.js"></script>
+
+    <script>
+        //Hide 000webhost panel
+        let getPanel = document.querySelector("div[style*='z-index:9999999;']");
+        if (getPanel != null) {
+            getPanel.style = "display: none;"
+        }
+    </script>

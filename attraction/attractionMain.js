@@ -33,7 +33,7 @@ $(".attraction_search")
           callback();
         },
         success: function (res) {
-          console.log(res.data.map((opt) => opt.result_object));
+          //console.log(res.data.map((opt) => opt.result_object));
           callback(res.data.map((opt) => opt.result_object));
         },
       });
@@ -51,7 +51,7 @@ function getSearchInfo(searchQuery, limit = 10, offset = 0) {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
       //LoadCarousel(results.data);
-      console.log(results);
+      //console.log(results);
     } else {
       console.log("Not found");
     }
@@ -117,7 +117,7 @@ function getTop20TouristAttractions() {
         .map(({ value }) => value)
         .slice(0, 20);
 
-      console.log(result);
+      //console.log(result);
 
       loadCarousel(
         result.map((result) => ({
@@ -155,7 +155,7 @@ function getTop20TouristAttractions() {
 }
 
 function loadCarousel(results) {
-  console.log(results);
+  //console.log(results);
   let carousel = $(".carousel-inner");
   let active = false;
 
@@ -165,7 +165,7 @@ function loadCarousel(results) {
         src="${result.imgURL}"
         class="d-block"
       />
-      <a class="carousel-anchor" href="../attraction/attraction.php?id=${
+      <a class="position-absolute bottom-0 end-0 me-2" href="../attraction/attraction.php?id=${
         result.locaId
       }">
       ${result.city ? result.city + ", " + result.country : result.country}

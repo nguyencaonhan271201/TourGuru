@@ -32,7 +32,7 @@ function getTop20TouristAttractions() {
         .map(({ value }) => value)
         .slice(0, 20);
 
-      console.log(result);
+      //console.log(result);
 
       loadCarousel(
         result.map((result) => ({
@@ -70,7 +70,7 @@ function getTop20TouristAttractions() {
 }
 
 function loadCarousel(results) {
-  console.log(results);
+  //console.log(results);
   let carousel = $("#carouselAttraction .carousel-inner");
   let active = false;
 
@@ -80,7 +80,7 @@ function loadCarousel(results) {
         src="${result.imgURL}"
         class="d-block"
       />
-      <a class="position-absolute bottom-0 end-0 me-2" href="../attraction/attraction.html?id=${
+      <a class="position-absolute bottom-0 end-0 me-2" href="attraction/attraction.php?id=${
         result.locaId
       }">
       ${result.city ? result.city + ", " + result.country : result.country}
@@ -132,7 +132,7 @@ function loadTopLocationsCards(results) {
   });
 
   $(".top_location.card").click(function () {
-    window.location.href = `../attraction/attraction.html?id=${
+    window.location.href = `attraction/attraction.php?id=${
       $(this).data().geoid
     }`;
   });

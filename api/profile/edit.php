@@ -43,7 +43,7 @@
       }
     }
   } else if (isset($_POST["csrf"]) && ($_POST["csrf"] == $_SESSION["csrf"])) {
-    if (!isset($POST["id"]) || !isset($_POST["displayName"])) {
+    if (!isset($_POST["id"]) || !isset($_POST["displayName"])) {
       http_response_code(400);
       exit;
     }
@@ -56,6 +56,7 @@
     } else {
       $image = null;
     }
+
     
     $errors = [];
 

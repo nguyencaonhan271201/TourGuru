@@ -127,22 +127,25 @@ class User {
             }        
         }
 
+
         if (empty($errors)) {
             //Check info
             if ($displayName == "" || !filter_var($displayName, FILTER_SANITIZE_STRING)) {
                 $errors["displayName"] = "Display name is not valid.";
                 return;
             }
+
+            $filter_name = htmlspecialchars($displayName);
             
             if ($image["tmp_name"] != '') {
                 $query = "UPDATE users SET display_name = ?, image = ? WHERE user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("sss", htmlspecialchars($displayName), $newURL, $id);
+                $stmt->bind_param("sss", $filter_name, $newURL, $id);
                 $stmt->execute();
             } else {
                 $query = "UPDATE users SET display_name = ? WHERE user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("ss", htmlspecialchars($displayName), $id);
+                $stmt->bind_param("ss", $filter_name, $id);
                 $stmt->execute();
             }
             if ($stmt->affected_rows == -1 || $stmt->errno > 0) {
@@ -181,10 +184,13 @@ class User {
     public function getUserForDashboard($offset){
         $offset *= 10;
             $sql = 
-            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated
+            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated,
+            image, (SELECT COUNT(*) FROM flight_bookings WHERE user_id = users.user_id) AS numberOfFlights,
+            (SELECT COUNT(*) FROM hotel_bookings WHERE user_id = users.user_id) AS numberOfHotels,
+            (SELECT COUNT(*) FROM visited_locations WHERE user_id = users.user_id) AS numberOfLocations
             FROM users
             ORDER BY date_created DESC
-            LIMIT ?  ";
+            LIMIT ?";
 
             //userID,userName, mail, timeCreated
 

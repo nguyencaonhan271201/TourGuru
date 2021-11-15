@@ -100,7 +100,6 @@ h5 {
   height: auto;
   flex-grow: 1;
   flex-basis: 0;
-  padding-right: 20px;
 }
 
 .hotel-info {
@@ -211,7 +210,7 @@ h5 {
   color: black !important;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1000px) {
   #main-div {
     display: block;
   }

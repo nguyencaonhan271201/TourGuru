@@ -198,6 +198,9 @@
         </div>
       </div>
     </div>
+    <?php 
+      include '../shared/php/footer.php';
+    ?>
   </body>
 </html>
 <script

@@ -1,5 +1,6 @@
 let colorThief = new ColorThief();
-const userID = 1;
+let userID;
+let infoToSend = {};
 
 $(window).scroll(function () {
   /*fades background gradually*/
@@ -24,26 +25,46 @@ $(window).scroll(function () {
 $(".background img").on("load", function () {
   let bgColor = colorThief.getColor(this);
 
-  // let mainColor = tinycolor(`rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`);
+  let accentColor = tinycolor(`rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`);
+  let accentComplimentColor = accentColor.complement().saturate(100);
 
   let mainColor = tinycolor("#6763A8");
   let compColor = mainColor.complement().saturate(100);
 
-  if (tinycolor(`rgb(${bgColor[0]},${bgColor[1]},${bgColor[2]})`).isLight()) {
-    setColor($(".billboard h1"), "color", mainColor.toRgb());
+  if (accentColor.isDark()) {
+    setColor($(".billboard h1, .billboard h6"), "color", accentColor.toRgb());
+    setColor($(".circle"), "fill", accentComplimentColor.toRgb());
+    setColor($(".window"), "border-color", accentComplimentColor.toRgb());
+
     setColor($(".TGI .main"), "fill", mainColor.toRgb());
-    setColor($(".billboard h6"), "color", compColor.toRgb());
-    setColor($(".window"), "border-color", compColor.toRgb());
-    setColor($(".circle, .inner"), "fill", compColor.desaturate(20).toRgb());
     setColor($(".TGI .others"), "stroke", compColor.toRgb());
-    setColor($(".description"), "color", compColor.toRgb());
+  } else {
+    setColor(
+      $(".billboard h1, .billboard h6"),
+      "color",
+      accentComplimentColor.toRgb()
+    );
+    setColor($(".circle"), "fill", accentColor.toRgb());
+    setColor($(".window"), "border-color", accentColor.toRgb());
+
+    setColor($(".TGI .main"), "fill", compColor.toRgb());
+    setColor($(".TGI .others"), "stroke", mainColor.toRgb());
   }
+  setColor($(".description"), "color", compColor.toRgb());
 });
 
 $(window).on("load", function () {
-  checkVisited(geoID);
-  $(".visted_div").click(function () {
-    sendVisited(geoID);
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      userID = user.uid;
+      checkVisited(geoID);
+      $(".visted_div").click(function () {
+        sendVisited(geoID);
+      });
+    } else {
+      location.replace("./../auth/login.php");
+      return;
+    }
   });
 });
 
@@ -55,10 +76,18 @@ function checkVisited(geoID) {
   const xhr = new XMLHttpRequest();
 
   xhr.onload = function () {
-    console.log(this.responseText);
     if (this.status == 200) {
-      if (this.responseText == "0") $("#visited_svg").load("visited~.svg");
-      else if (this.responseText == "1") $("#visited_svg").load("visited.svg");
+      console.log(this.responseText);
+      if (this.responseText == "0") {
+        $("#visited_svg").load("visited~.svg");
+        var tooltip = new bootstrap.Tooltip(
+          document.getElementById("visited_svg"),
+          {
+            boundary: document.body,
+          }
+        );
+      } else if (this.responseText == "1")
+        $("#visited_svg").load("visited.svg");
     } else {
       console.log("");
     }
@@ -74,16 +103,17 @@ function checkVisited(geoID) {
 function sendVisited(geoID) {
   $("#visited_svg").load("visited.svg");
   const xhr = new XMLHttpRequest();
+  xhr.open("POST", `../api/attraction/visiting.php`);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhr.onload = function () {
     if (this.status == 200) {
+      console.log(this.responseText);
       checkVisited(geoID);
     }
   };
-  xhr.open(
-    "POST",
-    `../api/attraction/visiting.php?userID=${userID}&geoID=${geoID}`
+  xhr.send(
+    `userID=${userID}&geoID=${geoID}&long=${infoToSend.longitude}&lat=${infoToSend.latitude}&region=${infoToSend.region}&title=${infoToSend.title}`
   );
-  xhr.send();
 }
 
 function getDetailOfAttractions(geoID) {
@@ -92,7 +122,7 @@ function getDetailOfAttractions(geoID) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
 
       loadDetails(results);
 
@@ -127,7 +157,7 @@ function getPhotosOfLocation(geoID) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
       loadGallery(
         results.data
           .filter((photo) => photo.images.original)
@@ -158,7 +188,7 @@ function getAttractionsOfGeo(geoID, center) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      console.log(results);
+      //console.log(results);
       if (results.errors) loadMap(center);
       else
         loadMap(
@@ -201,6 +231,14 @@ function loadDetails(result) {
   $(".description").text(
     result.geo_description ? result.geo_description : result.description
   );
+
+  //Store results for visiting request send
+  infoToSend = {
+    title: result.name,
+    longitude: parseFloat(result.longitude),
+    latitude: parseFloat(result.latitude),
+    region: result.timezone.split("/")[0],
+  };
 }
 
 function loadGallery(imgURLs) {
@@ -243,16 +281,16 @@ function loadMap(center, attractions = []) {
 
 let zone;
 const geoID = new URL(window.location.href).searchParams.get("id");
-console.log(geoID);
+//console.log(geoID);
 
-console.log(temp, tempAttractions, tempPhotos);
+//console.log(temp, tempAttractions, tempPhotos);
 
-loadDetails(temp);
-loadGallery(
-  tempPhotos.data
-    .filter((photo) => photo.images.original)
-    .map((photo) => photo.images.original.url)
-);
+// loadDetails(temp);
+// loadGallery(
+//   tempPhotos.data
+//     .filter((photo) => photo.images.original)
+//     .map((photo) => photo.images.original.url)
+// );
 // loadMap(
 //   { lng: parseFloat(temp.longitude), lat: parseFloat(temp.latitude) },
 //   tempAttractions.data
@@ -267,3 +305,6 @@ loadGallery(
 // );
 
 //getDetailOfAttractions(geoID);
+window.addEventListener("DOMContentLoaded", () => {
+  getDetailOfAttractions(geoID);
+});

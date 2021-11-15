@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.getItem("headerInfo") == "null"
   ) {
     document.getElementById("header-logged-in").style.display = "none";
-    document.getElementById("header-not-logged-in").style.display = "initial";
+    document.getElementById("header-not-logged-in").style.display = "block";
   } else {
-    document.getElementById("header-logged-in").style.display = "initial";
+    document.getElementById("header-logged-in").style.display = "block";
     document.getElementById("header-not-logged-in").style.display = "none";
     updateInfo();
   }
@@ -43,3 +43,11 @@ const updateInfo = () => {
     profileImage = root + "/" + profileImage.substring(6, profileImage.length);
   document.getElementById("profile-img").setAttribute("src", profileImage);
 };
+
+document.addEventListener("DOMContentLoaded", function () {
+  //Hide 000webhost panel
+  let getPanel = document.querySelector("div[style*='z-index:9999999;']");
+  if (getPanel != null) {
+    getPanel.style = "display: none;";
+  }
+});

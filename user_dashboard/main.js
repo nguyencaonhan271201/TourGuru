@@ -3,8 +3,8 @@ let uid;
 let flightsDiv = document.querySelector(".flights-bookings");
 let hotelsDiv = document.querySelector(".hotels-bookings");
 let visitedDiv = document.querySelector(".visited-location-div");
-let navHotel = document.querySelector("#nav-hotel");
-let navFlight = document.querySelector("#nav-flight");
+let navHotel = document.querySelector("#nav-subpart-hotel");
+let navFlight = document.querySelector("#nav-subpart-flight");
 let navVisited = document.querySelector("#nav-visited");
 
 let visitedLocations = [];
@@ -420,6 +420,7 @@ const loadToTables = () => {
             </tr>
         `
     })
+    
     hotelsDiv.querySelector("tbody").innerHTML = html;
 
     document.querySelectorAll(".btn-view-booking-flight").forEach(btn => {
@@ -457,5 +458,55 @@ const getDisplayDateFormatAdd7Hours = (ISODate) => {
 }
 
 const loadVisitedLocationsToMap = () => {
-    console.log(visitedLocations);
+    //Filter object to show on map
+    let sumLongitude = 0;
+    let sumLatitude = 0;
+    let attractions = [];
+    visitedLocations.forEach(location => {
+        attractions.push({
+            position: {
+                lng: location.longitude,
+                lat: location.latitude
+            },
+            name: location.location_title
+        })
+        sumLongitude += location.longitude;
+        sumLatitude += location.latitude;
+    })
+
+    //Center to be the center of all visited locations
+    let center = {
+        lng: visitedLocations.length > 0? parseFloat(sumLongitude / visitedLocations.length) : 0,
+        lat: visitedLocations.length > 0? parseFloat(sumLatitude / visitedLocations.length) : 0
+    }
+
+    loadMap(center, attractions);
 }
+
+function loadMap(center, attractions = []) {
+    console.log(attractions);
+
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 2,
+      center: center,
+      styles: [
+        {
+          featureType: "poi",
+          elementType: "labels",
+          stylers: [{ visibility: "off" }],
+        },
+      ],
+    });
+    const centerMarker = new google.maps.Marker({
+      position: center,
+      map: map,
+      icon: "../shared/assets/logo.svg",
+    });
+    attractions.forEach((attraction) => {
+      let marker = new google.maps.Marker({
+        position: attraction.position,
+        title: attraction.name,
+        map: map,
+      });
+    });
+  }

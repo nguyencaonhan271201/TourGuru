@@ -372,7 +372,7 @@ const initializeEventListeners = () => {
             signInWithGoogle(res)
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             if (errorText != null) {
                 Swal.fire({
                     icon: 'error',
@@ -537,18 +537,26 @@ const getInfoFromServer = async() => {
                 "isAdmin": result.isAdmin,
                 "image": result.image
             }));
-            if (localStorage.getItem("fromFlight") != "null")
+            if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            else if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
             else location.replace("./../");
         } else {
-            if (localStorage.getItem("fromFlight") != "null")
+            if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
-            else if (localStorage.getItem("hotelInfo") != "null")
+            else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
                 location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
             else location.replace("./../");
         }
     }
     xhr.send();
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    //Hide 000webhost panel
+    let getPanel = document.querySelector("div[style*='z-index:9999999;']");
+    if (getPanel != null) {
+        getPanel.style = "display: none;"
+    }
+})

@@ -23,7 +23,8 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     //Not chosen any flight
-    if (localStorage.getItem("fromFlight") == "null" || localStorage.getItem("flightPassengers") == "null") {
+    if (localStorage.getItem("fromFlight") == "null" || localStorage.getItem("flightPassengers") == "null"
+        || !localStorage.getItem("fromFlight") || !localStorage.getItem("flightPassengers")) {
         location.replace("./../");
         return;
     }
@@ -58,7 +59,7 @@ const printToDisplay = () => {
     let forwardFlight = JSON.parse(localStorage.getItem("fromFlight"));
     Object.setPrototypeOf(forwardFlight, Flight.prototype);
 
-    console.log(forwardFlight);
+    //console.log(forwardFlight);
     forwardDiv.innerHTML = `<h4 class="text-purple">Forward Flight</h4>`;
 
     let getClass = forwardFlight.class;
@@ -104,7 +105,7 @@ const printToDisplay = () => {
     })
 
 
-    if (localStorage.getItem("toFlight") == "null") {
+    if (!localStorage.getItem("toFlight") ||localStorage.getItem("toFlight") == "null") {
         returnDiv.innerHTML = ``;
     } else {
         let returnFlight = JSON.parse(localStorage.getItem("toFlight"));

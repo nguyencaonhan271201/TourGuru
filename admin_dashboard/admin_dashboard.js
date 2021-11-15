@@ -38,8 +38,6 @@ function getBookingTrendsChartDatas(period = "W") {
             borderColor: "#6763a8",
           },
         ];
-        bookingChart.update();
-
         getHotels();
       } else {
       }
@@ -78,39 +76,36 @@ function getBookingTrendsChartDatas(period = "W") {
 
 function getVisitedTrendsChartDatas(period = "W") {
   let tempV;
-  switch (period) {
-    case "W": {
-      tempV = tempVW;
-      break;
-    }
-    case "M": {
-      tempV = tempVM;
-      break;
-    }
-    case "Q": {
-      tempV = tempVQ;
-      break;
-    }
-    case "Y": {
-      tempV = tempVY;
-      break;
-    }
-  }
 
-  visitedChart.data = {
-    labels: tempV.map((data) => data.zone),
-    datasets: [
-      {
-        data: tempV.map((data) => data.sum),
-        backgroundColor: tinycolor("#6763a8")
-          .tetrad()
-          .map((color) => color.toHexString()),
-        hoverOffset: 10,
-      },
-    ],
+  const xhr = new XMLHttpRequest();
+  xhr.onload = function () {
+    if (this.status == 200) {
+      let result = JSON.parse(this.responseText);
+
+      tempV = result;
+    
+      visitedChart.data = {
+        labels: tempV.map((data) => data.zone),
+        datasets: [
+          {
+            data: tempV.map((data) => data.sum),
+            backgroundColor: tinycolor("#6763a8")
+              .tetrad()
+              .map((color) => color.toHexString()),
+            hoverOffset: 10,
+          },
+        ],
+      };
+    
+      visitedChart.update();
+    } else {
+    }
   };
-
-  visitedChart.update();
+  xhr.open(
+    "GET",
+    `../api/dashboard/visitedLocations.php?period=${period}`
+  );
+  xhr.send();
 }
 
 function getFlightTableDatas(offset = 1) {
@@ -174,7 +169,6 @@ function cacthTable() {
   $(".see_more_row")
     .off("click")
     .on("click", function () {
-      console.log($(this).data().type);
       loadTableMore($(this).data().type);
     });
 }
@@ -202,7 +196,6 @@ function loadFlightTable(flights) {
 }
 
 function loadHotelTable(hotels) {
-  console.log("hotel catched");
   hotels.forEach((hotel) => {
     $(".hotel_table tbody").append(`
           <tr>
@@ -236,7 +229,12 @@ function loadUserTable(users) {
           <td>${new Date(user.timeCreated)
             .addHours(7)
             .toLocaleString()}</td>                  
-          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User" data-row-id="${
+          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User"
+          data-hotel=${user.numberOfHotels} data-flight=${user.numberOfFlights} data-location=${user.numberOfLocations} 
+          data-image=${user.image.replace("../../", "../")} data-name="${user.userName}" 
+          data-email="${user.mail}" data-created="${new Date(user.timeCreated)
+            .addHours(7)
+            .toLocaleString()}" data-row-id="${
             user.userID
           }"></td>
       </tr>
@@ -276,16 +274,32 @@ function disError() {
   });
 }
 
-function getSpecific(type, id) {
+function getSpecific(type) {
   if (type.rowType === "Flight") {
     location.replace(`./flight?id=${type.rowId}`);
   } else if (type.rowType === "Hotel") {
     location.replace(`./hotel?id=${type.rowId}`);
+  } else if (type.rowType === "User") {
+    Swal.fire({
+      title: `${type.name}`,
+      html:
+          `
+          <div>
+            <img alt="" src="${type.image}" class="view-user-img" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+            <div class="text-left mt-4" style="margin: 0 auto;">
+              <h5 style="color: black; width: fit-content;">Email: ${type.email}</h5>
+              <h5 style="color: black; width: fit-content;">Created: ${type.created}</h5>
+              <h5 style="color: black; width: fit-content;">Flight Bookings: ${type.flight}</h5>
+              <h5 style="color: black; width: fit-content;">Hotel Bookings: ${type.hotel}</h5>
+              <h5 style="color: black; width: fit-content;">Visited Locations: ${type.location}</h4>
+            </div>
+          </div>
+          `,
+    })
   }
 }
 
 function deleteSpecific({ rowType: type, userId, rowId: Id }) {
-  console.log(type);
   Swal.fire({
     title: `Confirm delete ${type.toLowerCase()} #${Id} ?`,
     icon: "warning",
@@ -379,7 +393,7 @@ const loadBasicInfo = (uid) => {
         icon: "error",
         text: "Error occured.",
       }).then(() => {
-        //location.replace("./../");
+        location.replace("./../");
       });
     }
   };
