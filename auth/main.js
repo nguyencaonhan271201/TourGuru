@@ -540,13 +540,13 @@ const getInfoFromServer = async() => {
             if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
             else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
-                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
+                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotel"]["ID"]}`);
             else location.replace("./../");
         } else {
             if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
             else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")
-                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotelID"]}`);
+                location.replace(`./../hotel/info/?hotel=${JSON.parse(localStorage.getItem("hotelInfo"))["hotel"]["ID"]}`);
             else location.replace("./../");
         }
     }
