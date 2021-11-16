@@ -72,65 +72,70 @@
   
       <div class="container-fluid p-3">
         <div class="row">
-          <div class="col-md-8 mb-3">
-            <div class="d-flex justify-content-between">
-              <div>
-                <h1 class="outline-1">booking trends</h1>
+          <div class="col-md-8 col-sm mb-3">
+            <div class="row">
+              <div class="col-md-5 d-flex justify-content-sm-center justify-content-md-start align-items-center">
+                <div
+                  class="btn-group booking_trends_chart_options"
+                  role="group"
+                  aria-label="Basic radio toggle button group"
+                >
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="btnradio"
+                    id="btnradio1"
+                    autocomplete="off"
+                    data-period="Y"
+                  />
+                  <label id="labelradio1" class="btn btn-outline-primary" for="btnradio1"
+                    >Year</label
+                  >
+    
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="btnradio"
+                    id="btnradio2"
+                    autocomplete="off"
+                    data-period="Q"
+                  />
+                  <label class="btn btn-outline-primary" for="btnradio2"
+                    >Quarter</label
+                  >
+    
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="btnradio"
+                    id="btnradio3"
+                    autocomplete="off"
+                    data-period="M"
+                  />
+                  <label class="btn btn-outline-primary" for="btnradio3"
+                    >Month</label
+                  >
+    
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    name="btnradio"
+                    id="btnradio4"
+                    autocomplete="off"
+                    data-period="W"
+                    checked
+                  />
+                  <label class="btn btn-outline-primary" for="btnradio4"
+                    >Week</label
+                  >
+                </div>
               </div>
-              <div
-                class="btn-group booking_trends_chart_options"
-                role="group"
-                aria-label="Basic radio toggle button group"
-              >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="btnradio"
-                  id="btnradio1"
-                  autocomplete="off"
-                  data-period="Y"
-                />
-                <label id="labelradio1" class="btn btn-outline-primary" for="btnradio1"
-                  >Year</label
-                >
-  
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="btnradio"
-                  id="btnradio2"
-                  autocomplete="off"
-                  data-period="Q"
-                />
-                <label class="btn btn-outline-primary" for="btnradio2"
-                  >Quarter</label
-                >
-  
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="btnradio"
-                  id="btnradio3"
-                  autocomplete="off"
-                  data-period="M"
-                />
-                <label class="btn btn-outline-primary" for="btnradio3"
-                  >Month</label
-                >
-  
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="btnradio"
-                  id="btnradio4"
-                  autocomplete="off"
-                  data-period="W"
-                  checked
-                />
-                <label class="btn btn-outline-primary" for="btnradio4"
-                  >Week</label
-                >
+              <div class="col-md-7">
+                <h1 class="outline-1 text-sm-center text-xs-start">booking trends</h1>
               </div>
+            </div>
+            <div class="d-flex justify-content-between">             
+              
             </div>
   
             <div>
@@ -138,8 +143,8 @@
             </div>
           </div>
   
-          <div class="col-md-4 mb-3">
-            <h1 class="outline-1 text-sm-center text-xs-start">Visited trends</h1>
+          <div class="col-md-4 col-sm mb-3">
+            <h1 class="outline-1 text-sm-center text-xs-start">visited trends</h1>
             <div>
               <canvas id="myChart2" />
             </div>
@@ -148,7 +153,7 @@
       </div>
   
       <div class="w-100 p-3">
-        <h1 class="outline-1 ps-1">Flight Bookings History</h1>
+        <h1 class="outline-1 ps-1 text-xs-center text-md-start">flight bookings history</h1>
         <div class="table-responsive">
           <table class="flight_table table table-borderless table-hover">
             <thead>
@@ -164,8 +169,7 @@
           </table>
         </div>
   
-        <h1 class="outline-1 ps-1">Hotel Bookings History</h1>
-  
+        <h1 class="outline-1 ps-1 text-xs-center text-md-start">hotel bookings history</h1>  
         <div class="table-responsive">
           <table class="hotel_table table table-borderless table-hover">
             <thead>
@@ -182,7 +186,7 @@
           </table>
         </div>
   
-        <h1 class="outline-1 ps-1">Registered User History</h1>
+        <h1 class="outline-1 ps-1 text-xs-center text-md-start">registered user history</h1>
         <div class="table-responsive">
           <table class="user_table table table-borderless table-hover">
             <thead>
@@ -209,6 +213,7 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.js" integrity="sha512-y1yfXWvbXggos1g8bZhtprle9WdjkQtWrklZQkTpsgQxg+b5gdeljJ+I6iskDq3w55rnd1x6a6W+xHwAZuz1oQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="context-menu.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript" src="temp.js" charset="utf-8"></script>

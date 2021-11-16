@@ -83,28 +83,27 @@ function getVisitedTrendsChartDatas(period = "W") {
       let result = JSON.parse(this.responseText);
 
       tempV = result;
-    
+
       visitedChart.data = {
         labels: tempV.map((data) => data.zone),
         datasets: [
           {
             data: tempV.map((data) => data.sum),
-            backgroundColor: tinycolor("#6763a8")
-              .tetrad()
-              .map((color) => color.toHexString()),
+            backgroundColor: tempV.map((x, i) => {
+              return tinycolor("#6763a8")
+                .spin(60 * i)
+                .toHexString();
+            }),
             hoverOffset: 10,
           },
         ],
       };
-    
+
       visitedChart.update();
     } else {
     }
   };
-  xhr.open(
-    "GET",
-    `../api/dashboard/visitedLocations.php?period=${period}`
-  );
+  xhr.open("GET", `../api/dashboard/visitedLocations.php?period=${period}`);
   xhr.send();
 }
 
@@ -230,13 +229,15 @@ function loadUserTable(users) {
             .addHours(7)
             .toLocaleString()}</td>                  
           <td class="context-menu" data-container-id="context-menu-items" data-row-type="User"
-          data-hotel=${user.numberOfHotels} data-flight=${user.numberOfFlights} data-location=${user.numberOfLocations} 
-          data-image=${user.image.replace("../../", "../")} data-name="${user.userName}" 
+          data-hotel=${user.numberOfHotels} data-flight=${
+      user.numberOfFlights
+    } data-location=${user.numberOfLocations} 
+          data-image=${user.image.replace("../../", "../")} data-name="${
+      user.userName
+    }" 
           data-email="${user.mail}" data-created="${new Date(user.timeCreated)
-            .addHours(7)
-            .toLocaleString()}" data-row-id="${
-            user.userID
-          }"></td>
+      .addHours(7)
+      .toLocaleString()}" data-row-id="${user.userID}"></td>
       </tr>
     `);
   });
@@ -282,8 +283,7 @@ function getSpecific(type) {
   } else if (type.rowType === "User") {
     Swal.fire({
       title: `${type.name}`,
-      html:
-          `
+      html: `
           <div>
             <img alt="" src="${type.image}" class="view-user-img" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
             <div class="text-left mt-4" style="margin: 0 auto;">
@@ -295,7 +295,7 @@ function getSpecific(type) {
             </div>
           </div>
           `,
-    })
+    });
   }
 }
 
@@ -371,6 +371,8 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
   });
+
+  if ($(window).width() <= 768) $(".outline-1").fitText(1.2);
 });
 
 const loadBasicInfo = (uid) => {
