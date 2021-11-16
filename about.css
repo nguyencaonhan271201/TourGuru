@@ -1,0 +1,100 @@
+html, body {
+ width: 100%;
+ height:100%;
+}
+
+  .banner{
+  background: linear-gradient(270deg, rgba(160,130,175,1) 0%, rgba(213,137,177,1) 45%, rgba(255,149,161,1) 70%, rgba(255,173,135,1) 95%);
+  background-size: 400% 400%;
+  animation: gradient 9s ease infinite;
+}
+
+@keyframes gradient {
+   0% {
+       background-position: 0% 50%;
+   }
+   25% {
+       background-position: 100% 50%;
+   }
+   50% {
+       background-position: 0% 50%;
+   }
+   75% {
+       background-position: 100% 50%;
+   }
+   100% {
+       background-position: 0% 50%;
+   }
+}
+
+#container {
+  color: white;
+  text-transform: uppercase;
+  font-size:40px;
+  font-weight:bold;
+  margin-left:10%;
+  display:block;
+}
+
+#flip {
+height:50px;
+  overflow:hidden;
+}
+
+#flip > div > div {
+  color:white;
+  height:45px;
+  margin-bottom:45px;
+  display:inline-block;
+}
+
+#flip div:first-child {
+  animation: show 5s linear infinite;
+}
+
+@keyframes show {
+  0% {margin-top:-270px;}
+  5% {margin-top:-180px;}
+  33% {margin-top:-180px;}
+  38% {margin-top:-90px;}
+  66% {margin-top:-90px;}
+  71% {margin-top:0px;}
+  99.99% {margin-top:0px;}
+  100% {margin-top:-270px;}
+}
+
+.container-fluid #tour{
+ color: white;
+ font-size: 100px;
+ margin-left:10%;
+}
+
+#planes h1{
+  color:white;
+  font-size: 90px;
+}
+
+#container2 h1{
+  color:white;
+  font-size: 90px;
+  margin:10px;
+  margin-left:10%;
+  font-family:fantasy ;
+  font-weight: bold;
+}
+
+.headline h1{
+  font-size: 80px!important;
+}
+
+hr{
+  margin: 0 0 5px 0!important;
+  width: 300px!important;
+  height: 2px!important;
+  background: linear-gradient(rgba(160,130,175,1), rgba(213,137,177,1) , rgba(255,149,161,1) , rgba(255,173,135,1))!important;
+}
+
+h5{
+color: black !important;
+font-size: 30px!important;
+}
