@@ -228,6 +228,7 @@ function loadDetails(result) {
   $(".lat").text(result.latitude);
   $(".region").text(result.timezone.split("/")[0]);
   $(".title").text(result.name);
+  if (result.name.length >= 12) $(".title").fitText(0.9);
   $(".description").text(
     result.geo_description ? result.geo_description : result.description
   );
@@ -268,14 +269,24 @@ function loadMap(center, attractions = []) {
   const centerMarker = new google.maps.Marker({
     position: center,
     map: map,
-    icon: "../shared/assets/logo.svg",
+    icon: {
+      url: "../shared/assets/logo.svg",
+      scaledSize: new google.maps.Size(50, 50), // scaled size
+    },
   });
   attractions.forEach((attraction) => {
-    let marker = new google.maps.Marker({
-      position: attraction.position,
-      title: attraction.name,
-      map: map,
-    });
+    if (
+      !(
+        attraction.position.lng == center.lng &&
+        attraction.position.lat == center.lat
+      )
+    ) {
+      let marker = new google.maps.Marker({
+        position: attraction.position,
+        title: attraction.name,
+        map: map,
+      });
+    }
   });
 }
 

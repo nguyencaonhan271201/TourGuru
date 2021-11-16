@@ -143,7 +143,8 @@
     </div>
 
   </body>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.js" integrity="sha512-y1yfXWvbXggos1g8bZhtprle9WdjkQtWrklZQkTpsgQxg+b5gdeljJ+I6iskDq3w55rnd1x6a6W+xHwAZuz1oQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.min.js"
     integrity="sha512-mMe7BAZPOkGbq+zhRBMNV3Q+5ZDzcUEOJoUYXbHpEcODkDBYbttaW7P108jX66AQgwgsAjvlP4Ayb/XLJZfmsg=="

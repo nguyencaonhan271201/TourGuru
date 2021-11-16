@@ -22,9 +22,9 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
     </head>
-    <body>
+    <body style="overflow: hidden;">
         
-    <div class="container-fluid">
+        <div class="container-fluid p-0">
             <div class="row">
                 <div class="align-items-center justify-content-center col-md-6 col-sm-0 d-md-flex d-none" id="sign-in-left-col"> 
                     <img class="left-col-logo" alt="" src="login.svg">

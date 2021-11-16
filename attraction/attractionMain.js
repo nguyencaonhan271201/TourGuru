@@ -34,7 +34,11 @@ $(".attraction_search")
         },
         success: function (res) {
           //console.log(res.data.map((opt) => opt.result_object));
-          callback(res.data.map((opt) => opt.result_object));
+          callback(
+            res.data.map((opt) => {
+              if (opt.result_object.photo) return opt.result_object;
+            })
+          );
         },
       });
     },
