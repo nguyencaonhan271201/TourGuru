@@ -57,7 +57,7 @@
             <h6 class="lat"></h6>
           </div>
 
-          <div class="position-absolute bottom-0 end-0 me-2">
+          <div class="position-absolute bottom-0 end-0 me-4">
             <h6 class="region"></h6>
           </div>
         </div>

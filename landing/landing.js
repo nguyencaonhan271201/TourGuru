@@ -80,7 +80,7 @@ function loadCarousel(results) {
         src="${result.imgURL}"
         class="d-block"
       />
-      <a class="position-absolute bottom-0 end-0 me-2" href="attraction/attraction.php?id=${
+      <a class="position-absolute bottom-0 end-0 me-4" href="attraction/attraction.php?id=${
         result.locaId
       }">
       ${result.city ? result.city + ", " + result.country : result.country}

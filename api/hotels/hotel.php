@@ -1,8 +1,12 @@
 <?php
   session_start();
-  require_once("../db.php");
+  //require_once("../db.php");
   include("../email/sendEmail.php");
   include('../../shared/classes/HotelBooking.php');
+  require_once("../../shared/classes/Database.php");
+
+  $db = Database::getInstance();
+  $conn = $db->getConnection();
 
   if (isset($_POST["csrf"]) && ($_POST["csrf"] == $_SESSION["csrf"])) {
     if (isset($_POST["bookingInfo"])) {

@@ -77,7 +77,6 @@ function checkVisited(geoID) {
 
   xhr.onload = function () {
     if (this.status == 200) {
-      console.log(this.responseText);
       if (this.responseText == "0") {
         $("#visited_svg").load("visited~.svg");
         var tooltip = new bootstrap.Tooltip(

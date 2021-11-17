@@ -1,6 +1,11 @@
 <?php
-    include "../db.php";
+    //include "../db.php";
     include "../../shared/classes/location.php";
+    require_once("../../shared/classes/Database.php");
+
+    $db = Database::getInstance();
+    $conn = $db->getConnection();
+    
     if(isset($_POST['userID']) && isset($_POST['geoID'])
     && isset($_POST['long']) && isset($_POST['lat'])
     && isset($_POST['region']) && isset($_POST['title'])){
