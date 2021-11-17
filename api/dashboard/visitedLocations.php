@@ -1,5 +1,10 @@
 <?php
-    include "../db.php";
+    //include "../db.php";
+    require_once("../../shared/classes/Database.php");
+
+    $db = Database::getInstance();
+    $conn = $db->getConnection();
+    
     if(isset($_GET['period'])){
         if ($_GET['period'] != 'W' && $_GET['period'] != 'Q' &&
         $_GET['period'] != 'M' && $_GET['period'] != 'Y') {

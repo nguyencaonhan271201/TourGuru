@@ -1,7 +1,12 @@
 <?php
 
-include "../db.php";
+//include "../db.php";
 include "../../shared/classes/hotels.php";
+require_once("../../shared/classes/Database.php");
+
+$db = Database::getInstance();
+$conn = $db->getConnection();
+
 if(isset($_GET['user_id']) && isset($_GET['isAdmin'])){
   $query = "SELECT * FROM users WHERE user_id = ? AND role = 0";
   $stmt = $conn->prepare($query);

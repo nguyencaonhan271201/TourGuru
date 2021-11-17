@@ -1,8 +1,12 @@
 <?php
   session_start();
-  require_once ("../db.php");
+  //require_once ("../db.php");
   include('../../shared/classes/FlightBooking.php');
   include('../../shared/classes/HotelBooking.php');
+  require_once("../../shared/classes/Database.php");
+
+  $db = Database::getInstance();
+  $conn = $db->getConnection();
 
   if (isset($_GET["csrf"]) && ($_GET["csrf"] == $_SESSION["csrf"])) {
     if (isset($_GET["getFlightsInfo"])) {
