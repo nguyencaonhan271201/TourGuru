@@ -137,6 +137,7 @@ const initializeEventListener = () => {
         let isHovered = $('#search-flight-from-result').is(":hover");
         if (!isHovered) {
             resetSearchResult(true);
+            fromSearch.value = fromID;
         }
     })
 
@@ -148,6 +149,7 @@ const initializeEventListener = () => {
         let isHovered = $('#search-flight-to-result').is(":hover");
         if (!isHovered) {
             resetSearchResult(false);
+            toSearch.value = toID;
         }
     })
 
@@ -169,15 +171,16 @@ const initializeEventListener = () => {
 
     swapButton.parentNode.addEventListener("click", (e) => {
         e.preventDefault();
-        swapButton.classList.add("rotate");
         toSearch.value = fromID;
         fromSearch.value = toID;
         let tmp = fromID;
         fromID = toID;
         toID = tmp;
-        setTimeout(() => {
+        if (!swapButton.classList.contains("rotate")) {
+            swapButton.classList.add("rotate");
+        } else {
             swapButton.classList.remove("rotate");
-        }, 1000)
+        }
     })
 
     swapButton.addEventListener("click", (e) => {

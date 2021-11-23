@@ -1,4 +1,4 @@
-class HotelBooking {
+class HotelBooking extends Booking {
   constructor(bookingInfo, id) {
     this.hotel = {
       id: bookingInfo.hotel_id,
@@ -46,7 +46,7 @@ class FlightBookingIteration {
   }
 }
 
-class FlightBooking {
+class FlightBooking extends Booking {
   constructor(bookingInfo, id) {
     this.booking_id = id;
     this.class = bookingInfo[0].class;
@@ -58,6 +58,7 @@ class FlightBooking {
     bookingInfo.forEach(iteration => {
       this.iterations.push(new FlightBookingIteration(iteration));
     })
+    this.passengersList = [];
   }
 }
 
@@ -74,5 +75,11 @@ class HotelBookingFactory extends AbstractFactory {
 class FlightBookingFactory extends AbstractFactory {
   create(bookingInfo, id) {
     return new FlightBooking(bookingInfo, id);
+  }
+}
+
+class Booking {
+  constructor(id) {
+    this.id = id;
   }
 }

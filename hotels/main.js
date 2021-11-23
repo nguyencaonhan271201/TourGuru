@@ -85,6 +85,7 @@ const initializeEventListener = () => {
         let isHovered = $('#search-location-result').is(":hover");
         if (!isHovered) {
             resetSearchResult();
+            locationSearch.value = selectedLocationID;
         }
     })
 
