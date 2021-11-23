@@ -270,7 +270,7 @@
           </div>
           <div class="col-md-8 d-flex align-items-center">
             <div>
-              <h2>Cheap</h2>
+              <h2>Exploratory</h2>
               <p>
                 With Tour Guru, you can not only prepare things for your intended vacations
                 but you can also use Tour Guru as the place to explore more about the world,
