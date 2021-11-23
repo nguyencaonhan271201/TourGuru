@@ -270,12 +270,11 @@
           </div>
           <div class="col-md-8 d-flex align-items-center">
             <div>
-              <h2>Cheap</h2>
+              <h2>Exploratory</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Obcaecati adipisci, repudiandae quisquam officia provident earum
-                ab omnis iusto beatae modi dolor velit perspiciatis
-                necessitatibus nihil ullam vero. Reiciendis, quos eveniet.
+                With Tour Guru, you can not only prepare things for your intended vacations
+                but you can also use Tour Guru as the place to explore more about the world,
+                the attractions, the places, the scenics of cities and countries all over the planet.
               </p>
             </div>
           </div>
@@ -289,12 +288,12 @@
           </div>
           <div class="col-md-8 d-flex align-items-center">
             <div>
-              <h2>Cheap</h2>
+              <h2>Convenient</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Obcaecati adipisci, repudiandae quisquam officia provident earum
-                ab omnis iusto beatae modi dolor velit perspiciatis
-                necessitatibus nihil ullam vero. Reiciendis, quos eveniet.
+                Tour Guru provides you with an "all-in-one" platform, where you
+                can do many things related to your trips without having to navigate
+                to many pages. Flights, Hotels, Plans, etc. all can be done within
+                our site.
               </p>
             </div>
           </div>
@@ -308,12 +307,11 @@
           </div>
           <div class="col-md-8 d-flex align-items-center">
             <div>
-              <h2>Cheap</h2>
+              <h2>Economical</h2>
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Obcaecati adipisci, repudiandae quisquam officia provident earum
-                ab omnis iusto beatae modi dolor velit perspiciatis
-                necessitatibus nihil ullam vero. Reiciendis, quos eveniet.
+                Tour Guru provides a trust-worthy solution for bookings and plannings for your
+                trip in a most economical way, offering not only best available prices and services
+                but also providing the best ensurance.
               </p>
             </div>
           </div>

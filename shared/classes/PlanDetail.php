@@ -45,7 +45,7 @@ class PlanDetail {
     }
   }
 
-  public function getPlanDetails($plan_id, $errors) {
+  public function getPlanDetails($plan_id, &$errors) {
     try {
       $query = "SELECT * FROM plan_details WHERE plan_id = ? ORDER BY id ASC";
       $stmt = $this->conn->prepare($query);
