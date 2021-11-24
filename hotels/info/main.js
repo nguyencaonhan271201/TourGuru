@@ -568,7 +568,7 @@ const sendBookingInfo = () => {
         }
     }
 
-    xhr.send(`bookingInfo&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    xhr.send(`bookingInfo&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
 }
 
 const sendBookingConfirmationEmail = () => {        

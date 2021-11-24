@@ -98,6 +98,18 @@ h4 {
   background: var(--theme-link-hover);
 }
 
+html {
+  overflow-x: visible !important;
+  overflow: visible !important;
+  overflow-y: visible !important;
+}
+
+::-webkit-sadcrollbar {
+  width: 0px;
+  background: transparent;
+  display: none;
+}
+
 @media screen and (max-width: 576px) {
   #btn-create {
     display: block;
