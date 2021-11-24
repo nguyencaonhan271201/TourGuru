@@ -987,7 +987,7 @@ const savePlan = () => {
             });
         }
     }
-    xhr.send(`planInfo&data=${JSON.stringify(data)}&csrf=${csrf}`);
+    xhr.send(`planInfo&data=${JSON.stringify(data).replace("&", "and")}&csrf=${csrf}`);
 }
 
 const sendDetails = (planID) => {
@@ -1038,7 +1038,7 @@ const sendDetails = (planID) => {
             });
         }
     }
-    xhr.send(`planDetails&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+    xhr.send(`planDetails&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
 }
 
 //Testing only

@@ -1125,7 +1125,7 @@ const savePlan = () => {
                 deletePlan(newPlanID, false);
             }
         }
-        xhr.send(`planDetails&data=${JSON.stringify(sendData)}&csrf=${csrf}`);
+        xhr.send(`planDetails&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
     }
 
     const reAddNewPlan = () => {
@@ -1174,7 +1174,7 @@ const savePlan = () => {
                 });
             }
         }
-        xhr.send(`planInfo&data=${JSON.stringify(data)}&csrf=${csrf}`);
+        xhr.send(`planInfo&data=${JSON.stringify(data).replace("&", "and")}&csrf=${csrf}`);
     }
 
     if (title == "" || fromDate == "" || toDate == "") {
@@ -1206,11 +1206,11 @@ const deletePlan = async (id, isRedirect) => {
         if (xhr.status === 200 && xhr.readyState === 4) {
             if (isRedirect) {
                 Swal.fire({
-                    title: 'Plan has been saved successfully.',
+                    title: 'Plan has been edited successfully.',
                     icon: 'success'
+                }).then(() => {
+                    location.replace("./../");
                 })
-
-                location.replace("./../")
             }
         } else {
             swal.close();

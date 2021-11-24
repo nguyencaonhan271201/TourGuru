@@ -41,6 +41,10 @@
   border-bottom-left-radius: 4px;
 }
 
+h5 {
+  color: #f8f7f7;
+}
+
 @media screen and (max-width: 576px) {
   .booking_trends_chart_options {
     display: block;
