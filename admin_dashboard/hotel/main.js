@@ -42,21 +42,29 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     document.getElementById("print").addEventListener("click", () => {
-        document.getElementById("print-block").style.display = "none";
-
-        var headstr = "<html><head><title>Booking Details</title></head><body>";
-        var footstr = "</body>";
-        var newstr = document.getElementById("booking-detail").innerHTML;
-        var oldstr = document.body.innerHTML;
-        document.body.innerHTML = headstr+newstr+footstr;
-        window.print();
-        document.body.innerHTML = oldstr;
-
-        document.getElementById("print-block").style.display = "initial";
-
-        return false;
+        performPrint();
     });
 })
+
+const performPrint = () => {
+    document.getElementById("print-block").style.display = "none";
+
+    var headstr = "<html><head><title>Booking Details</title></head><body>";
+    var footstr = "</body>";
+    var newstr = document.getElementById("booking-detail").innerHTML;
+    var oldstr = document.body.innerHTML;
+    document.body.innerHTML = headstr+newstr+footstr;
+    window.print();
+    document.body.innerHTML = oldstr;
+
+    document.getElementById("print-block").style.display = "initial";
+
+    document.getElementById("print").addEventListener("click", () => {
+        performPrint();
+    });
+
+    return false;
+}
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {
     const newDateObj = new Date(ISODate);

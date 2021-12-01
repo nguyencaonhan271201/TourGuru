@@ -41,7 +41,7 @@
                 </div>
                 <h4 class="text-purple mt-3 mb-3 text-center">Hotel Booking Confirmation</h4>
                 <div id="main-div">
-                    <img id="hotel-image">
+                    <img id="hotel-image" alt="">
                     <div class="hotel-info">
                         <h3 id="hotel-name" class="text-pink"></h3>
                         <h4 id="hotel-stars"></h4>

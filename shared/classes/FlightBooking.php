@@ -100,7 +100,7 @@ class FlightBooking {
       (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked FROM flight_bookings_iterations f1 
       WHERE booking_id IN (SELECT id FROM flight_bookings WHERE status = 1 AND id = ?)";
       $stmt = $this->conn->prepare($query);
-      $stmt->bind_param("i");
+      $stmt->bind_param("i", $booking_id);
       $stmt->execute();
       $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       return $result;
