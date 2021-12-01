@@ -26,7 +26,7 @@
     ></script>
     
     <nav class="navbar navbar-expand-sm navbar-light">
-        <a class="nav-link active" aria-current="page" href=""
+        <a class="nav-link active" aria-current="page" href="/"
           ><img src="/shared/assets/images/logo.svg" id="logo"
         /></a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
