@@ -37,4 +37,5 @@ Or manage where you have been to, what you have booked\
 
 **All in one - with <a href="https://tourgurubycntt.000webhostapp.com/" target="_blank">Tour Guru</a>** \
 
-![TourGuru](https://firebasestorage.googleapis.com/v0/b/testmultiplayerfirebase.appspot.com/o/personal-site%2Fds%2FTourGuru%2Flogo-filled.svg?alt=media&token=fee67c75-3577-4a34-ad57-2b730ae30536 =100x)
+<img src="https://firebasestorage.googleapis.com/v0/b/testmultiplayerfirebase.appspot.com/o/personal-site%2Fds%2FTourGuru%2Flogo-filled.svg?alt=media&token=fee67c75-3577-4a34-ad57-2b730ae30536" alt=""
+style="width: 100px"></img>
