@@ -35,7 +35,7 @@ Set reminder for important events and receive notifications via email\
 Or manage where you have been to, what you have booked\
 ![Visited](https://firebasestorage.googleapis.com/v0/b/testmultiplayerfirebase.appspot.com/o/personal-site%2Fds%2FTourGuru%2FScreenshot%202021-12-09%2000.38.16.png?alt=media&token=c20ebb29-8c13-40df-8286-5803743b7db9)
 
-**All in one - with <a href="https://tourgurubycntt.000webhostapp.com/" target="_blank">Tour Guru</a>** \
+**All in one - with <a href="https://tourgurubycntt.000webhostapp.com/" target="_blank">Tour Guru</a>**
 
 <img src="https://firebasestorage.googleapis.com/v0/b/testmultiplayerfirebase.appspot.com/o/personal-site%2Fds%2FTourGuru%2Flogo-filled.svg?alt=media&token=fee67c75-3577-4a34-ad57-2b730ae30536" alt=""
 style="width: 100px"></img>
