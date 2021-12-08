@@ -63,7 +63,7 @@ function getTop20TouristAttractions() {
   xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
   xhr.setRequestHeader(
     "x-rapidapi-key",
-    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
+    "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6"
   );
 
   xhr.send();

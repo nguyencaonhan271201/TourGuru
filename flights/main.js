@@ -335,7 +335,7 @@ const getSearchInfo = (searchQuery, isFrom) => {
 
     xhr.open("GET", `https://priceline-com-provider.p.rapidapi.com/v1/flights/locations?name=${searchQuery}`);
     xhr.setRequestHeader("x-rapidapi-host", "priceline-com-provider.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
+    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
 
     xhr.send();
 }
@@ -414,7 +414,7 @@ const getFlights = (sort_order, date_departure, itinerary_type, class_type, numb
 
     xhr.open("GET", url);
     xhr.setRequestHeader("x-rapidapi-host", "priceline-com-provider.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
+    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
 
     xhr.send();
 }

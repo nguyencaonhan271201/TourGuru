@@ -37,6 +37,9 @@ class HotelBooking {
         }
       }
 
+      $new_url = str_replace("_z", "_w", $data["hotel_image_url"]);
+      $data["hotel_image_url"] = $new_url;
+
       $query = "INSERT INTO hotel_bookings(user_id, date_start, date_end, number_of_nights, hotel_id, hotel_name,
       hotel_image_url, number_of_beds, total_cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);

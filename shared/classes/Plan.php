@@ -57,7 +57,7 @@ class Plan {
   public function addPlanInfo($data, &$errors) {
     try {
       //List of fields
-      $fields = ["user_id", "plan_title", "description", "from_date"];
+      $fields = ["user_id", "plan_title", "from_date"];
 
       foreach ($fields as $field) {
         if (!isset($data[$field]) || $data[$field] == "") {

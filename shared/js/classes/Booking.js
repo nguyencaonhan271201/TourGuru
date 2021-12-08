@@ -70,17 +70,17 @@ class FlightBooking extends Booking {
   }
 }
 
-class AbstractFactory {
+class Factory {
   create() {}
 }
 
-class HotelBookingFactory extends AbstractFactory {
+class HotelBookingFactory extends Factory {
   create(bookingInfo, id) {
     return new HotelBooking(bookingInfo, id);
   }
 }
 
-class FlightBookingFactory extends AbstractFactory {
+class FlightBookingFactory extends Factory {
   create(bookingInfo, id) {
     return new FlightBooking(bookingInfo, id);
   }
