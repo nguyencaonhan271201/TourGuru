@@ -62,7 +62,8 @@ $(window).on("load", function () {
         sendVisited(geoID);
       });
     } else {
-      location.replace("./../auth/login.php");
+      // location.replace("./../auth/login.php");
+      $(".visted_div").css("display", "none");
       return;
     }
   });
@@ -144,7 +145,7 @@ function getDetailOfAttractions(geoID) {
   xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
   xhr.setRequestHeader(
     "x-rapidapi-key",
-    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
+    "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6"
   );
 
   xhr.send();
@@ -175,7 +176,7 @@ function getPhotosOfLocation(geoID) {
   xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
   xhr.setRequestHeader(
     "x-rapidapi-key",
-    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
+    "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6"
   );
 
   xhr.send();
@@ -215,7 +216,7 @@ function getAttractionsOfGeo(geoID, center) {
   xhr.setRequestHeader("x-rapidapi-host", "travel-advisor.p.rapidapi.com");
   xhr.setRequestHeader(
     "x-rapidapi-key",
-    "6015fab332mshe435514eb925d97p10417ejsn0296e3e75ef9"
+    "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6"
   );
 
   xhr.send();

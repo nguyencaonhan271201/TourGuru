@@ -244,7 +244,7 @@ const getSearchInfo = (searchQuery) => {
 
     xhr.open("GET", `https://hotels4.p.rapidapi.com/locations/v2/search?query=${searchQuery}&locale=en_US`);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
+    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
 
     xhr.send();
 }
@@ -350,7 +350,7 @@ const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, star
 
     xhr.open("GET", query);
     xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629");
+    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
 
     xhr.send();
 }

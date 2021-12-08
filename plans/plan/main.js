@@ -278,30 +278,35 @@ const updateBookingLinkedDetail = () => {
     
     chosenBookings.flights.forEach(booking => {
         let subHTMLContent = ``;
-        booking.forEach(iteration => {
-            subHTMLContent += `
-                <div>
-                    <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
-                    ${iteration.flight_number}: ${iteration.origin_code} - ${iteration.dest_code} (${iteration.departure} - ${iteration.arrival}) 
-                    - ${getDisplayDateFormat(false, iteration.date)}
+        if (booking)
+        {
+            booking.forEach(iteration => {
+                subHTMLContent += `
+                    <div>
+                        <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
+                        ${iteration.flight_number}: ${iteration.origin_code} - ${iteration.dest_code} (${iteration.departure} - ${iteration.arrival}) 
+                        - ${getDisplayDateFormat(false, iteration.date)}
+                    </div>
+                `
+            })
+
+            html += `
+                <div class="flight-booking text-center mt-1 mb-1 editable-container" data-booking-id=${booking[0].booking_id}>
+                    ${subHTMLContent}
                 </div>
             `
-        })
-
-        html += `
-            <div class="flight-booking text-center mt-1 mb-1 editable-container" data-booking-id=${booking[0].booking_id}>
-                ${subHTMLContent}
-            </div>
-        `
+        }
     })
 
     chosenBookings.hotels.forEach(hotel => {
-        html += `
+        if (hotel) {
+            html += `
             <div class="hotel-booking text-center mt-2 mb-2 editable-container" data-booking-id=${hotel.id}>
                 <i class="fa fa-hotel" aria-hidden="true"></i>
                 ${hotel.hotel_name} - ${hotel.number_of_beds} rooms (${getDisplayDateFormat(false, hotel.date_start)} - ${getDisplayDateFormat(false, hotel.date_end)})
             </div>
         `
+        }
     })
 
     document.querySelector(".bookings").innerHTML = html;
@@ -314,12 +319,14 @@ const printDetails = () => {
 
     const detailsByDay = {};
     details.forEach(detail => {
-        let date = detail.date;
-        if (Object.keys(detailsByDay).includes(date)) {
-            detailsByDay[date].push(detail);
-        } else {
-            detailsByDay[date] = [];
-            detailsByDay[date].push(detail);
+        if (detail) {
+            let date = detail.date;
+            if (Object.keys(detailsByDay).includes(date)) {
+                detailsByDay[date].push(detail);
+            } else {
+                detailsByDay[date] = [];
+                detailsByDay[date].push(detail);
+            }
         }
     }) 
 
