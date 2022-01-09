@@ -666,7 +666,7 @@ const sendBookingConfirmationEmail = () => {
             });
         }
     }
-    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${htmlContent}&csrf=${csrf}`);
+    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${JSON.stringify({'content': htmlContent})}&csrf=${csrf}`);
 }
 
 const getDatePart = (ISODate, getPart) => {
