@@ -649,7 +649,7 @@ const sendBookingConfirmationEmail = () => {
             getFlight["totalPrice"] = `${totalFare} ${usingCurrency}`;
             localStorage.setItem("fromFlight", JSON.stringify(getFlight));
             localStorage.setItem("flightPassengers", JSON.stringify(paxInfos));
-            location.replace("./../booking-detail");
+            //location.replace("./../booking-detail");
         } else {
             Swal.fire({
                 icon: "error",
@@ -657,5 +657,5 @@ const sendBookingConfirmationEmail = () => {
             });
         }
     }
-    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${htmlContent}&csrf=${csrf}`);
+    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${JSON.stringify({'content': htmlContent})}&csrf=${csrf}`);
 }

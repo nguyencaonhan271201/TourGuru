@@ -42,8 +42,15 @@
         http_response_code(400);
         exit;
       }
+
+      $content = json_decode($_POST["content"]);
+      if (!array_key_exists('content', $content)) {
+        http_response_code(400);
+        exit;
+      }
+
       $subject = $_POST["subject"];
-      $content = $_POST["content"];
+      $content = $content->content;
       $error = false;
 
       sendEmail($to, "", $subject, $content, $error);
