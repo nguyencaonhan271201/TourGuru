@@ -58,21 +58,23 @@ h4 {
 #btn-create {
   color: white;
   border: none;
-  background: var(--theme-link);
+  background: var(--theme-purple);
   border-radius: 10rem;
-  padding: 0px 20px;
+  padding: 5px 30px;
   transition: background 200ms;
   text-decoration: none;
+  font-size: 20px;
 }
 
 #btn-create:hover {
-  background: var(--theme-link-hover);
+  background: var(--theme-dark-purple);
 }
 
 .plan {
   border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  padding: 10px 15px;
+  border: 3px solid var(--theme-purple);
+  cursor: pointer;
 }
 
 .plan-container {
@@ -82,6 +84,10 @@ h4 {
 
 .text-gray {
   color: gray;
+}
+
+.text-light-gray {
+  color: #ccc6c6;
 }
 
 .btn-view {
@@ -108,6 +114,23 @@ html {
   width: 0px;
   background: transparent;
   display: none;
+}
+
+.text-tiny {
+  font-size: 0.75rem;
+  color: #ccc6c6;
+}
+
+.colabs img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+  object-fit: contain;
+}
+
+.colabs img:not(:first-child) {
+  margin-left: -15px;
 }
 
 @media screen and (max-width: 576px) {

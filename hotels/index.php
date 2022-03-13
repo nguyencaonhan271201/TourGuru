@@ -71,7 +71,7 @@
                     </div>
                     <div class="p-1" id="main-search-form">
                         <div class="row m-0" style="height: 100%; width: 100%;">
-                            <div id="hotel-search-div" class="col-md-4 col-sm-12 d-flex p-0  mb-sm-2">
+                            <div id="hotel-search-div" class="col-lg-3 col-md-12 d-flex p-0  mb-sm-2">
                                 <div class="input-block input-block-abs">
                                     <span class="d-flex align-items-center header-search">
                                         <i class="fa fa-map-marker-alt ml-2 mr-2" aria-hidden="true"></i>
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="date-search-div" class="col-md-6 col-sm-12 d-flex p-0 mb-sm-2">
+                            <div id="date-search-div" class="col-lg-4 col-md-12 d-flex p-0 mb-sm-2">
                                 <div class="input-block">
                                     <span class="d-flex align-items-center">
                                         <i class="fa fa-calendar ml-2 mr-2" aria-hidden="true"></i>
@@ -96,10 +96,43 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-md-2 col-sm-12 d-flex p-0">
+                            <div id="room-info-search-div" class="col-lg-4 col-md-12 d-flex p-0 mb-sm-2">
+                                <div class="input-block">
+                                    <span class="d-flex align-items-center">
+                                        <i class="fas fa-user ml-2 mr-2"></i>
+                                        <!-- <input name="guests" id="guests" placeholder="guests" type="number" min="1" value="2"
+                                        max="30"> -->
+
+                                        <select name="guests" id="guests">
+                                            <?php 
+                                                for ($i = 1; $i <= 20; $i++) {
+                                                    $selected = $i == 2? "selected" : "";
+                                                    $guestOrGuests = $i == 1? "guest" : "guests";
+                                                    echo "<option value=\"{$i}\" {$selected}>{$i} {$guestOrGuests}</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                    </span>
+                                </div>
+                                <div class="input-block right-most">
+                                    <span class="d-flex align-items-center">
+                                        <i class="fas fa-door-open ml-2 mr-2"></i>
+                                        <select name="rooms" id="rooms">
+                                            <?php 
+                                                for ($i = 1; $i <= 10; $i++) {
+                                                    $selected = $i == 1? "selected" : "";
+                                                    $roomOrRooms = $i == 1? "room" : "rooms";
+                                                    echo "<option value=\"{$i}\" {$selected}>{$i} {$roomOrRooms}</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-12 d-flex p-0">
                                 <div class="input-block btn-search-block">
                                     <button id="btn-search">
-                                        <i class="fa fa-search mr-1" aria-hidden="true"></i>Search
+                                        <i class="fa fa-search mr-1" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </div>
@@ -111,53 +144,63 @@
             <div class="container search-result-div mt-4" style="opacity: 0">
                 <div class="row">
                     <div class="col-md-4 col-sm-12 summary-box">
-                    <h5 class="mb-3 text-purple">stars</h5>
+                        <h5 class="mb-3 text-purple">filter by</h5>
                         <hr class="overlap-hr">
-                        <div class="mt-2 mb-2">
-                            <input class="star-checkbox" type="checkbox" data-star=1>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                        </div>
-                        <div class="mt-2 mb-2">
-                            <input class="star-checkbox" type="checkbox" data-star=2>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                        </div>
-                        <div class="mt-2 mb-2">
-                            <input class="star-checkbox" type="checkbox" data-star=3>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                        </div>
-                        <div class="mt-2 mb-2">
-                            <input class="star-checkbox" type="checkbox" data-star=4>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                        </div>
-                        <div class="mt-2 mb-2">
-                            <input class="star-checkbox" type="checkbox" data-star=5>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
-                            <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                        <div id="filter-blocks">
+                            <div class="filter-element" id="star-block">
+                                <h5 class="mb-3 text-pink">stars</h5>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=0>
+                                    <span class="text-purple">unrated</span>
+                                </div>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=1>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=2>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=3>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=4>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                </div>
+                                <div class="mt-2 mb-2">
+                                    <input class="star-checkbox" type="checkbox" data-star=5>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star filter-star" aria-hidden="true"></i>
+                                </div>
+                                <hr class="overlap-hr">
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-8 col-sm-12 pl-4">
                         <div id="result-div">
                             <h2 id="location-title-h2" class="mt-1"></h2>
+                            <h4 id="number-of-props-h4" class="mt-1"></h4>
 
-                            <div class="text-right d-flex align-items-center justify-content-start">
+                            <div class="text-right d-flex align-items-center justify-content-end">
                                 <h5 class="mr-2 mb-1 mt-0" style="color: black !important;">sort by: </h5>
                                 <select name="sort" id="sort">
-                                    <option value="BEST_SELLER" selected="selected">best seller</option>
-                                    <option value="STAR_RATING_HIGHEST_FIRST">stars (high to low)</option>
-                                    <option value="STAR_RATING_LOWEST_FIRST">stars (low to high)</option>
-                                    <option value="DISTANCE_FROM_LANDMARK">distance from landmark</option>
-                                    <option value="GUEST_RATING">guest rating</option>
-                                    <option value="PRICE_HIGHEST_FIRST">price (highest first)</option>
-                                    <option value="PRICE">price (lowest first)</option>
+                                    <option value="popularity" selected="selected">popularity</option>
+                                    <option value="class_ascending">stars (ascending)</option>
+                                    <option value="class_descending">stars (descending)</option>
+                                    <option value="distance">distance from landmark</option>
+                                    <option value="review_score">review score</option>
+                                    <option value="price">price (descending)</option>
                                 </select>
                             </div>
                             <div id="result-choices">

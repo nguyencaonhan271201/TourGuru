@@ -537,6 +537,7 @@ const getInfoFromServer = async() => {
                 "isAdmin": result.isAdmin,
                 "image": result.image
             }));
+            localStorage.removeItem("business");
             if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
                 location.replace("./../flights/confirmation/");
             else if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") != "null")

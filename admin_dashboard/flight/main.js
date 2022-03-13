@@ -261,6 +261,17 @@ const printToDisplay = () => {
     
     document.getElementById("total-price").innerText = forwardFlight.total_price;
 
+    let approveHTML = ``;
+    if (flightInfo[0].approved === 0) {
+        approveHTML += `<span class="pending">PENDING</span>`;
+    } else if (flightInfo[0].approved === 1) {
+        approveHTML += `<span class="approved">APPROVED</span>`;
+    } else {
+        approveHTML += `<span class="rejected">REJECTED</span>`;
+    }
+
+    document.getElementById("approve-status").innerHTML = approveHTML;
+
     Swal.close();
 }
 

@@ -29,148 +29,184 @@
 
         <div class="container mb-4 d-flex justify-content-center" style="margin-top: 80px;">
             <div class="main-container">
-                <div class="hotel-info-head">
-                    <div class="row" style="width: 100%; margin: 0 auto">
-                        <div class="col-md-9 col-sm-12 ">
-                            <div class="hotel-option-info d-flex align-items-start flex-column">
-                                <h3 class="hotel-option-name"></h3>
-                                <p class="hotel-option-star">
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 order-md-1 order-2 p-md-0 p-3">
+                        <div id="search-box">
+                            <h4>search</h4>
+                            <form>
+                                <div class="form-group">
+                                  <label for="property">property</label>
+                                  <input type="text"
+                                    class="form-control" name="property" id="property" aria-describedby="helpId" placeholder=""
+                                    readonly="true">
+                                </div>
 
-                                </p>
-                                <p class="text-gray mb-1"><i class="fas fa-map-marked-alt">
-                                </i> <span class="hotel-address"></span></p>
+                                <div class="form-group">
+                                  <label for="check-in">check-in</label>
+                                  <input type="date"
+                                    class="form-control" name="check-in" id="check-in" aria-describedby="helpId" placeholder="">
+                                </div>
+
+                                <div class="form-group">
+                                  <label for="property">check-out</label>
+                                  <input type="date"
+                                    class="form-control" name="check-out" id="check-out" aria-describedby="helpId" placeholder="">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-12 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="guests">guests</label>
+                                            <select class="form-control" name="guests" id="guests">
+                                                <?php 
+                                                    for ($i = 1; $i <= 20; $i++) {
+                                                        $selected = $i == 2? "selected" : "";
+                                                        $guestOrGuests = $i == 1? "guest" : "guests";
+                                                        echo "<option value=\"{$i}\" {$selected}>{$i} {$guestOrGuests}</option>";
+                                                    }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 pl-md-1">
+                                        <div class="form-group">
+                                            <label for="rooms">rooms</label>
+                                            <select  class="form-control" name="rooms" id="rooms">
+                                                <?php 
+                                                    for ($i = 1; $i <= 10; $i++) {
+                                                        $selected = $i == 1? "selected" : "";
+                                                        $roomOrRooms = $i == 1? "room" : "rooms";
+                                                        echo "<option value=\"{$i}\" {$selected}>{$i} {$roomOrRooms}</option>";
+                                                    }
+                                                ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <img 
+                            alt="" 
+                            class="img-review-on-map"
+                            src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif">
+                    </div>
+                    <div class="col-md-9 col-sm-12 order-md-2 order-1">
+                        <div class="hotel-info-head">
+                            <div class="row" style="width: 100%; margin: 0 auto">
+                                <div class="col-md-9 col-sm-12 ">
+                                    <div class="hotel-option-info d-flex align-items-start flex-column">
+                                        <h3 class="hotel-option-name"></h3>
+                                        <p class="hotel-option-star">
+
+                                        </p>
+                                        <p class="text-gray mb-1"><i class="fas fa-map-marked-alt">
+                                        </i> <span class="hotel-address"></span></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-12 hotel-option-rating-div d-flex align-items-end flex-column justify-content-end">
+                                    <h3 class="hotel-option-rating"></h3>
+                                    <h4 class="hotel-option-type"></h4>
+                                </div>
+                            </div>
+                            
+                            <div class="head-img row mt-3 mb-2" style="width: 100%; margin: 0 auto">
+                                <div class="col-md-4 col-sm-12 image-head-left pr-md-1 pr-0 pl-0 pt-1 pb-1">
+                                    <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
+                                    <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
+                                </div>
+                                <div class="head-img-right col-md-8 col-sm-12 pl-md-1 pl-0 pt-1 pb-1 pr-0">
+                                    <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
+                                </div>
+                            </div>
+
+                            <div class="swiper slider">
+                                <div class="swiper-wrapper">
+                                    
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-12 hotel-option-rating-div d-flex align-items-end flex-column justify-content-end">
-                            <h3 class="hotel-option-rating"></h3>
-                            <h4 class="hotel-option-type"></h4>
-                        </div>
                     </div>
-                    
-                    <div class="head-img row mt-3 mb-2" style="width: 100%; margin: 0 auto">
-                        <div class="col-md-4 col-sm-12 image-head-left pr-md-1 pr-sm-0 pl-0 pt-1 pb-1">
-                            <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
-                            <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
-                        </div>
-                        <div class="head-img-right col-md-8 col-sm-12 pl-md-1 pl-sm-0 pt-1 pb-1 pr-0">
-                            <img src="https://i.pinimg.com/originals/e1/80/4e/e1804e9f5a5c4893167f45873342faba.gif" alt="">
+                </div>
+
+                <div class="hotel-info-body mt-2 mb-4">
+                    <div class="about">
+                        <h4 class="text-pink">about</h4>
+
+                        <p style="white-space: pre-wrap"></p>
+                    </div>
+
+                    <div class="availability mt-4 mb-4">
+                        <h4 class="text-pink">availability</h4>
+
+                        <div class="table-responsive">
+                        <table class="table mt-2">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">room type</th>
+                                    <th scope="col" class="text-center">facilities</th>
+                                    <th scope="col" class="text-center">price</th>
+                                    <th scope="col" class="text-center">book</th>
+                                </tr>
+                            </thead>
+                            <tbody id="availability-tbody">
+                                
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4">
+                                        <h5 class="text-pink text-right">total: <span id="total-price"></span></h5>
+                                    </td>
+                                </tr>
+                                <tr id="book-now-row">
+                                    <td colspan="4" class="text-right">
+                                        <button id="btn-search" onClick="performBook();">book now</button>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                         </div>
                     </div>
 
-                    <div class="swiper slider">
-                        <div class="swiper-wrapper">
+                    <div class="facilities mt-4 mb-4">
+                        <h4 class="text-pink">facilities</h4>
+
+                        <div class="row overview" style="width: 100%; margin: 0 auto;">
+                        
+                        </div>
+                    </div>
+             
+                    <div class="surroundings mt-4 mb-4">
+                        <h4 class="text-pink">hotel surroundings</h4>
+
+                        <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                            <div class="col-md-6 col-12 p-2">
+                                <h4 class="amenity-title"><i class="fas fa-archway"></i> What's nearby</h4>
+                                <ul class="hotel-info-ul closest" style="width: 100%; margin: 0 auto;">
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6 col-12 p-2">
+                                <h4 class="amenity-title"><i class="fas fa-archway"></i> Top attractions</h4>
+                                <ul class="hotel-info-ul popular" style="width: 100%; margin: 0 auto;">
+                                    
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="surroundings-div row" style="width: 100%; margin: 0 auto;">
+                        
+                        </div>
+                    </div>
+
+                    <div class="guest-reviews mt-4 mb-4">
+                        <h4 class="text-pink">guest reviews</h4>
+
+                        <div class="row" id="guest-reviews-items">
                             
                         </div>
                     </div>
                 </div>
-
-                <div class="hotel-info-body mt-4 mb-4">
-                    <div class="row overview" style="width: 100%; margin: 0 auto;">
-                        
-                    </div>
-
-                    <!-- 
-                    <div class="amenities mt-3">
-                        <div class="in-the-hotel mb-1">
-                            <h4 class="amenity-title"><i class="fas fa-hotel"></i> In the Hotel</h4>
-                            <div id="in-the-hotel-amenities">
-
-                            </div>
-                        </div>
-
-                        <div class="in-the-hotel mt-1">
-                            <h4 class="amenity-title"><i class="fas fa-hotel"></i> In the Room</h4>
-                            <div id="in-the-room-amenities">
-                                
-                            </div>
-                        </div>
-                    </div>
-                     -->
-
-                    <div class="policies mt-3">
-                        <h4 class="amenity-title"><i class="fa fa-info" aria-hidden="true"></i> Policies & Information</h4>
-                        <div id="hotel-policies" class="row"></div>
-                    </div>
-                </div>
-
-                <div class="booking-hide">
-                    <h3 class="hotel-option-name">book now</h3>
-                    <div class="search-div container d-flex align-items-center justify-content-center">
-                        <form id="flight-search-form" method="post" action="#">
-                            <div class="ml-md-3 ml-sm-0 d-flex" id="horizontal-upper-form-div">
-                                <label for="currency" class="mb-0 mr-2">currency</label>
-                                <select name="currency" id="currency">
-                                    <option value="USD" selected="selected">USD</option>
-                                </select>
-                            </div>
-                            <div class="p-1" id="main-search-form">
-                                <div class="row m-0" style="height: 100%; width: 100%;">
-                                    <div id="date-search-div" class="col-md-9 col-sm-12 d-flex p-0 mb-sm-2">
-                                        <div class="input-block">
-                                            <span class="d-flex align-items-center">
-                                                <i class="fa fa-calendar ml-2 mr-2" aria-hidden="true"></i>
-                                                <input name="check-in" id="check-in" placeholder="check-in">
-                                            </span>
-                                        </div>
-                                        <div class="input-block right-most">
-                                            <span class="d-flex align-items-center">
-                                                <i class="fas fa-calendar ml-2 mr-2"></i>
-                                                <input name="check-out" id="check-out" placeholder="check-out">
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 col-sm-12 d-flex p-0">
-                                        <div class="input-block btn-search-block">
-                                            <button id="btn-search-form">
-                                                <i class="fa fa-search mr-1" aria-hidden="true"></i>Search
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="booking">
-                    <h3 class="hotel-option-name">booking</h3>
-                    <div class="booking-summary">
-                        <div class="row">
-                            <div class="col-md-6 col-sm-12 pr-md-6 pr-0 d-flex align-items-center justify-content-center">
-                                <img src="" alt="" id="booking-summary-img">
-                            </div>
-                            <div class="col-md-6 col-sm-12 d-flex align-items-center pl-md-6 pr-0">
-                                <div>
-                                    <h4 class="text-purple" id="nights-count"></h4>
-                                    <h5 class="text-dark-purple" id="nights-range"></h5>
-                                    <h5 class="text-purple">number of rooms: 
-                                        <select name="rooms" id="rooms">
-                                            <option value="1" selected="selected">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                        </select>
-                                    </h5>
-                                    <p class="mt-1 mb-1">total price:</p>
-                                    <span id="container-total-price"><span id="total-price">0 USD</span>/ <span id="number-of-rooms">1 room</span></span>
-                                    <div class="mt-2">
-                                        <button id="btn-search">change hotel</button>
-                                    </div>
-                                    <div class="mt-2">
-                                        <button id="btn-book">confirm booking</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- <div id="map" style="width:100%; height:400px;" class="mt-3 mb-3"></div>                 -->
-
-                <!-- <div class="text-center">
-                    <a id="btn-search" href="../">search for another hotel</a>
-                </div> -->
             </div>
         </div>
 
@@ -190,7 +226,7 @@
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         
         <!-- SweetAlert -->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -208,8 +244,8 @@
         <script src="./../../shared/js/firebase.js"></script>
         <script src="./email.js"></script>
         <script src="./../../shared/js/classes/Hotel.js"></script>
+        <script src="./tmpHotelData.js"></script>
         <script src="./main.js"></script>
-
     </body>
 </html>
 

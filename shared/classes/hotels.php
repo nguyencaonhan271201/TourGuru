@@ -26,8 +26,8 @@
             $offset *= 10;
 
             $sql = 
-            "SELECT id as bookingNo, hotel_name as hotelName, hotel_id, date_start as 'from', date_end as 'to', user_id as userID, date_booked as timeBooked 
-            FROM hotel_bookings 
+            "SELECT id as bookingNo, (SELECT name FROM hotels h1 WHERE h1.hotel_id = h.hotel_id) as hotelName, hotel_id, date_start as 'from', date_end as 'to', user_id as userID, date_booked as timeBooked 
+            FROM hotel_bookings h
             ORDER BY date_booked DESC
             LIMIT ?";
 

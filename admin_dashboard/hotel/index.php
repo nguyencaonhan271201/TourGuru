@@ -39,6 +39,11 @@
                     </div>
                 </div>
                 <h4 class="text-purple mt-3 mb-3 text-center">Hotel Booking Confirmation</h4>
+
+                <div id="approve-status">
+                    
+                </div>
+                
                 <div id="main-div">
                     <img id="hotel-image" alt="">
                     <div class="hotel-info">
@@ -63,16 +68,23 @@
                         <p class="text-gray">0:00 - 12:00</p>
                     </div>
                     <div class="room-night text-center">
-                        <div class="room">
+                        <!-- <div class="room">
                             <h4 class="text-pink">room</h4>
                             <h1 class="text-purple room-count"></h1>
-                        </div>
+                        </div> -->
                         <div class="night">
                             <h4 class="text-pink">night</h4>
                             <h1 class="text-purple night-count"></h1>
                         </div>
                     </div>
                 </div>
+
+                <hr>
+                <h4 class="text-pink">rooms</h4>
+                <div id="rooms-detail">
+                    
+                </div>
+
                 <hr>
                 <h4 class="text-pink">total price</h4>
                 <span id="container-total-price"><span id="total-price">0 USD</span></span>

@@ -457,7 +457,7 @@ const sendBookingIterations = (bookingID) => {
             });
         }
     }
-    xhr.send(`bookingIterations&booking_id=${bookingID}&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
+    xhr.send(`bookingIterations&booking_id=${bookingID}&data=${JSON.stringify(sendData).replaceAll("&", "and")}&csrf=${csrf}`);
 }
 
 const sendPassengerInfos = (bookingID) => {
@@ -490,7 +490,7 @@ const sendPassengerInfos = (bookingID) => {
             });
         }
     }
-    xhr.send(`bookingCustomers&booking_id=${bookingID}&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
+    xhr.send(`bookingCustomers&booking_id=${bookingID}&data=${JSON.stringify(sendData).replaceAll("&", "and")}&csrf=${csrf}`);
 }
 
 const sendBookingConfirmationEmail = () => {
@@ -649,7 +649,7 @@ const sendBookingConfirmationEmail = () => {
             getFlight["totalPrice"] = `${totalFare} ${usingCurrency}`;
             localStorage.setItem("fromFlight", JSON.stringify(getFlight));
             localStorage.setItem("flightPassengers", JSON.stringify(paxInfos));
-            //location.replace("./../booking-detail");
+            location.replace("./../booking-detail");
         } else {
             Swal.fire({
                 icon: "error",

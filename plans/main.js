@@ -94,20 +94,48 @@ const printPlansToDisplay = (result) => {
 
     container.innerHTML = "";
     result.forEach(plan => {
+        let planModeHTML = plan.mode === 0? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
+        let locations = '';
+        let locationsHTML ='';
+        if (plan.locations.length > 0) {
+            for (let i = 0; i < plan.locations.length; i++) {
+                locations += ', ' + plan.locations[i].location_name;
+            }
+
+            locations = locations.slice(2);
+
+            locationsHTML = `<p class="text-light-gray mb-2"><i class="fas fa-map-marker-alt"></i> ${locations}</p>`;
+        }
+        let colabsImages = ``;
+        plan.colabs.forEach((colab, index) => {
+            colabsImages += `
+                <img 
+                    src=${colab.image.replace('../../', '../')}
+                    alt=""
+                    style="z-index: ${plan.colabs.length - index}"
+                >
+            `
+        });
+
         container.innerHTML += `
-            <div class="col-md-4 col-sm-6 col-12 plan-container">
-                <div class="plan text-center">
-                    <h3 class="text-pink">${plan.plan_title}</h3>
-                    <h5 class="text-purple">${getDisplayDateFormat(false, plan.from_date)} - ${getDisplayDateFormat(false, plan.to_date)}</h5>
-                    <p class="">${plan.description}</p>
-                    <p class="text-gray font-italic">created: ${getDisplayDateFormatAdd7Hours(plan.date_created)}</p>
-                    <button class="btn-view" data-plan-id=${plan.id}>view</button>
+            <div class="col-xl-4 col-sm-6 col-12 plan-container">
+                <div class="plan d-flex  flex-column align-items-start justify-content-center" data-plan-id=${plan.id}>
+                    <h1 class="text-purple">${plan.plan_title}
+                        <span class="text-tiny">
+                            ${planModeHTML}
+                        </span>
+                    </h1>
+                    ${locationsHTML}
+                    <h5 class="text-purple mb-2"><i class="fas fa-clock"></i> ${plan.numberOfDays} ${plan.numberOfDays === 1? "day" : "days"}</h5>
+                    <div class="colabs mt-2">
+                        ${colabsImages}
+                    </div>
                 </div>
             </div>
         `
     })
 
-    document.querySelectorAll(".btn-view").forEach(button => {
+    document.querySelectorAll(".plan").forEach(button => {
         button.addEventListener("click", () => {
             let id = button.getAttribute("data-plan-id");
             location.replace(`./plan?id=${id}`);

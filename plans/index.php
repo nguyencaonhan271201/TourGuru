@@ -26,12 +26,11 @@
 
         <div class="container-fluid mb-4" style="margin-top: 80px;">
             <div class="main-container">
-                <h1 class="text-purple text-center mb-3">my plans</h1>
-                <h5 class="text-pink text-center mt-2">feel free to 
-                    <a id="btn-create" href="./create">create a new plan</a>
-                    if you wish
-                </h5>
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="text-purple text-left mb-3" style="font-size: 4rem; font-weight: normal; font-family:'body'">my plans</h1>
 
+                    <a id="btn-create" href="./create"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                </div>
                 <div class="plans row mt-4">
                     
                 </div>
