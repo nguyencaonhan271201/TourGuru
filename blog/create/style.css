@@ -140,3 +140,10 @@ h4 {
   background: lightgrey;
   cursor: pointer;
 }
+
+/* Add responsive */
+@media screen and (max-width: 768px) {
+  .container-fluid {
+    max-width: 90%;
+  }
+}
