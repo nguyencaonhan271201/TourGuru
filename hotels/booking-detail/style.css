@@ -155,7 +155,8 @@ h5 {
   font-family: "header1";
 }
 
-#total-price {
+#total-price,
+.total-price {
   color: var(--theme-dark-purple) !important;
   font-size: 2rem;
   font-weight: 600;
@@ -191,6 +192,12 @@ h5 {
   background: var(--theme-link-hover);
 }
 
+.img-room-type {
+  max-width: 280px;
+  max-height: 200px;
+  object-fit: cover;
+}
+
 h5 {
   color: black !important;
 }
@@ -214,5 +221,17 @@ h5 {
 
   .date-info {
     display: block;
+  }
+
+  .booking-detail {
+    max-width: 95%;
+  }
+
+  .room-detail {
+    flex-direction: column;
+  }
+
+  #total-price {
+    font-size: 2rem !important;
   }
 }

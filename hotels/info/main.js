@@ -16,6 +16,7 @@ let numberOfRoom = 1;
 let roomSelect;
 let totalRoomPrice = 0;
 let hotelName = "";
+let hotelID = "";
 
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -32,6 +33,12 @@ let numberOfNights;
 let stars;
 let address;
 
+//Get all required info
+let hotelFull = {};
+
+//For room details
+let roomsInfo = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".main-container").style.opacity = 0;
     Swal.fire({
@@ -46,16 +53,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Check for parameter
     let urlParams = new URLSearchParams(window.location.search);
+
     //Initiate the rooms list
     if (urlParams.has("hotel")) {
-        getHotelInfo(urlParams.get("hotel"))
-        getHotelImages(urlParams.get("hotel"))
+        // getHotelInfo(urlParams.get("hotel"))
+        // getHotelImages(urlParams.get("hotel"))
+        hotelID = urlParams.get("hotel");
+        getCurrencyInfo();
     } else {
         //location.replace("./../");
         console.log("4");
     } 
 
     //Not chosen any hotel
+    /*
     if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
         document.querySelector(".booking").style.display = "none";
         document.querySelector(".booking-hide").style.display = "block";
@@ -144,12 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let checkIn = fromDate.toISOString().split('T')[0];
             let checkOut = toDate.toISOString().split('T')[0];
 
-            //cloneHotelInfo["date"]["checkIn"] = checkIn;
-            //cloneHotelInfo["date"]["checkOut"] = checkOut;
-
-            //cloneHotelInfo["currency"]["code"] = choosingCurrency;
-            //cloneHotelInfo["currency"]["rate"] = ratesList[choosingCurrency];
-
             let calculateFare = tmpSingleNight * ratesList[choosingCurrency] * numberOfNights;
             calculateFare = Math.round(calculateFare * 100) / 100
             //cloneHotelInfo["singleNight"] = calculateFare;
@@ -204,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
         }
     }
+    */
 })
 
 const getCurrencyInfo = () => {
@@ -218,12 +224,14 @@ const getCurrencyInfo = () => {
             let result = JSON.parse(xhr.responseText);
             ratesList = result.rates;
 
+            getHotelInfo(hotelID)
+
             //Upload the select
-            Object.keys(ratesList).forEach((key) => {
-                if (key != "USD") {
-                    document.getElementById("currency").innerHTML += `<option value="${key}">${key}</option>`
-                }
-            })
+            // Object.keys(ratesList).forEach((key) => {
+            //     if (key != "USD") {
+            //         document.getElementById("currency").innerHTML += `<option value="${key}">${key}</option>`
+            //     }
+            // })
         }
     }
 
@@ -234,31 +242,188 @@ const getCurrencyInfo = () => {
 }
 
 const getHotelInfo = (hotelID) => {
+    hotelFull = {};
+
+    if (localStorage.getItem("hotelInfo") !== "null") {
+        hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
+        Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
+    }
+
+    getHotelDescription(hotelID);
+}
+
+const performCheck = () => {
+    if (Object.keys(hotelFull).length === 6) {
+        updateHotelInfo(hotelFull);
+    }
+}
+
+const getHotelDescription = async(hotelID) => {
     const xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
         if(this.status == 200) {
             try {
                 let results = JSON.parse(xhr.responseText);
-                hotelInfo = results.data.body;
-                updateHotelInfo(hotelInfo);
+                hotelFull.description = results.description;
+
+                getHotelRoomsList(hotelID);
             }
             catch (e) {
                 console.log(e);
-                //location.replace("./../");
                 return;
             }
         }
     }
 
-    xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-details?id=${hotelID}`);
-    xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/description?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
 
     xhr.send();
 }
 
-const getHotelImages = (hotelID) => {
+const getHotelRoomsList = async(hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                hotelFull.roomsList = results[0];
+
+                getHotelFacilities(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    let tmpHotel = {}
+    if (localStorage.getItem("hotelInfo") !== "null") {
+        tmpHotel = JSON.parse(localStorage.getItem("hotelInfo"));
+        Object.setPrototypeOf(tmpHotel, HotelBookingInfo.prototype);
+    }
+    let currentDate = new Date();
+    let next4Days = new Date(new Date().getTime() + (4*24*60*60*1000));
+
+    let query = `https://booking-com.p.rapidapi.com/v1/hotels/room-list?units=metric&adults_number_by_rooms=2&hotel_id=${hotelID}` +
+    `&checkin_date=${tmpHotel.date.checkIn? tmpHotel.date.checkIn : currentDate.toISOString().split('T')[0]}` +
+    `&checkout_date=${tmpHotel.date.checkOut? tmpHotel.date.checkOut: next4Days.toISOString().split('T')[0]}` +
+    `&locale=en-us` +
+    `&currency=USD`;
+
+    xhr.open("GET", query);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const getHotelFacilities = async(hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                hotelFull.facilities = results;
+
+                getNearbyPlaces(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/facilities?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const getNearbyPlaces = async(hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                hotelFull.nearbyPlaces = results;
+
+                getHotelReviewScores(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/nearby-places?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const getHotelReviewScores = async(hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                hotelFull.scores = results.score_breakdown;
+
+                getHotelMapLocation(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/review-scores?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const getHotelMapLocation = async(hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                hotelFull.map = results.map_preview_url;
+
+                performCheck();
+                getHotelImages(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/map-markers?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const getHotelImages = async(hotelID) => {
     const xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
@@ -267,10 +432,9 @@ const getHotelImages = (hotelID) => {
                 let results = JSON.parse(xhr.responseText);
             
                 //Xử lý kết quả khi in ảnh
-                hotelImages = results.hotelImages.map(image => {
+                hotelImages = results.map(image => {
                     //Format lại định dạng url ảnh
-                    let url = image.baseUrl;
-                    url = url.replace("_{size}", "_w");
+                    let url = image.url_max;
                     return url
                 })
 
@@ -284,9 +448,9 @@ const getHotelImages = (hotelID) => {
         }
     }
 
-    xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-hotel-photos?id=${hotelID}`);
-    xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/photos?locale=en-gb&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
 
     xhr.send();
 }
@@ -328,8 +492,8 @@ const updateImages = () => {
         img.addEventListener("click", function(e) {
             e.preventDefault();
             let getURL = img.src;
-            if (getURL.includes("_s"))
-                getURL = getURL.replace("_s.jpg", "_w.jpg")
+            // if (getURL.includes("_s"))
+            //     getURL = getURL.replace("_s.jpg", "_w.jpg")
             loadImage(getURL);
             showImageBox();
         })
@@ -339,96 +503,327 @@ const updateImages = () => {
 
 const updateHotelInfo = (hotelInfo) => {
     Swal.close()
+
+    //Update form
+    document.getElementById("property").value = hotelChoosingInfo.hotel.name;
+    document.getElementById("check-in").value = hotelChoosingInfo.date.checkIn;
+    document.getElementById("check-out").value = hotelChoosingInfo.date.checkOut;
+    document.getElementById("guests").options[parseInt(hotelChoosingInfo.numberOfGuests) - 1].selected = true;
+    document.getElementById("rooms").options[parseInt(hotelChoosingInfo.numberOfRooms) - 1].selected = true;
+
     document.querySelector(".main-container").style.opacity = 1;
 
-    document.querySelector(".hotel-option-name").innerText = hotelInfo.propertyDescription.name;
-    hotelName = hotelInfo.propertyDescription.name;
+    document.querySelector(".hotel-option-name").innerText = hotelChoosingInfo.hotel.name;
+    hotelName = hotelChoosingInfo.hotel.name;
 
-    if (hotelInfo.guestReviews && hotelInfo.guestReviews.brands) {
+    if (hotelChoosingInfo.score && hotelChoosingInfo.score.score) {
         document.querySelector(".hotel-option-rating-div").style.display = "initial";
-        document.querySelector(".hotel-option-rating").innerText = `${hotelInfo.guestReviews.brands.formattedRating}`;
-        document.querySelector(".hotel-option-type").innerText = `${hotelInfo.guestReviews.brands.badgeText}`;
+        document.querySelector(".hotel-option-rating").innerText = `${hotelChoosingInfo.score.score}`;
+        document.querySelector(".hotel-option-type").innerText = `${hotelChoosingInfo.score.word}`;
     } else {
         document.querySelector(".hotel-option-rating-div").style.display = "none";
     }
 
-    document.querySelector(".hotel-address").innerText = hotelInfo.propertyDescription 
-    && hotelInfo.propertyDescription.address? hotelInfo.propertyDescription.address.fullAddress : "";
+    document.querySelector(".hotel-address").innerText = hotelChoosingInfo.hotel.address.replace(/\s\s+/g, ' ').replaceAll(" ,", ",");
+    address = hotelChoosingInfo.hotel.address;
+    stars = hotelChoosingInfo.hotel.stars;
 
-    address = hotelInfo.propertyDescription 
-    && hotelInfo.propertyDescription.address? hotelInfo.propertyDescription.address.fullAddress : "";
-    stars = hotelInfo.propertyDescription.starRating;
+    document.querySelector(".hotel-option-star").innerHTML = returnStar(hotelChoosingInfo.hotel.stars);
 
-    document.querySelector(".hotel-option-star").innerHTML = returnStar(hotelInfo.propertyDescription.starRating)
+    //Map
+    document.querySelector(".img-review-on-map").setAttribute("src", hotelInfo.map);
+    document.querySelector(".img-review-on-map").style.height = 
+    `${document.querySelector(".img-review-on-map").parentNode.offsetHeight - 
+    document.querySelector("#search-box").offsetHeight - 20}px`;
+
+    document.querySelector(".img-review-on-map").addEventListener("click", function(e) {
+        e.preventDefault();
+        let getURL = e.target.src;
+        loadImage(getURL);
+        showImageBox();
+    })
+
+    //About
+    document.querySelector(".about p").innerHTML = hotelInfo.description.replace("\n\n", "<br>");
+
+    //Facilities
+    let facilities = {};
+
+    hotelInfo.facilities.map(facility => {
+        if (!Object.keys(facilities).includes(facility.facilitytype_name)) {
+            facilities[facility.facilitytype_name] = [facility.facility_name];
+        } else {
+            facilities[facility.facilitytype_name].push(facility.facility_name);
+        }
+    })
 
     let overviewHTML = ``;
-    hotelInfo.overview.overviewSections.forEach(overview => {
-        if (overview.title) {
-            let childHTML = ``;
-            overview.content.forEach(content => {
-                childHTML += `<li class="col-md-6 col-sm-12"><i class="fa fa-check" aria-hidden="true"></i> ${content}</li>`
-            })
-            overviewHTML += `
-                <div class="mb-2">
-                    <h4 class="amenity-title"><i class="fas fa-utensils"></i> ${overview.title}</h4>
-                    <ul class="hotel-info-ul row" style="width: 100%; margin: 0 auto;">
-                        ${childHTML}
-                    </ul>
-                </div>
-            `
-        }
+    Object.keys(facilities).forEach(facilityGroup => {
+        let childHTML = ``;
+        facilities[facilityGroup].forEach(facility => {
+            childHTML += `<li class="col-md-4 col-sm-6 col-12 pl-1 pr-1 pt-2 pb-2"><i class="fa fa-check" aria-hidden="true"></i> ${facility}</li>`
+        })
+        overviewHTML += `
+            <div class="mb-2">
+                <h4 class="amenity-title"><i class="fas fa-utensils"></i> ${facilityGroup}</h4>
+                <ul class="hotel-info-ul row" style="width: 100%; margin: 0 auto;">
+                    ${childHTML}
+                </ul>
+            </div>
+        `
     })
 
     document.querySelector(".overview").innerHTML = overviewHTML;
 
-    let hotelInfoHTML = "";
+    //Surrounding
+    let surroundingHTML = ``;
+    let childHTML = ``;
 
-    Object.keys(hotelInfo.atAGlance.keyFacts).forEach(
-        amenity => {
-            let title;
-            switch (amenity) {
-                case "arrivingLeaving":
-                    title = `<h5 class="ml-md-3 ml-sm-0 amenity-subtitle"><i class="fa fa-calendar-check" aria-hidden="true"></i> Check-in and Check-out</h5>`
-                    break;
-                case "hotelSize":
-                    title = `<h5 class="ml-md-3 ml-sm-0 amenity-subtitle"><i class="fas fa-hotel"></i> Hotel</h5>`
-                    break;
-                case "requiredAtCheckIn":
-                    title = `<h5 class="ml-md-3 ml-sm-0 amenity-subtitle"><i class="fa fa-check" aria-hidden="true"></i> Check-in Info</h5>`
-                    break;
-                case "specialCheckInInstructions":
-                    title = `<h5 class="ml-md-3 ml-sm-0 amenity-subtitle"><i class="fa fa-question" aria-hidden="true"></i> Check-in Instructions</h5>`
-                    break;
-            }
+    //Landmark
+    hotelInfo.nearbyPlaces.landmarks.closests.forEach(place => {
+        childHTML += `<li class="mr-3">
+            <div class="d-flex justify-content-between pt-2 pb-2">
+                <span>
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    ${place.landmark_name}
+                </span>
+                <span>${getKilometersDistance(place.distance)}</span>
+            </div>
+        </li>`
+    })
+    document.querySelector(".closest").innerHTML = childHTML;
+
+    childHTML = ``;
+    hotelInfo.nearbyPlaces.landmarks.populars.forEach(place => {
+        childHTML += `<li class="mr-3">
+            <div class="d-flex justify-content-between pt-2 pb-2">
+                <span>
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    ${place.landmark_name}
+                </span>
+                <span>${getKilometersDistance(place.distance)}</span>
+            </div>
+        </li>`
+    })
+
+    document.querySelector(".popular").innerHTML = childHTML;
+
+    //surroundings
+    let surroundingByCategoriesHTML = ``;
+    Object.keys(hotelInfo.nearbyPlaces.surroundings).forEach(placesGroup => {
+        childHTML = ``;
+
+        hotelInfo.nearbyPlaces.surroundings[placesGroup].items.forEach(item => {
+            childHTML += `<li class="mr-3">
+                <div class="d-flex justify-content-between pt-2 pb-2">
+                    <span>
+                        <i class="fas fa-map-marked-alt mr-2"></i>
+                        ${item.landmark_name}
+                    </span>
+                    <span>${getKilometersDistance(item.distance)}</span>
+                </div>
+            </li>`
+        })
+
+        surroundingByCategoriesHTML += `
+        <div class="col-md-6 col-12 p-2">
+            <h4 class="amenity-title"><i class="fas fa-mountain"></i> 
+            ${hotelInfo.nearbyPlaces.surroundings[placesGroup].type_title}</h4>
+            <ul class="hotel-info-ul" style="width: 100%; margin: 0 auto;">
+                ${childHTML}
+            </ul>
+        </div>
+    `
+    })
     
-            if (title != "") {
-                let childHTML = ``;
-                hotelInfo.atAGlance.keyFacts[amenity].forEach(item => {
-                    childHTML += `<li class="ml-md-3 ml-sm-0">${item}</li>`
-                })
-                hotelInfoHTML += `
-                    <div class="mb-2 col-md-6 col-sm-12">
-                        ${title}
-                        <ul class="hotel-info-ul row" style="width: 100%; margin: 0 auto;">
-                            ${childHTML}
-                        </ul>
-                    </div>
-                `
+
+    document.querySelector(".surroundings-div").innerHTML = surroundingByCategoriesHTML;
+
+    //Guest reviews
+    
+    let scoreToDisplay = [];
+    hotelInfo.scores.forEach(score => {
+        if (score.customer_type === "total") {
+            scoreToDisplay = score.question;
+        }
+    })
+    let reviewItemsHTML = ``;
+    scoreToDisplay.forEach(item => {
+        if (!isNaN(item.score)) {
+            let score = parseFloat(item.score);
+            reviewItemsHTML += `
+            <div class="col-md-4 col-sm-6 col-12">
+                <p class="mb-1">${item.localized_question}</p>
+                <div class="review-progress-div">
+                    <span class="progress" style="width: 90%;">
+                        <div class="progress-bar review-progress" role="progressbar" style="width: ${score / 10 * 100}%" 
+                        aria-valuenow="${score / 10 * 100}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </span>
+                    <span class="ml-1">${score.toFixed(1)}</span>
+                </div>
+            </div>
+        `
+        }
+    })
+    document.querySelector("#guest-reviews-items").innerHTML = reviewItemsHTML;
+    
+    //Availability
+
+    roomsInfo = [];
+    hotelInfo.roomsList.block.forEach(room => {
+        //Prevent duplicate
+        id = room.room_id;
+
+        let duplicated = false;
+        for (let i = 0; i < roomsInfo.length; i++) {
+            if (id === roomsInfo[i].id) {
+                duplicated = true;
             }
         }
-    )
 
-    document.getElementById("hotel-policies").innerHTML = hotelInfoHTML;
+        if (!duplicated) {
+            roomsInfo.push({
+                name: room.name,
+                id: room.room_id,
+                price: room.min_price.price / ratesList[room.min_price.currency] * hotelChoosingInfo.currency.rate,
+                currency: hotelChoosingInfo.currency.code,
+                surface: room.room_surface_in_m2,
+                adults: room.nr_adults,
+                roomInfo: {
+                    description: hotelInfo.roomsList.rooms[room.room_id].description,
+                    facilities: hotelInfo.roomsList.rooms[room.room_id].facilities,
+                    photos: hotelInfo.roomsList.rooms[room.room_id].photos,
+                    highlights: hotelInfo.roomsList.rooms[room.room_id].highlights,
+                    bedConfig: hotelInfo.roomsList.rooms[room.room_id].bed_configurations
+                }
+            })
+        }
+    })
 
-    //Get map
-    //initMap(new google.maps.LatLng(hotelInfo.pdpHeader.hotelLocation.coordinates.latitude, hotelInfo.pdpHeader.hotelLocation.coordinates.longitude))
+    let tableHTML = ``;
 
-    document.getElementById("booking-summary-img").setAttribute("src", document.querySelector(".head-img-right img").getAttribute("src"))
+    for (let j = 0; j < roomsInfo.length; j++) {
+        let room = roomsInfo[j];
 
-    tmpSingleNight = hotelInfo.propertyDescription.featuredPrice.currentPrice.plain;
+        let carouselImagesHTML = ``;
 
-    if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
-        cloneImageURL = document.querySelector(".head-img-right img").getAttribute("src"); 
+        for (let i = 0; i < room.roomInfo.photos.length; i++) {
+            carouselImagesHTML += `
+                <div class="carousel-item ${i == 0? "active" : ""}">
+                    <img class="d-block w-100 img-room-type" src="${room.roomInfo.photos[i].url_original}" alt="">
+                </div>
+            `
+        }
+
+        let nightString = `${hotelChoosingInfo.numberOfNights} ${hotelChoosingInfo.numberOfNights === 1? "night" : "nights"}`;
+
+        let facilitiesListing = ``;
+        room.roomInfo.facilities.slice(0, Math.min(room.roomInfo.facilities.length, 20)).forEach(facility => {
+            facilitiesListing += `🗸 ${facility.name}  `
+        })
+
+        let highlightsListing = ``;
+        room.roomInfo.highlights.forEach(highlight => {
+            highlightsListing += `🗸 ${highlight.translated_name}  `
+        })
+
+        let roomSubInfo = ``;
+        let bedConfig = ``;
+        for (let i = 0; i < room.roomInfo.bedConfig.length; i++) {
+            if (i === 0) {
+                bedConfig += room.roomInfo.bedConfig[i].bed_types[0].name_with_count;
+            } else {
+                bedConfig += " or " + room.roomInfo.bedConfig[i].bed_types[0].name_with_count;
+            }
+        }
+        roomSubInfo += `${room.surface} m² · ${room.adults} ${room.adults > 1? "adults" : "adult"} · ${bedConfig}`
+
+        tableHTML += `
+            <tr>
+                <td style="min-width: 350px; width: 350px">
+                    <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100%">
+                        <div id="carousel-${j}" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner">
+                                ${carouselImagesHTML}
+                            </div>
+                            <a class="carousel-control-prev" href="#carousel-${j}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carousel-${j}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        <p class="font-weight-normal text-center">${room.name}</p>
+                    </div>
+                </td>
+                <td style="min-width: 300px; width: 300px">
+                    <div class="d-flex flex-column align-items-left justify-content-center" style="height: 100%">
+                        <p class="font-weight-normal text-medium text-left">${room.roomInfo.description}</p>
+                        <p class="font-weight-normal text-medium text-left">${roomSubInfo}</p>
+                        <p class="font-weight-normal text-medium text-purple text-left">${highlightsListing}</p>
+                        <p class="font-weight-normal text-tiny text-purple text-left">${facilitiesListing}</p>
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex flex-column align-items-center justify-content-center" style="height: 100%">
+                        <h5 class="text-center text-pink">
+                        ${room.price.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${room.currency}/${nightString}</h5>
+                    </div>
+                </td>
+                <td style="min-width: 90px; width: 90px">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <select class="custom-select room-select" data-price="${room.price}" onChange="updateBookingQuantity()">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        `
+    }
+
+    document.getElementById("availability-tbody").innerHTML = tableHTML;
+
+    document.querySelectorAll(".img-room-type").forEach(img => {
+        img.addEventListener("click", function(e) {
+            e.preventDefault();
+            let getURL = e.target.src;
+            loadImage(getURL);
+            showImageBox();
+        }
+    )})
+
+    document.querySelector("#total-price").innerHTML =
+    `${totalRoomPrice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${hotelChoosingInfo.currency.code}`
+}
+
+const updateBookingQuantity = () => {
+    let tmpTotalPrice = 0;
+    document.querySelectorAll(".room-select").forEach(select => {
+        let getQuantity = select.value;
+        let getPrice = select.getAttribute("data-price");
+        tmpTotalPrice += getQuantity * getPrice;
+    })
+
+    totalRoomPrice = tmpTotalPrice.toFixed(2);
+    document.querySelector("#total-price").innerHTML = 
+    `${totalRoomPrice.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${hotelChoosingInfo.currency.code}`
+
+    if (totalRoomPrice > 0) {
+        document.getElementById("book-now-row").style.display = "table-row";
+    } else {
+        document.getElementById("book-now-row").style.display = "none";
     }
 }
 
@@ -486,6 +881,11 @@ function initMap(center) {
     });
 }
 
+const getKilometersDistance = (distanceInMeters) => {
+    let kilometers = (distanceInMeters / 1000).toFixed(1);
+    return `${kilometers} km`
+}
+
 const getDisplayDateFormat = (isWeekDay, ISODate) => {
     const newDateObj = new Date(ISODate);
     const toMonth = newDateObj.getMonth() + 1;
@@ -540,11 +940,11 @@ const sendBookingInfo = () => {
 
     let totalRoomPriceReformatted = Math.round(totalRoomPrice * 100) / 100
 
-    hotelChoosingInfo.hotel.name = hotelName;
-    hotelChoosingInfo.numberOfRooms = numberOfRoom;
+    // hotelChoosingInfo.hotel.name = hotelName;
+    // hotelChoosingInfo.numberOfRooms = numberOfRoom;
     hotelChoosingInfo.totalCost = totalRoomPriceReformatted;
-    hotelChoosingInfo.hotel.stars = stars;
-    hotelChoosingInfo.hotel.address = address;
+    // hotelChoosingInfo.hotel.stars = stars;
+    // hotelChoosingInfo.hotel.address = address;
     
     let sendData = hotelChoosingInfo.buildObjectForSend(uid);
 
@@ -557,7 +957,55 @@ const sendBookingInfo = () => {
     xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.onload = () => {
         if (xhr.status === 200 && xhr.readyState === 4) {
-            localStorage.setItem("hotelInfo", JSON.stringify(hotelChoosingInfo))
+            let bookingID = parseInt(xhr.responseText);
+            sendHotelBookingDetails(bookingID);
+        } else {
+            swal.close();
+            Swal.fire({
+                icon: "error",
+                text: "Error occured. Please try again later."
+            });
+        }
+    }
+
+    xhr.send(`bookingInfo&data=${JSON.stringify(sendData).replaceAll("&", "and")}&csrf=${csrf}`);
+}
+
+const sendHotelBookingDetails = (bookingID) => {
+    //Add booking details to table
+    //Get csrf
+    let csrf = "";
+    csrf = document.getElementById("csrf-hotel-info").innerText;
+
+    let hotelRoomInfos = [];
+
+    document.querySelectorAll(".room-select").forEach((select, index) => {
+        let getQuantity = select.value;
+        let getPrice = select.getAttribute("data-price");
+        if (getQuantity > 0) {
+            hotelRoomInfos.push({
+                room_name: roomsInfo[index].name,
+                room_image: roomsInfo[index].roomInfo.photos[0].url_original || "",
+                number_of_room: getQuantity,
+                single_cost: getPrice,
+                currency: roomsInfo[index].currency,
+            })
+        }
+    })
+
+    hotelChoosingInfo.roomDetails = hotelRoomInfos;
+    let sendData = hotelRoomInfos;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        "POST",
+        "../../api/hotels/hotel.php",
+        true
+    )
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+            localStorage.setItem("hotelInfo", JSON.stringify(hotelChoosingInfo));
             sendBookingConfirmationEmail();
         } else {
             swal.close();
@@ -568,10 +1016,21 @@ const sendBookingInfo = () => {
         }
     }
 
-    xhr.send(`bookingInfo&data=${JSON.stringify(sendData).replace("&", "and")}&csrf=${csrf}`);
+    xhr.send(`bookingDetails&data=${encodeURIComponent(JSON.stringify(sendData))}&bookingID=${bookingID}&csrf=${csrf}`);
 }
 
-const sendBookingConfirmationEmail = () => {        
+const sendBookingConfirmationEmail = () => {      
+    let hotelRoomInfoHTML = ``;
+    hotelChoosingInfo.roomDetails.forEach(detail => {
+        hotelRoomInfoHTML += `
+            <div>
+                <h3 id="total-price" style="color: #a082af; display: inline;">${detail.number_of_room} x </h3>
+                <p style="display: inline;">${detail.room_name}</p>
+                <p style="display: inline;">(${detail.single_cost} ${detail.currency})</p>
+            </div>
+        `
+    })
+    
     let htmlContent = `
         <html>
             <head>
@@ -590,7 +1049,7 @@ const sendBookingConfirmationEmail = () => {
                             <div class="hotel-info">
                                 <h1 id="hotel-name" class="text-pink" style="color: #c95998">${hotelChoosingInfo.hotel.name}</h1>
                                 <h4 id="hotel-stars" style="color: rgb(223, 167, 25)">${returnStarForMail(hotelChoosingInfo.hotel.stars)}</h4>
-                                <p id="hotel-address" class="text-gray" style="color: gray">${hotelChoosingInfo.hotel.address}</p>
+                                <p id="hotel-address" class="text-gray" style="color: gray">${hotelChoosingInfo.hotel.address.replace(/\s\s+/g, ' ').replaceAll(" ,", ",")}</p>
                             </div>
                         </div>
                         <div class="date-info">
@@ -614,13 +1073,15 @@ const sendBookingConfirmationEmail = () => {
                             <div class="room-night text-center">
                                 <div class="room">
                                     <h2 class="text-pink" style="color: #c95998">
-                                        <span class="text-purple room-count" style="color: #a082af">${hotelChoosingInfo.displayRoomString()}</span>
-                                        -
                                         <span class="text-purple night-count" style="color: #a082af">${hotelChoosingInfo.displayNightFullString()}</span>
                                     </h2>                                    
                                 </div>
                             </div>
                         </div>
+                        <hr>
+                        <h4 class="text-pink" style="color: #c95998">rooms</h4>
+                        ${hotelRoomInfoHTML}
+
                         <hr>
                         <h4 class="text-pink" style="color: #c95998">total price</h4>
                         <h3 id="container-total-price"><h2 id="total-price" style="color: #a082af">${hotelChoosingInfo.buildCostString()}</h2></h3>
@@ -666,7 +1127,7 @@ const sendBookingConfirmationEmail = () => {
             });
         }
     }
-    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${JSON.stringify({'content': htmlContent})}&csrf=${csrf}`);
+    xhr.send(`sendEmail&to=${user_email}&subject=${subject}&content=${encodeURIComponent(JSON.stringify({'content': htmlContent}))}&csrf=${csrf}`);
 }
 
 const getDatePart = (ISODate, getPart) => {

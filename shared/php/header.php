@@ -1,5 +1,5 @@
 <?php 
-  putenv("ROOT=/TourGuru");
+  putenv("ROOT=/TourGuru_v2");
 ?>
     <link rel="icon" href="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg">
     <link href="<?php echo getenv('ROOT')?>/shared/css/style.css" rel="stylesheet" />
@@ -55,6 +55,10 @@
           </ul>
                 
           <ul class="navbar-nav float-lg-right" id="header-logged-in">
+            <p id="business-name">
+              Vietnam Airlines
+            </p>
+            
             <!-- Avatar -->
             <li class="nav-item dropdown dropdown-menu-right dropdown-menu-end">
               <a
@@ -76,27 +80,39 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                <li>
-                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
-                </li>
-                <div class="dropdown-divider"></div>
-                <li>
-                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/profile/edit"><i class="fas fa-edit"></i> Edit profile</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
-                </li>
-                <div class="dropdown-divider"></div>
-                <div id="admin-header-block">
+                <div id="business-dropdown">
                   <li>
-                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/admin_dashboard"><i class="fas fa-chart-line"></i> Management</a>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/edit"><i class="fas fa-edit"></i> Edit business profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
                   </li>
                   <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
+                </div> 
+                <div id="user-dropdown">
+                  <li>
+                      <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
+                    </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/profile/edit"><i class="fas fa-edit"></i> Edit profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <div id="admin-header-block">
+                    <li>
+                      <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/admin_dashboard"><i class="fas fa-chart-line"></i> Management</a>
+                    </li>
+                    <div class="dropdown-divider"></div>
+                  </div>
+                  <a class="dropdown-item" href="#" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
                 </div>
-                <a class="dropdown-item" href="#" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
               </ul>
             </li>
           </ul>            

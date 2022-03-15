@@ -208,6 +208,52 @@ h5 {
   color: black !important;
 }
 
+#approve-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.approved {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #90ee90;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+.pending {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #ffffe0;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+.rejected {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #f08080;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+.img-room-type {
+  max-width: 280px;
+  max-height: 200px;
+  object-fit: cover;
+}
+
 @media screen and (max-width: 1000px) {
   #main-div {
     display: block;
@@ -227,5 +273,17 @@ h5 {
 
   .date-info {
     display: block;
+  }
+
+  .booking-detail {
+    max-width: 95%;
+  }
+
+  .room-detail {
+    flex-direction: column;
+  }
+
+  #total-price {
+    font-size: 2rem !important;
   }
 }

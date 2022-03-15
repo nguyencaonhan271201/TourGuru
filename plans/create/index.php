@@ -35,42 +35,90 @@
                     you should submit your plan whenever the basic information is included. <br>further modifications are allowed.
                 </p>
                 <div class="text-center">
-                    <button type="button" id="btn-create" class="text-center"><i class="fas fa-save"></i></button>
+                    <button type="button" id="btn-create" class="text-center mr-1"><i class="fas fa-save"></i></button>
+                    <!-- <button type="button" id="btn-add-colab" class="text-center ml-1"><i class="fas fa-plus"></i></button> -->
                 </div>
                 <div class="header-div text-center">
                     <div class="editable-container" id="title-div">
-                        <h1 class="editable" id="plan-title">title</h1>
+                        <div class="flex-row d-flex align-items-center justify-content-center">
+                            <h1 id="plan-title">title
+                           
+                            </h1>
+                            <span id="plan-mode" class="ml-2">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
                         <p class="editable-icon" data-type="title"><i class="fas fa-edit"></i></p>
+
                     </div>
-                    <div class="editable-container" id="date-div">
+
+                    <div class="editable-container" id="colab-div">
+                        <div class="colabs mt-2" id="colabs-display" onClick="showAddColabSwal()">
+                            
+                        </div>
+                    </div>
+
+                    <div class="editable-container mt-2 mb-2 d-flex flex-row align-items-center justify-content-center" id="wrapper-location-div">
+                        <!-- <p class="mb-1 mr-2">locations: </p> -->
+                        <div id="wrapper-locations-display">
+                        
+                        </div>
+                        <p class="editable-icon wrapper-location-editable"
+                        data-tooltip="Add a location" data-tooltip-location="right"
+                        data-type="wrapper-location"><i class="fas fa-plus"></i></p>
+                    </div>
+                    
+                    <!-- <div class="editable-container" id="date-div">
                         <h4 class="editable" id="plan-date">from date - to date</h4>
                         <p class="editable-icon" data-type="date"><i class="fas fa-edit"></i></p>
-                    </div>
+                    </div> -->
+                    <!-- <div class="editable-container mb-2 mt-2" id="mode-div">
+                        <span id="plan-mode">
+                            <i class="fas fa-globe-asia"></i>
+                            <i class="fas fa-lock"></i> private
+                        </span>
+                        <p class="editable-icon" data-type="mode"><i class="fas fa-edit"></i></p>
+                    </div> -->
+
                     <div class="editable-container" id="description-div">
                         <!-- <h5 class="editable" id="plan-description"></h5>
                         <p class="editable-icon"><i class="fas fa-edit"></i></p> -->
+
+                        <p class="editable-icon-show" id="add-description"
+                    data-tooltip="Add description" data-tooltip-location="left"
+                    ><i class="fa fa-plus" aria-hidden="true"></i></p>
                     </div>
                     
-                    <p class="editable-icon-show" id="add-description"
-                    data-tooltip="Add description" data-tooltip-location="right"
-                    ><i class="fa fa-plus" aria-hidden="true"></i></p>
+
                 </div>
-                <hr>
-                <div class="external-linkings">
-                    <div class="bookings">
+
+                <div class="main-detail-div text-center">
+                    <h2 class="text-purple text-left" style="font-family: 'body'">plans
+                       
+                    </h2>
+
+                    <p class="editable-icon-show mt-3" id="add-day"
+                        data-tooltip="Add a day" data-tooltip-location="right"><i class="fa fa-plus" aria-hidden="true"></i></p>
                         
+                    <div id="details" class="row">
+
                     </div>
+                </div>
+
+                <div class="external-linkings">
+                    <h2 class="text-purple text-left" style="font-family: 'body'">bookings</h2>
+                    <div class="bookings">
+                        <div class="flight-bookings row">
+
+                        </div>
+                        <div class="hotel-bookings row">
+
+                        </div>
+                    </div>
+
                     <p class="editable-icon-show mt-3" id="add-booking"
                     data-tooltip="Link an existing booking" data-tooltip-location="right"
                     ><i class="fa fa-plus" aria-hidden="true"></i></p>
-                </div>
-                <hr>
-                <div class="main-detail-div text-center">
-                    <div id="details">
-
-                    </div>
-                    <p class="editable-icon-show" id="add-detail"
-                    data-tooltip="Add a detail" data-tooltip-location="right"><i class="fa fa-plus" aria-hidden="true"></i></p>
                 </div>
             </div>
         </div>
@@ -99,6 +147,9 @@
         <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
         <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+        <!-- SortableJS (for Draggable list) -->
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
         <!-- Project JavaScript -->
         <script src="./../../shared/js/firebase.js"></script>

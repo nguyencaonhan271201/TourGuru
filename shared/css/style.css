@@ -7,6 +7,11 @@
   --black: #323545;
 }
 
+* {
+  -webkit-print-color-adjust: exact !important; /* Chrome, Safari, Edge */
+  color-adjust: exact !important; /*Firefox*/
+}
+
 @font-face {
   font-family: "medium";
   src: url("../assets/fonts/header.TTF");
@@ -230,6 +235,15 @@ th {
   top: 10px;
 }
 
+#business-name {
+  color: white;
+  font-family: "regular";
+  margin-bottom: auto !important;
+  margin-right: 80px;
+  font-weight: 500;
+  font-size: 20px;
+}
+
 @media screen and (max-width: 575px) {
   .navbar {
     background: #f8f9fa !important;
@@ -248,6 +262,12 @@ th {
     position: relative;
     margin-left: 20px;
     margin-top: -10px;
+  }
+
+  #business-name {
+    color: black;
+    margin-right: 0px;
+    margin-top: 5px;
   }
 }
 

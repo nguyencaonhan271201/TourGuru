@@ -4,6 +4,7 @@ let planID;
 let hotelID;
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let roomsInfo = [];
 
 window.addEventListener("DOMContentLoaded", () => {
     Swal.fire({
@@ -111,33 +112,29 @@ const returnStar = (star) => {
     return result;
 }
 
-const getHotelInfo = () => {
-    const xhr = new XMLHttpRequest();
-
-    xhr.onload = function() {
-        if(this.status == 200) {
-            try {
-                let results = JSON.parse(xhr.responseText);
-                hotelInfo = results.data.body;
-                printToDisplay();
-            }
-            catch (e) {
-                Swal.fire({
-                    icon: "error",
-                    text: "Error occured."
-                }).then(() => {
-                    location.replace("./../");
-                })
-                
-                return;
-            }
+const getHotelBookingDetails = () => {
+    let csrf = document.getElementById("csrf").innerText;
+    let xhr = new XMLHttpRequest();
+    xhr.open(
+        "GET",
+        `../../api/bookings/info.php?getHotelsDetailsAdmin&booking_id=${planID}&user_id=${uid}&csrf=${csrf}&isAdmin=${isAdmin}`,
+        true
+    )
+    xhr.onload = () => {
+        if (xhr.status === 200 && xhr.readyState === 4) {
+            //Nhận thông tin và lưu vào danh mục
+            let result = JSON.parse(xhr.responseText); 
+            roomsInfo = result;
+            printToDisplay();
+        } else {
+            Swal.fire({
+                icon: "error",
+                text: "Error occured."
+            }).then(() => {
+                location.replace("./../");
+            })
         }
     }
-
-    xhr.open("GET", `https://hotels4.p.rapidapi.com/properties/get-details?id=${hotelID}`);
-    xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
-
     xhr.send();
 }
 
@@ -157,7 +154,7 @@ const getHotelBookingInfo = () => {
                 bookingInfo = result;
                 //console.log(result);
                 hotelID = bookingInfo.hotel_id;
-                getHotelInfo();
+                getHotelBookingDetails();
             } else {
                 Swal.fire({
                     icon: "error",
@@ -181,9 +178,8 @@ const printToDisplay = () => {
 
     document.getElementById("hotel-name").innerText = bookingInfo.hotel_name;
     document.getElementById("hotel-name-span").innerText = bookingInfo.hotel_name;
-    document.getElementById("hotel-stars").innerHTML = returnStar(hotelInfo.propertyDescription.starRating);
-    document.getElementById("hotel-address").innerText = hotelInfo.propertyDescription 
-    && hotelInfo.propertyDescription.address? hotelInfo.propertyDescription.address.fullAddress : "";
+    document.getElementById("hotel-stars").innerHTML = returnStar(bookingInfo.hotel_stars);
+    document.getElementById("hotel-address").innerText = bookingInfo.hotel_address;
 
     document.querySelector(".check-in-date").innerText = getDatePart(bookingInfo.date_start, "date")
     document.querySelector(".check-in-month").innerText = getDatePart(bookingInfo.date_start, "monthYear")
@@ -193,10 +189,41 @@ const printToDisplay = () => {
     document.querySelector(".check-out-month").innerText = getDatePart(bookingInfo.date_end, "monthYear")
     document.querySelector(".check-out-weekday").innerText = getDatePart(bookingInfo.date_end, "weekDay")
 
-    document.querySelector(".room-count").innerText = bookingInfo.number_of_beds;
+    // document.querySelector(".room-count").innerText = bookingInfo.number_of_beds;
     document.querySelector(".night-count").innerText = bookingInfo.number_of_nights;
 
     document.getElementById("total-price").innerText = bookingInfo.total_cost;
+
+    let roomDetailsHTML = ``;
+    roomsInfo.forEach(detail => {
+        roomDetailsHTML += `
+            <div class="room-detail d-flex align-items-center justify-content-center">
+                <div class="d-flex flex-column align-items-center justify-content-center" style="max-width: 350px;">
+                    <img src="${detail.room_image}" alt="" class="img-room-type">
+                    <p class="font-weight-normal text-center">${detail.room_name}</p>
+                </div>
+                <div class="ml-4 mr-4" style="width: fit-content;">
+                    <h5 class="font-weight-normal text-center">(${parseFloat(detail.single_cost).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${detail.currency})</h5>
+                </div>
+                <div class="ml-4 mr-4" style="width: fit-content; margin-top: -7.5px">
+                    <h3 class="total-price" style="display: inline;"> x </h3>
+                    <h3 class="total-price" style="display: inline;"> ${detail.number_of_room} </h3>
+                </div>
+            </div>
+        `
+    })
+    document.getElementById("rooms-detail").innerHTML = roomDetailsHTML;
+
+    let approveHTML = ``;
+    if (bookingInfo.approved === 0) {
+        approveHTML += `<span class="pending">PENDING</span>`;
+    } else if (bookingInfo.approved === 1) {
+        approveHTML += `<span class="approved">APPROVED</span>`;
+    } else {
+        approveHTML += `<span class="rejected">REJECTED</span>`;
+    }
+
+    document.getElementById("approve-status").innerHTML = approveHTML;
 
     swal.close();
 }

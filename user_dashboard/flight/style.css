@@ -149,3 +149,53 @@ h5 {
 h5 {
   color: black !important;
 }
+
+#approve-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.approved {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #90ee90;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+.pending {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #ffffe0;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+.rejected {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #f08080;
+  display: block;
+  text-align: center;
+  font-family: "header1";
+}
+
+@media screen and (max-width: 1000px) {
+  .booking-detail {
+    max-width: 95%;
+  }
+
+  #total-price {
+    font-size: 2rem !important;
+  }
+}

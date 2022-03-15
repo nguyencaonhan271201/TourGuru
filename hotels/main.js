@@ -6,11 +6,15 @@ let searchButton = document.getElementById("btn-search");
 let ratesList = null;
 let choosingCurrency = "USD";
 let selectedLocationID = "";
+let selectedLocationType = "";
+let searchHeader = "";
 let isPrintedHotel = false;
 let starQuery = "";
-let sortBy = "BEST_SELLER";
+let sortBy = "popularity";
 let currentPageNumber = 1;
 let numberOfNights = 1;
+let numberOfGuests;
+let numberOfRooms;
 let newlySearch = false;
 let checkIn = "";
 let checkOut = "";
@@ -85,7 +89,7 @@ const initializeEventListener = () => {
         let isHovered = $('#search-location-result').is(":hover");
         if (!isHovered) {
             resetSearchResult();
-            locationSearch.value = selectedLocationID;
+            locationSearch.value = searchHeader;
         }
     })
 
@@ -172,10 +176,14 @@ const initializeEventListener = () => {
         choosingCurrency = document.getElementById("currency").value;
         
         currentPageNumber = 1;
-        sortBy = "BEST_SELLER";
+        sortBy = "popularity";
         starQuery = "";
 
-        getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy)
+        //Additional info
+        numberOfGuests = document.getElementById("guests").value;
+        numberOfRooms = document.getElementById("rooms").value;
+
+        getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfRooms, undefined, isNewSearch = true);
 
         document.querySelectorAll(".star-checkbox").forEach((checkbox) => {
             checkbox.checked = false;
@@ -183,13 +191,12 @@ const initializeEventListener = () => {
         starQuery = "";
 
         document.getElementById("sort").innerHTML = `
-            <option value="BEST_SELLER" selected="selected">best seller</option>
-            <option value="STAR_RATING_HIGHEST_FIRST">stars (high to low)</option>
-            <option value="STAR_RATING_LOWEST_FIRST">stars (low to high)</option>
-            <option value="DISTANCE_FROM_LANDMARK">distance from landmark</option>
-            <option value="GUEST_RATING">guest rating</option>
-            <option value="PRICE_HIGHEST_FIRST">price (highest first)</option>
-            <option value="PRICE">price (lowest first)</option>
+            <option value="popularity" selected="selected">popularity</option>
+            <option value="class_ascending">stars (ascending)</option>
+            <option value="class_descending">stars (descending)</option>
+            <option value="distance">distance from landmark</option>
+            <option value="review_score">review score</option>
+            <option value="price">price (descending)</option>
         `;
     
         setTimeout(() => {
@@ -206,9 +213,9 @@ const initializeEventListener = () => {
                 container = document.getElementById("result-choices");
                 container.innerHTML = "";
                 if (starQuery == "")
-                    getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy)
+                    getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfNights, undefined, isNewSearch = false)
                 else
-                    getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy, starQuery)
+                    getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfNights, starQuery, isNewSearch = false)
             }
         }
     })
@@ -236,32 +243,50 @@ const getSearchInfo = (searchQuery) => {
     xhr.onload = function() {
         if(this.status == 200) {
             let results = JSON.parse(xhr.responseText);
-            printSearchInfo(results.suggestions);
+            printSearchInfo(results);
         } else {
             
         }
     }
 
-    xhr.open("GET", `https://hotels4.p.rapidapi.com/locations/v2/search?query=${searchQuery}&locale=en_US`);
-    xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/locations?name=${searchQuery}&locale=en-us`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
 
     xhr.send();
+}
+
+const getIcon = (destionationType) => {
+    switch (destionationType) {
+        case "city":
+            return `<i class="fas fa-city"></i>`;
+        case "region":
+            return `<i class="fas fa-map"></i>`;
+        case "landmark":
+            return `<i class="fas fa-landmark"></i>`;
+        case "district":
+            return `<i class="fas fa-map-marked-alt"></i>`;
+        case "hotel":
+            return `<i class="fas fa-hotel"></i>`;
+        case "country":
+            return `<i class="fas fa-flag"></i>`;
+        case "airport":
+            return `<i class="fas fa-plane-departure"></i>`;
+        default:
+            return `<i class="fas fa-map-marked-alt"></i>`;
+    }
 }
 
 const printSearchInfo = (suggestions) => {
     let getSearchBox = document.getElementById("search-location-result");
     getSearchBox.innerHTML = "";
-    suggestions.forEach((group) => {
-        if (group.group === "CITY_GROUP" || group.group === "LANDMARK_GROUP") {
-            group.entities.forEach((item) => {
-                getSearchBox.innerHTML += `
-                    <div class="search-result" data-id=${item.destinationId}>
-                        ${item.caption}
-                    </div>
-                `
-            })
-        }
+
+    suggestions.forEach(item => {
+        getSearchBox.innerHTML += `
+        <div class="search-result" data-id=${item.dest_id} data-type=${item.dest_type}>
+            ${getIcon(item.dest_type)} ${item.label}
+        </div>
+        `
     })
 
     //Add event listener for each search-result
@@ -269,6 +294,8 @@ const printSearchInfo = (suggestions) => {
     .forEach(result => {
         result.addEventListener("click", () => {
             selectedLocationID = result.getAttribute("data-id");
+            selectedLocationType = result.getAttribute("data-type");
+            searchHeader = result.innerText;
             locationSearch.value = result.innerText;
             resetSearchResult();
         })
@@ -307,7 +334,7 @@ const getDisplayDateFormat = (isWeekDay, ISODate) => {
     return dateTemplate;
 }
 
-const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, starRatings) => {
+const getHotelsList = (destinationID, destinationType, pageNumber, order_by, adults, rooms, stars, isNewSearch) => {
     const xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
@@ -322,10 +349,17 @@ const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, star
                 document.getElementById("carousel").style.display = "none";
             }
 
-            if (results.data) {
-                printHotelList(results.data.body.header, results.data.body.searchResults.results);
+            if (results.result && results.result.length > 0) {
+                printHotelList(searchHeader, results, pageNumber);
+                if (isNewSearch && isNewSearch === true) {
+                    getFilter(destinationID, destinationType, pageNumber, order_by, adults, rooms);
+                }
             } else {
                 printNoResult();
+
+                if (isNewSearch) {
+                    document.querySelector("#filter-blocks").innerHTML = "";
+                }
             }
         } else {
             Swal.fire({
@@ -335,91 +369,145 @@ const getHotelsList = (destinationID, pageNumber, pageSize, adults, sortBy, star
         }
     }
 
-    let query = `https://hotels4.p.rapidapi.com/properties/list?destinationId=${destinationID}` + 
-    `&pageNumber=${pageNumber}` +
-    `&pageSize=${pageSize}` +
-    `&checkIn=${checkIn}` +
-    `&checkOut=${checkOut}` +
-    `&adults1=${adults}` +
-    `&sortOrder=${sortBy}` +
-    `&locale=en_US` +
-    `&currency=USD`
+    let query = `https://booking-com.p.rapidapi.com/v1/hotels/search?dest_id=${destinationID}` +
+    `&dest_type=${destinationType}` +
+    `&page_number=${pageNumber - 1}` +
+    `&checkin_date=${checkIn}` +
+    `&checkout_date=${checkOut}` +
+    `&adults_number=${adults}` +
+    `&room_number=${rooms}` + 
+    `&units=metric` + 
+    `&order_by=${order_by}` +
+    `&locale=en-us` +
+    `&filter_by_currency=USD`;
 
-    if (starRatings != null)
-        query += `&starRatings=${starRatings}`;
+    if (stars !== undefined) {
+        query += `&categories_filter_ids=${stars}`;
+    }
 
     xhr.open("GET", query);
-    xhr.setRequestHeader("x-rapidapi-host", "hotels4.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "50ab243ea0mshdda18fe8e21df40p101ca6jsnac533b141bb6");
+
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");    
 
     xhr.send();
 }
 
-const printHotelList = (header, results) => {
+const printHotelList = (header, results, pageNumber) => {
     container = document.getElementById("result-choices");
     container.innerHTML = "";
     document.querySelector(".search-result-div").style.display = "block";
 
     document.getElementById("location-title-h2").innerText = header;
+    document.getElementById("number-of-props-h4").innerText = `${results.count} properties found`
 
-    results.forEach((result) => {
-        if (result.ratePlan != null) {
-            let calculateFare = result.ratePlan.price.exactCurrent * ratesList[choosingCurrency] * numberOfNights;
-            calculateFare = Math.round(calculateFare * 100) / 100
-            let fare = calculateFare.toString() + " " + choosingCurrency;
+    //Update pagination
+    let numberOfPages = Math.floor(results.count / 20);
+    if (results.count > numberOfPages * 20)
+        numberOfPages++;
 
-            let nightString = numberOfNights > 1? `${numberOfNights} nights` : `night`
+    //Find list of items to show in pagination
+    let pagesToShow = [];
+    //Pages before
+    for (let i = pageNumber - 2; i < pageNumber; i++) {
+        if (i >= 1)
+            pagesToShow.push(i);
+    }
+    pagesToShow.push(pageNumber);
+    for (let i = pageNumber + 1; i <= Math.min(pageNumber + 3, numberOfPages); i++) {
+        pagesToShow.push(i);
+    }
+    if (pagesToShow[pagesToShow.length - 1] === numberOfPages) {
+        for (let i = pagesToShow.length; i <= 5; i++) {
+            if (pageNumber - 3 - (pagesToShow.length) >= 1)
+                pagesToShow.unshift(pageNumber - 3 - (pagesToShow.length)) 
+        }
+    }
+    //Have enough page to show
+    //Add to pagination
+    let getPagination = document.querySelector('.pagination');
+    getPagination.innerHTML = "";
+    if (pageNumber !== 1) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${pageNumber - 1})"><</a></li>`;
+    } else {
+        getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link"><</a></li>`;
+    }
+    if (pagesToShow[0] !== 1) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(1)">1</a></li>`;
+        if (pagesToShow[0] !== 2) {
+            getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">...</a></li>`;
+        }
+    }
+    pagesToShow.forEach(page => {
+        let isActive = page === pageNumber? "active": "";
+        getPagination.innerHTML += `<li class="page-item ${isActive}"><a class="page-link" href="javascript:pageChange(${page})">${page}</a></li>`;
+    })
+    if (pagesToShow[pagesToShow.length - 1] !== numberOfPages) {
+        if (pagesToShow[pagesToShow.length - 1] !== numberOfPages - 1) {
+            getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">...</a></li>`;
+        }
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${numberOfPages})">${numberOfPages}</a></li>`;
+    }
+    if (pageNumber !== numberOfPages) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${pageNumber + 1})">></a></li>`;
+    } else {
+        getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">></a></li>`;
+    }
 
-            let reviewHTML = "";
-            if (result.guestReviews != null) {
-                reviewHTML = `<h3 class="hotel-option-rating">${result.guestReviews? result.guestReviews.rating : ""}</h3>`;
-            }
+    results.result.forEach((result) => {
+        let {value, currency} = result.composite_price_breakdown.all_inclusive_amount;
+        let calculateFare = value / ratesList[currency] * ratesList[choosingCurrency];
+        calculateFare = Math.round(calculateFare * 100) / 100
+        let fare = calculateFare.toFixed(1).replace('.0', '').replace(',0', '') + " " + choosingCurrency;
 
-            container.innerHTML += `
-                <div class="hotel-option-box">
-                    <div class="d-flex">
-                        <img 
-                            src="${result.optimizedThumbUrls? result.optimizedThumbUrls.srpDesktop : ""}" 
-                            alt=""
-                            class="hotel-option-image">
-                        
-                        <div class="row" style="width: 100%">
-                            <div class="col-md-9 col-sm-12">
-                                <div class="hotel-option-info d-flex align-items-start flex-column">
-                                    <h3 class="hotel-option-name">${result.name}</h3>
-                                    <p class="hotel-option-star">${returnStar(result.starRating? result.starRating : 0)}</p>
-                                    <p class="text-gray mb-1"><i class="fas fa-map-marked-alt">
-                                    </i> ${result.address && result.address.streetAddress? result.address.streetAddress: ""}</p>
-                                    <span class="m-0">
-                                        <span class="total-price mb-0 mt-0">${fare}</span>
-                                        <span class="mt-0 mb-0" id="container-total-price">/${nightString}</span>
-                                    </span>
-                                </div>
+        let nightString = numberOfNights > 1? `${numberOfNights} nights` : `night`
+
+        let reviewHTML = "";
+        if (result.review_score != null) {
+            reviewHTML = `<h3 class="hotel-option-rating">${result.review_score.toFixed(1)}</h3>`;
+        }
+
+        let address = `${result.address_trans}${result.district? `, ${result.district}` : ''}
+        ${result.state_trans? `, ${result.state_trans}` : ''}${result.city_trans? `, ${result.city_trans}` : ''}
+        ${result.country_trans? `, ${result.country_trans}` : ''}`;
+
+        container.innerHTML += `
+            <div class="hotel-option-box">
+                <div class="d-flex">
+                    <img 
+                        src="${result.max_photo_url}" 
+                        alt=""
+                        class="hotel-option-image">
+                    
+                    <div class="row" style="width: 100%">
+                        <div class="col-md-9 col-sm-12">
+                            <div class="hotel-option-info d-flex align-items-start flex-column">
+                                <h3 class="hotel-option-name">${result.hotel_name_trans}</h3>
+                                <p class="hotel-option-star">${returnStar(result.class? result.class : 0)}</p>
+                                <p class="text-gray mb-1"><i class="fas fa-map-marked-alt">
+                                </i> ${address}
+                                </p>
+                                <span class="m-0">
+                                    <span class="total-price mb-0 mt-0">${fare}</span>
+                                    <span class="mt-0 mb-0" id="container-total-price">/${nightString}</span>
+                                </span>
                             </div>
-                            <div class="col-md-3 col-sm-12" style="position:relative">
-                                ${reviewHTML}
-                                <button class="btn-full button-choose mt-2 btn-depart" data-id=${result.id} 
-                                data-image-url="${result.optimizedThumbUrls.srpDesktop}" data-price=${calculateFare}>
-                                    more info
-                                </button>
-                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-12" style="position:relative">
+                            ${reviewHTML}
+                            <button class="btn-full button-choose mt-2 btn-depart" data-id=${result.hotel_id} 
+                            data-image-url="${result.max_photo_url}" data-price=${calculateFare}
+                            data-name="${result.hotel_name_trans}" data-address="${address}" data-stars="${result.class? result.class : 0}"
+                            data-long="${result.longitude}" data-lat="${result.latitude}"
+                            data-score="${result.review_score? result.review_score.toFixed(1) : ""}" data-score-word="${result.review_score_word}">
+                                more info
+                            </button>
                         </div>
                     </div>
                 </div>
-            `
-        }
-    })
-
-    let paginationHTML = "";
-    paginationHTML = `<ul class="pagination">`
-    for (let i = 1; i <= 5; i++) {
-        let classActive = currentPageNumber === i? "active" : "";
-        paginationHTML += `
-            <li class="page-item ${classActive}"><a class="page-link" href="javascript:pageChange(${i})">${i}</a></li>
+            </div>
         `
-    }
-    paginationHTML += `</ul>`
-    document.getElementById("hotel-pagination").innerHTML = paginationHTML;
+    })
 
     document.querySelectorAll(".button-choose").forEach(btn => {
         btn.addEventListener("click", (e) => {
@@ -427,7 +515,16 @@ const printHotelList = (header, results) => {
             let getID = btn.getAttribute("data-id");
             let getImage = btn.getAttribute("data-image-url");
             let price = btn.getAttribute("data-price");
-            getHotelInfo(getImage, getID, price);
+            let getName = btn.getAttribute("data-name");
+            let getAddress = btn.getAttribute("data-address");
+            let getStars = btn.getAttribute("data-stars");
+            let long = btn.getAttribute("data-long");
+            let lat = btn.getAttribute("data-lat");
+            let reviewScore = {
+                score: btn.getAttribute("data-score"),
+                word: btn.getAttribute("data-score-word")
+            }
+            getHotelInfo(getImage, getID, price, getName, getAddress, getStars, long, lat, reviewScore);
         })
     })
 }
@@ -448,23 +545,41 @@ const pageChange = (pageNumber) => {
     container = document.getElementById("result-choices");
     container.innerHTML = "";
 
-    let paginationHTML = "";
-    paginationHTML = `<ul class="pagination">`
-    for (let i = 1; i <= 5; i++) {
-        let classActive = pageNumber === i? "active" : "";
-        paginationHTML += `
-            <li class="page-item ${classActive}"><a class="page-link" href="javascript:pageChange(${i})">${i}</a></li>
-        `
+    let getPagination = document.querySelector('.pagination');
+    getPagination.innerHTML = "";
+    if (pageNumber !== 1) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${pageNumber - 1})"><</a></li>`;
+    } else {
+        getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link"><</a></li>`;
     }
-    paginationHTML += `</ul>`
-    document.getElementById("hotel-pagination").innerHTML = paginationHTML;
+    if (pagesToShow[0] !== 1) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(1)">1</a></li>`;
+        if (pagesToShow[0] !== 2) {
+            getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">...</a></li>`;
+        }
+    }
+    pagesToShow.forEach(page => {
+        let isActive = page === pageNumber? "active": "";
+        getPagination.innerHTML += `<li class="page-item ${isActive}"><a class="page-link" href="javascript:pageChange(${page})">${page}</a></li>`;
+    })
+    if (pagesToShow[pagesToShow.length - 1] !== numberOfPages) {
+        if (pagesToShow[pagesToShow.length - 1] !== numberOfPages - 1) {
+            getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">...</a></li>`;
+        }
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${numberOfPages})">${numberOfPages}</a></li>`;
+    }
+    if (pageNumber !== numberOfPages) {
+        getPagination.innerHTML += `<li class="page-item"><a class="page-link" href="javascript:pageChange(${pageNumber + 1})">></a></li>`;
+    } else {
+        getPagination.innerHTML += `<li class="page-item disabled"><a class="page-link">></a></li>`;
+    }
 
     currentPageNumber = pageNumber
     
     if (starQuery == "")
-        getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy)
+        getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfRooms, undefined, isNewSearch = false)
     else 
-        getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy, starQuery)
+        getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfRooms, starQuery, isNewSearch = false)
 }
 
 const printNoResult = () => {
@@ -472,14 +587,8 @@ const printNoResult = () => {
     document.querySelector(".search-result-div").style.display = "block";
 
     document.getElementById("location-title-h2").innerText = "No results found";
+    document.getElementById("number-of-props-h4").innerText = ``
 }
-
-document.querySelectorAll(".star-checkbox").forEach((checkbox) => {
-    starQuery = "";
-    checkbox.addEventListener("change", () => {
-        checkStarInput();
-    })
-})
 
 const checkStarInput = () => {
     if (!newlySearch) {
@@ -487,12 +596,18 @@ const checkStarInput = () => {
 
         document.querySelectorAll(".star-checkbox").forEach((checkbox) => {
             if (checkbox.checked) {
-                starQuery += `${checkbox.getAttribute("data-star")},`
+                starQuery += `class::${checkbox.getAttribute("data-star")},`
+            }
+        })
+
+        document.querySelectorAll(".filter-checkbox").forEach((filterItem) => {
+            if (filterItem.checked) {
+                starQuery += `${filterItem.getAttribute("data-id")},`
             }
         })
 
         if (starQuery.length > 0)
-            starQuery = starQuery.substring(0, starQuery.length - 1)
+            starQuery = starQuery.substring(0, starQuery.length - 1);
 
         currentPageNumber = 1;
 
@@ -501,14 +616,14 @@ const checkStarInput = () => {
             container.innerHTML = "";
 
             if (starQuery == "")
-                getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy)
+                getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfRooms, undefined, isNewSearch = false)
             else
-                getHotelsList(selectedLocationID, currentPageNumber, 30, 2, sortBy, starQuery)
+                getHotelsList(selectedLocationID, selectedLocationType, currentPageNumber, sortBy, numberOfGuests, numberOfRooms, starQuery, isNewSearch = false)
         }
     }
 }
 
-const getHotelInfo = (hotelURL, hotelID, price) => {
+const getHotelInfo = (hotelURL, hotelID, price, getName, getAddress, getStars, long, lat, reviewScore) => {
     let hotelInfo = new HotelBookingInfo(
         choosingCurrency,
         ratesList[choosingCurrency],
@@ -517,16 +632,94 @@ const getHotelInfo = (hotelURL, hotelID, price) => {
         checkIn,
         checkOut,
         numberOfNights,
-        price
+        price,
+        getName, getAddress, getStars, long, lat, reviewScore,
+        numberOfGuests, numberOfRooms
     );
-    // hotelInfo["currencyCode"] = choosingCurrency;
-    // hotelInfo["currencyRate"] = ratesList[choosingCurrency];
-    // hotelInfo["hotelID"] = hotelID; 
-    // hotelInfo["hotelImageURL"] = hotelURL;
-    // hotelInfo["checkIn"] = checkIn;
-    // hotelInfo["checkOut"] = checkOut;
-    // hotelInfo["numberOfNights"] = numberOfNights;
-    // hotelInfo["singleNight"] = price;
     localStorage.setItem("hotelInfo", JSON.stringify(hotelInfo));
     window.location.replace(`info?hotel=${hotelID}`)
+}
+
+const getFilter = (destinationID, destinationType, pageNumber, order_by, adults, rooms) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        swal.close();
+        if(this.status == 200) {
+            let results = JSON.parse(xhr.responseText);
+
+            if (results.filter && results.filter.length > 0) {
+                printFilters(results.filter)
+            } else {
+                document.querySelector("#filter-blocks").innerHTML = "";
+            }
+        } else {
+            document.querySelector("#filter-blocks").innerHTML = "";
+        }
+    }
+
+    let query = `https://booking-com.p.rapidapi.com/v1/hotels/search-filters?dest_id=${destinationID}` +
+    `&dest_type=${destinationType}` +
+    `&page_number=${pageNumber - 1}` +
+    `&checkin_date=2022-02-15` +
+    `&checkout_date=2022-02-19` +
+    `&adults_number=${adults}` +
+    `&room_number=${rooms}` + 
+    `&units=metric` + 
+    `&order_by=${order_by}` +
+    `&locale=en-us` +
+    `&filter_by_currency=USD`;
+
+    xhr.open("GET", query);
+
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+
+    xhr.send();
+}
+
+const printFilters = (result) => {
+    //Get stars block
+    let starsBlockHTML = document.querySelector("#star-block").outerHTML;
+
+    //Get filter blocks
+    let filterBlock = document.querySelector("#filter-blocks");
+    filterBlock.innerHTML = "";
+    filterBlock.innerHTML += starsBlockHTML;
+
+    //Add more filter
+    result.forEach(filterElement => {
+        if (filterElement.iconfont !== "acstar" && !filterElement.title.toLowerCase().includes("budget")) {
+            let addHTML = "";
+            addHTML += `<div class="filter-element">`;
+            addHTML += `<h5 class="mb-3 text-pink">${filterElement.title.toLowerCase()}</h5>`;
+
+            filterElement.categories.forEach(cat => {
+                addHTML += `
+                <div class="mt-2 mb-2">
+                    <input class="star-checkbox filter-checkbox" type="checkbox" data-id=${cat.id}>
+                    <span class="text-purple">${cat.name.toLowerCase()}</span>
+                </div>`
+            })
+
+            addHTML += `<hr class="overlap-hr">`;
+            addHTML += `</div>`;
+
+            filterBlock.innerHTML += addHTML;
+        }
+    })
+
+    document.querySelectorAll(".star-checkbox").forEach((checkbox) => {
+        starQuery = "";
+        checkbox.addEventListener("change", () => {
+            checkStarInput();
+        })
+    })
+
+    //Update event addEventListener
+    document.querySelectorAll(".filter-checkbox").forEach(element => {
+        element.addEventListener("change", () => {
+            checkStarInput();
+        })
+    })
 }

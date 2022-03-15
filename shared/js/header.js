@@ -1,4 +1,4 @@
-let root = "/TourGuru";
+let root = "/TourGuru_v2";
 let isAdmin;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,10 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInfo();
   }
 
-  document.getElementById("log-out").addEventListener("click", (e) => {
-    e.preventDefault();
-    location.replace(`${root}` + "/logout.php");
-  });
+  document.querySelectorAll("#log-out").forEach(logOut => {
+    logOut.addEventListener("click", (e) => {
+      e.preventDefault();
+      location.replace(`${root}` + "/logout.php");
+    })
+  })
 
   if (window.location.pathname.includes("/flights")) {
     document.getElementById("nav-flight").classList.add("active");
@@ -31,16 +33,31 @@ document.addEventListener("DOMContentLoaded", () => {
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
   isAdmin = userInfo.isAdmin;
-  if (userInfo.isAdmin) {
-    document.getElementById("admin-header-block").style.display = "block";
+  isBusiness = userInfo.isBusiness || null; 
+
+  if (isBusiness && isBusiness === true) {
+    document.getElementById("user-dropdown").style.display = "none";
+    document.getElementById("business-dropdown").style.display = "block";
+    document.getElementById("business-name").style.display = "block";
   } else {
-    document.getElementById("admin-header-block").style.display = "none";
+    document.getElementById("user-dropdown").style.display = "block";
+    document.getElementById("business-dropdown").style.display = "none";
+    document.getElementById("business-name").style.display = "none";
+    if (userInfo.isAdmin) {
+      document.getElementById("admin-header-block").style.display = "block";
+    } else {
+      document.getElementById("admin-header-block").style.display = "none";
+    }
   }
 
   //getAvatar
   let profileImage = userInfo.image;
-  if (profileImage.includes("../../"))
-    profileImage = root + "/" + profileImage.substring(6, profileImage.length);
+  if (profileImage && (profileImage.includes("../../") || profileImage.includes("../../../"))) {
+    while (profileImage.includes("../")) {
+      profileImage = profileImage.replace('../', '');
+    }
+    profileImage = root + "/" + profileImage;
+  }
   document.getElementById("profile-img").setAttribute("src", profileImage);
 };
 

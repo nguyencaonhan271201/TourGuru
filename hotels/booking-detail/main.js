@@ -53,15 +53,13 @@ window.addEventListener("DOMContentLoaded", () => {
 const printToDisplay = () => {
     //Modify the URL
     let hotelImageURL = info.hotel.imageURL;
-    hotelImageURL = hotelImageURL.substring(0, hotelImageURL.indexOf("_"))
-    hotelImageURL += "_w.jpg";
 
     document.getElementById("hotel-image").setAttribute("src", hotelImageURL)
 
     document.getElementById("hotel-name").innerText = info.hotel.name;
     document.getElementById("hotel-name-span").innerText = info.hotel.name;
     document.getElementById("hotel-stars").innerHTML = returnStar(info.hotel.stars);
-    document.getElementById("hotel-address").innerText = info.hotel.address;
+    document.getElementById("hotel-address").innerText = info.hotel.address.replace(/\s\s+/g, ' ').replaceAll(" ,", ",");
 
     document.querySelector(".check-in-date").innerText = getDatePart(info.date.checkIn, "date")
     document.querySelector(".check-in-month").innerText = getDatePart(info.date.checkIn, "monthYear")
@@ -71,10 +69,30 @@ const printToDisplay = () => {
     document.querySelector(".check-out-month").innerText = getDatePart(info.date.checkOut, "monthYear")
     document.querySelector(".check-out-weekday").innerText = getDatePart(info.date.checkOut, "weekDay")
 
-    document.querySelector(".room-count").innerText = info.numberOfRooms;
+    // document.querySelector(".room-count").innerText = info.numberOfRooms;
     document.querySelector(".night-count").innerText = info.numberOfNights;
 
     document.getElementById("total-price").innerText = info.buildCostString();
+
+    let roomDetailsHTML = ``;
+    info.roomDetails.forEach(detail => {
+        roomDetailsHTML += `
+            <div class="room-detail d-flex align-items-center justify-content-center">
+                <div class="d-flex flex-column align-items-center justify-content-center" style="max-width: 350px;">
+                    <img src="${detail.room_image}" alt="" class="img-room-type">
+                    <p class="font-weight-normal text-center">${detail.room_name}</p>
+                </div>
+                <div class="ml-4 mr-4" style="width: fit-content;">
+                    <h5 class="font-weight-normal text-center">(${parseFloat(detail.single_cost).toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${detail.currency})</h5>
+                </div>
+                <div class="ml-4 mr-4" style="width: fit-content; margin-top: -7.5px">
+                    <h3 class="total-price" style="display: inline;"> x </h3>
+                    <h3 class="total-price" style="display: inline;"> ${detail.number_of_room} </h3>
+                </div>
+            </div>
+        `
+    })
+    document.getElementById("rooms-detail").innerHTML = roomDetailsHTML;
 }
 
 const getDisplayDateFormat = (isWeekDay, ISODate) => {

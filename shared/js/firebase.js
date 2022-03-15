@@ -1,4 +1,4 @@
-let rootDir = "/TourGuru"
+let rootDir = "/TourGuru_v2"
 
 const firebaseConfig = {
     apiKey: "AIzaSyAJj6Z-kMC94FeLTY5aiEZ4NHhAklOcLnU",

@@ -20,16 +20,39 @@
 
       $errors = [];
 
-      $booking->addBookingInfo($data, $errors);
+      $inserted_id = $booking->addBookingInfo($data, $errors);
 
       if (!empty($errors)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo $inserted_id;
+        exit;
+      }
+    } 
+    else if (isset($_POST["bookingDetails"])) {
+      if (!isset($_POST["data"]) || !isset($_POST["bookingID"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $data = json_decode($_POST["data"], true);
+      $booking = new HotelBooking($conn);
+
+      $errors = [];
+
+      $inserted_id = $booking->addBookingDetails($data, $_POST["bookingID"], $errors);
+
+      if (!empty($errors)) {
+        var_dump($errors);
         http_response_code(400);
         exit;
       } else {
         http_response_code(200);
         exit;
       }
-    } else if (isset($_POST["sendEmail"])) {
+    }
+    else if (isset($_POST["sendEmail"])) {
       if (!isset($_POST["to"]) || !isset($_POST["subject"])
       || !isset($_POST["content"])) {
         http_response_code(400);

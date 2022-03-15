@@ -31,7 +31,7 @@
       }
 
       $plan = new Plan($conn);
-      $planGeneralInfo = $plan->getPlanGeneral($_GET["user_id"], $_GET["plan_id"]);
+      $planGeneralInfo = $plan->getPlanGeneral($_GET["user_id"], $_GET["plan_id"], isset($_GET["is_viewer"]));
 
       if (empty($planGeneralInfo)) {
         http_response_code(400);
@@ -39,6 +39,31 @@
       } else {
         echo json_encode($planGeneralInfo);
       }
+    } else if (isset($_GET["getPlanColabs"])) {
+      if (!isset($_GET["user_id"]) || !isset($_GET["plan_id"])) {
+        http_response_code(400);
+        exit;
+      }
+
+      $plan = new Plan($conn);
+      $planColabs = $plan->getPlanColabs($_GET["user_id"], $_GET["plan_id"], isset($_GET["is_viewer"]));
+
+      if (empty($planColabs)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($planColabs);
+      }
+    }  else if (isset($_GET["getPlanLocations"])) {
+      if (!isset($_GET["user_id"]) || !isset($_GET["plan_id"])) {
+        http_response_code(400);
+        exit;
+      }
+
+      $plan = new Plan($conn);
+      $planLocations = $plan->getPlanLocations($_GET["user_id"], $_GET["plan_id"], isset($_GET["is_viewer"]));
+
+      echo json_encode($planLocations);
     } else if (isset($_GET["getPlanDetails"])) {
       if (!isset($_GET["plan_id"])) {
         http_response_code(400);
@@ -55,6 +80,31 @@
       } else {
         echo json_encode($planDetails);
       }
+    } else if (isset($_GET["checkPlanViewPermission"])) {
+      if (!isset($_GET["plan_id"]) || !isset($_GET["user_id"])) {
+        http_response_code(400);
+        exit;
+      }
+
+      $plan = new Plan($conn);
+      $errors = [];
+      $rightToView = $plan->checkPlanViewPermission($_GET["plan_id"], $_GET["user_id"], $errors);
+
+      if ($rightToView[0]) {
+        echo $rightToView[1] ? json_encode(1) : json_encode(0);
+        http_response_code(200);
+        exit();
+      } else {
+        if ($rightToView[1]) {
+          echo 1;
+          http_response_code(200);
+          exit();
+        } else {
+          http_response_code(400);
+          exit;
+        }
+      }
+
     }
   } else if (isset($_POST["csrf"]) && ($_POST["csrf"] == $_SESSION["csrf"])) {
     if (isset($_POST["deletePlan"])) {

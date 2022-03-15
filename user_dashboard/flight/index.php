@@ -39,6 +39,11 @@
                         <h2>Tour Guru</h2>
                     </div>
                 </div>
+
+                <div id="approve-status">
+                    
+                </div>
+                
                 <div id="depart-div">
                     <h4 class="text-purple">Forward Flight</h4>
                     

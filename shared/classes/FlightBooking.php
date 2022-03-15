@@ -66,8 +66,9 @@ class FlightBooking {
     try {
       $query = "SELECT f1.*, (SELECT f.total_cost FROM flight_bookings f WHERE f.id = f1.booking_id) AS total_price, 
       (SELECT COUNT(*) FROM flight_bookings_customers f2 WHERE f2.booking_id = f1.booking_id) AS number_of_pax,
+      (SELECT f.status FROM flight_bookings f WHERE f.id = f1.booking_id) AS approved,
       (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked FROM flight_bookings_iterations f1 
-      WHERE booking_id IN (SELECT id FROM flight_bookings WHERE status = 1 AND id = ? AND user_id = ?)";
+      WHERE booking_id IN (SELECT id FROM flight_bookings WHERE id = ? AND user_id = ?)";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("is", $booking_id, $user_id);
       $stmt->execute();
@@ -97,8 +98,9 @@ class FlightBooking {
 
       $query = "SELECT f1.*, (SELECT f.total_cost FROM flight_bookings f WHERE f.id = f1.booking_id) AS total_price, 
       (SELECT COUNT(*) FROM flight_bookings_customers f2 WHERE f2.booking_id = f1.booking_id) AS number_of_pax,
+      (SELECT f.status FROM flight_bookings f WHERE f.id = f1.booking_id) AS approved,
       (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked FROM flight_bookings_iterations f1 
-      WHERE booking_id IN (SELECT id FROM flight_bookings WHERE status = 1 AND id = ?)";
+      WHERE booking_id IN (SELECT id FROM flight_bookings WHERE id = ?)";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $booking_id);
       $stmt->execute();

@@ -30,6 +30,7 @@
                 <div class="btn-block text-right">
                     <button type="button" id="btn-edit"><i class="fas fa-edit"></i></button>
                     <button type="button" id="btn-print"><i class="fa fa-print" aria-hidden="true"></i></button>
+                    <button type="button" id="btn-share"><i class="fa fa-share" aria-hidden="true"></i></button>
                 </div>
                 <div class="agency-detail">
                     <img id="agency-logo" src="https://firebasestorage.googleapis.com/v0/b/tour-guru-25442.appspot.com/o/logo.svg?alt=media&token=ca6b15e1-bce5-4d6b-be8d-8d834788d043" alt="">
@@ -39,11 +40,39 @@
                 </div>
                 <div class="header-div text-center">
                     <div class="editable-container" id="title-div">
-                        <h1 id="plan-title">title</h1>
+                        <div class="flex-row d-flex align-items-center justify-content-center">
+                            <h1 id="plan-title">title
+                           
+                            </h1>
+                            <span id="plan-mode" class="ml-2">
+                           
+                            </span>
+                        </div>
                     </div>
-                    <div class="editable-container" id="date-div">
+
+                    <div class="editable-container" id="colab-div">
+                        <div >
+                        
+                        </div>
+
+                        <div class="colabs mt-2" id="colabs-display" onClick="showColabsSwal()">
+                            
+                        </div>
+                    </div>
+
+                    <div class="editable-container mt-2 d-flex flex-row align-items-center justify-content-center" id="wrapper-location-div">
+                        <!-- <p class="mb-1 mr-2">locations: </p> -->
+                        <div id="wrapper-locations-display">
+                        
+                        </div>
+                    </div>
+
+                    <div class="editable-container mb-2 mt-2" id="mode-div">
+                        
+                    </div>
+                    <!-- <div class="editable-container" id="date-div">
                         <h4 id="plan-date">from date - to date</h4>
-                    </div>
+                    </div> -->
                     <div class="editable-container" id="description-div">
                         <h5 id="plan-description"></h5>
                     </div>
@@ -51,22 +80,30 @@
                         <p class="text-gray text-right font-italic" id="plan-created">updated: </p>
                     </div>
                 </div>
-                <hr>
-                <div class="external-linkings">
-                    <h2 class="text-pink text-right">bookings</h2>
-                    <div class="bookings">
-                        
+                
+
+                <div class="main-detail-div text-center">
+                    <h2 class="text-purple text-left" style="font-family: 'body'">plans</h2>
+                    <div id="details" class="row">
+
                     </div>
                 </div>
-                <hr>
-                <div class="main-detail-div text-center">
-                    <h2 class="text-pink text-right">details</h2>
-                    <div id="details">
 
+                <div class="external-linkings">
+                    <h2 class="text-purple text-left" style="font-family: 'body'">bookings</h2>
+                    <div class="bookings">
+                        <div class="flight-bookings row">
+
+                        </div>
+                        <div class="hotel-bookings row">
+
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        
 
         <!-- CSRF Token -->
         <p id="csrf" style="display: none"><?php echo $_SESSION['csrf']; ?></p>

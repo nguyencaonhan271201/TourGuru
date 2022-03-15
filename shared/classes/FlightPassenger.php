@@ -43,7 +43,7 @@ class FlightPassenger {
   public function getPassengers($user_id) {
     try {
       $query = "SELECT * FROM flight_bookings_customers WHERE booking_id IN 
-      (SELECT id from flight_bookings WHERE id = ? AND user_id = ? AND status = 1)";
+      (SELECT id from flight_bookings WHERE id = ? AND user_id = ?)";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("is", $this->booking_id, $user_id);
       $stmt->execute();
@@ -57,7 +57,7 @@ class FlightPassenger {
   public function getPassengersAdmin() {
     try {
       $query = "SELECT * FROM flight_bookings_customers WHERE booking_id IN 
-      (SELECT id from flight_bookings WHERE id = ? AND status = 1)";
+      (SELECT id from flight_bookings WHERE id = ?)";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $this->booking_id);
       $stmt->execute();

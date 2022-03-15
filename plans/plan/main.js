@@ -18,9 +18,15 @@ let chosenBookingIndex = {
     hotels: []
 }
 let details = [];
+let planMode = 0;
+
+let colabs = [];
+let wrapperLocations = [];
 
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 let weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+let isViewer = false;
 
 window.addEventListener("DOMContentLoaded", () => {
     Swal.fire({
@@ -29,11 +35,11 @@ window.addEventListener("DOMContentLoaded", () => {
         allowEscapeKey: false,
         allowOutsideClick: false,
         didOpen: () => {
-        Swal.showLoading()
+            Swal.showLoading()
         }
     });
-    
-    firebase.auth().onAuthStateChanged(function(user) {
+
+    firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             uid = user.uid;
 
@@ -42,7 +48,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 planID = urlParams.get("id");
             } else {
                 location.replace("./../");
-            } 
+            }
 
             gatherInformation();
         } else {
@@ -52,21 +58,8 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
     document.getElementById("btn-print").addEventListener("click", () => {
-        document.querySelector(".btn-block").style.display = "none";
-        document.querySelector(".agency-detail").style.display = "flex";
-
-        var headstr = `<html><head><title>${title}</title></head><body>`;
-        var footstr = "</body>";
-        var newstr = document.querySelector(".main-container").innerHTML;
-        var oldstr = document.body.innerHTML;
-        document.body.innerHTML = headstr+newstr+footstr;
-        window.print();
-        document.body.innerHTML = oldstr;
-
-        document.querySelector(".btn-block").style.display = "block";
-        document.querySelector(".agency-detail").style.display = "none";
+        performPrint();
         return false;
-
     });
 
     document.getElementById("btn-edit").addEventListener("click", (e) => {
@@ -75,20 +68,66 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 })
 
+const performPrint = () => {
+    document.querySelector(".btn-block").style.display = "none";
+    document.querySelector(".agency-detail").style.display = "flex";
+
+    setTimeout(() => {
+        window.onload = () => {
+
+        };
+        window.print();
+
+        document.querySelector(".btn-block").style.display = "block";
+        document.querySelector(".agency-detail").style.display = "none";
+    }, 300);
+}
+
 const gatherInformation = () => {
-    const gatherGeneralInfo = () => {
+    const checkViewMode = () => {
         let csrf = document.getElementById("csrf").innerText;
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            `../../api/plans/plans.php?getPlanGeneral&user_id=${uid}&plan_id=${planID}&csrf=${csrf}`,
+            `../../api/plans/plans.php?checkPlanViewPermission&user_id=${uid}&plan_id=${planID}&csrf=${csrf}`,
             true
         )
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
-               //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(xhr.responseText); 
+                isViewer = JSON.parse(xhr.responseText) !== 1;
+                if (isViewer) {
+                    document.getElementById("btn-edit").style.display = "none";
+                } else {
+                    document.getElementById("btn-edit").style.display = "initial";
+                }
+                gatherGeneralInfo();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "You do not have permission to access this plan."
+                }).then(() => {
+                    location.replace("./../");
+                })
+
+            }
+        }
+        xhr.send();
+    }
+
+    const gatherGeneralInfo = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            `../../api/plans/plans.php?getPlanGeneral&user_id=${uid}&plan_id=${planID}&is_viewer=${isViewer ? 1 : 0}&csrf=${csrf}`,
+            true
+        )
+        xhr.onload = () => {
+            swal.close();
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(xhr.responseText);
                 title = result.plan_title;
                 description = result.description;
                 fromDate = result.from_date;
@@ -98,6 +137,65 @@ const gatherInformation = () => {
                 chosenBookingIndex.hotels = result.hotel_id.split(',');
                 chosenBookingIndex.flights = chosenBookingIndex.flights.map(flight => parseInt(flight));
                 chosenBookingIndex.hotels = chosenBookingIndex.hotels.map(hotel => parseInt(hotel));
+                planMode = result.mode;
+                gatherColabs();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                }).then(() => {
+                    location.replace("./../");
+                })
+
+            }
+        }
+        xhr.send();
+    }
+
+    const gatherColabs = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            `../../api/plans/plans.php?getPlanColabs&user_id=${uid}&plan_id=${planID}&is_viewer=${isViewer ? 1 : 0}&csrf=${csrf}`,
+            true
+        )
+        xhr.onload = () => {
+            swal.close();
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(xhr.responseText);
+                colabs = result;
+                printColabs();
+                gatherLocations();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    text: "Error occured."
+                }).then(() => {
+                    location.replace("./../");
+                })
+
+            }
+        }
+        xhr.send();
+    }
+
+    const gatherLocations = () => {
+        let csrf = document.getElementById("csrf").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open(
+            "GET",
+            `../../api/plans/plans.php?getPlanLocations&user_id=${uid}&plan_id=${planID}&is_viewer=${isViewer ? 1 : 0}&csrf=${csrf}`,
+            true
+        )
+        xhr.onload = () => {
+            swal.close();
+            if (xhr.status === 200 && xhr.readyState === 4) {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(xhr.responseText);
+                wrapperLocations = result;
+                printWrapperLocations();
                 getAvailableFlightBookings();
             } else {
                 Swal.fire({
@@ -106,7 +204,7 @@ const gatherInformation = () => {
                 }).then(() => {
                     location.replace("./../");
                 })
-                
+
             }
         }
         xhr.send();
@@ -123,17 +221,17 @@ const gatherInformation = () => {
         xhr.onload = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
-               //Nhận thông tin và lưu vào danh mục
-               let result = JSON.parse(xhr.responseText); 
-               result.forEach(iteration => {
+                //Nhận thông tin và lưu vào danh mục
+                let result = JSON.parse(xhr.responseText);
+                result.forEach(iteration => {
                     if (!Object.keys(availableBookings.flights).includes(iteration.booking_id.toString())) {
                         availableBookings.flights[iteration.booking_id] = [];
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     } else {
                         availableBookings.flights[iteration.booking_id].push(iteration);
                     }
-               })
-               getAvailableHotelBookings();
+                })
+                getAvailableHotelBookings();
             } else {
                 Swal.fire({
                     icon: "error",
@@ -158,7 +256,7 @@ const gatherInformation = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(xhr.responseText); 
+                let result = JSON.parse(xhr.responseText);
                 availableBookings.hotels = result;
                 gatherPlanDetails();
             } else {
@@ -185,10 +283,13 @@ const gatherInformation = () => {
             swal.close();
             if (xhr.status === 200 && xhr.readyState === 4) {
                 //Nhận thông tin và lưu vào danh mục
-                let result = JSON.parse(xhr.responseText); 
+                let result = JSON.parse(xhr.responseText);
                 result.forEach(result => {
+                    let date_order = result.date_order;
+                    if (details.length <= date_order) {
+                        details.push([]);
+                    }
                     let detailToAdd = {
-                        date: result.date,
                         time: result.start,
                         detail: result.detail,
                         attraction: {
@@ -197,9 +298,9 @@ const gatherInformation = () => {
                             image: result.destination_image,
                         },
                         isRemind: result.set_alarmed,
-                        rawID: result.id
+                        rawID: result.time_order
                     }
-                    details.push(detailToAdd);
+                    details[date_order].push(detailToAdd);
                 })
                 //Load everything completed
                 printToDisplay();
@@ -209,13 +310,13 @@ const gatherInformation = () => {
                     text: "Error occured."
                 }).then(() => {
                     location.replace("./../");
-                })  
+                })
             }
         }
         xhr.send();
     }
 
-    gatherGeneralInfo();
+    checkViewMode();
 
     //dummyData();
 }
@@ -237,13 +338,35 @@ const printToDisplay = () => {
 
     document.getElementById("plan-title").innerText = title;
     let dateString = "";
+    /*
     if (fromDate == toDate) {
         dateString = getDisplayDateFormat(false, fromDate);
     } else {
         dateString = `${getDisplayDateFormat(false, fromDate)} - ${getDisplayDateFormat(false, toDate)}`
     }
     document.getElementById("plan-date").innerText = dateString;
-    
+    */
+    let modeHTML = planMode === 0 ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
+    document.getElementById("plan-mode").innerHTML = modeHTML;
+
+    if (planMode === 0 || isViewer) {
+        document.getElementById("btn-share").style.display = "none";
+    } else {
+        document.getElementById("btn-share").addEventListener("click", () => {
+            Swal.fire({
+                title: 'Are you sure want to share this plan to Tour Guru blog?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                confirmButtonColor: 'green',
+                cancelButtonColor: 'red'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    location.replace(`./../../blog/create?plan=${planID}`)
+                  }
+              })
+        })
+    }
+
     if (description == "") {
         document.getElementById("description-div").style.display = "none";
     } else {
@@ -256,7 +379,57 @@ const printToDisplay = () => {
     updateBookingLinkedDetail();
 
     printDetails();
-} 
+}
+
+const printColabs = () => {
+    let colabList = document.getElementById("colabs-display");
+    let listHTML = ``;
+
+    /*
+        <div class="mdc-chip" role="row" data-id = ${colab.user_id}>
+            <div class="mdc-chip__ripple"></div>
+            <img class="mdc-chip__icon mdc-chip__icon--leading" src="${colab.image}"></img>
+            <span role="gridcell">
+                <span role="button" tabindex="0" class="mdc-chip__primary-action">
+                    <span class="mdc-chip__text">${colab.display_name || colab.mail}</span>
+                </span>
+            </span>
+        </div>
+    */
+
+    colabs.forEach((colab, index) => {
+        listHTML += `<img 
+            src=${colab.image}
+            alt=""
+            style="z-index: ${colabs.length + 1 - index}"></img>`
+    })
+
+    colabList.innerHTML = listHTML;
+}
+
+const printWrapperLocations = () => {
+    if (wrapperLocations.length === 0) {
+        document.getElementById("wrapper-location-div").style.setProperty("display", "none", "important");
+    } else {
+        document.getElementById("wrapper-location-div").style.setProperty("display", "block", "important");
+        let wrapperLocationsList = document.getElementById("wrapper-locations-display");
+        let listHTML = ``;
+        wrapperLocations.forEach(location => {
+            listHTML += `<div class="mdc-chip" role="row" data-id = ${location.location_id}>
+                <div class="mdc-chip__ripple"></div>
+                <img class="mdc-chip__icon mdc-chip__icon--leading" src="${location.location_image}"></img>
+                <span role="gridcell">
+                    <span role="button" tabindex="0" class="mdc-chip__primary-action">
+                        <span class="mdc-chip__text">${location.location_name}</span>
+                    </span>
+                </span>
+            </div>`
+        })
+        wrapperLocationsList.innerHTML = listHTML;
+    }
+
+}
+
 
 const getDisplayDateFormatAdd7Hours = (ISODate) => {
     function addHoursToDate(date, hours) {
@@ -275,41 +448,80 @@ const getDisplayDateFormatAdd7Hours = (ISODate) => {
 
 const updateBookingLinkedDetail = () => {
     let html = ``;
-    
+    let subHTMLContent = ``;
+
     chosenBookings.flights.forEach(booking => {
-        let subHTMLContent = ``;
-        if (booking)
-        {
+        if (booking) {
             booking.forEach(iteration => {
                 subHTMLContent += `
-                    <div>
-                        <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
-                        ${iteration.flight_number}: ${iteration.origin_code} - ${iteration.dest_code} (${iteration.departure} - ${iteration.arrival}) 
-                        - ${getDisplayDateFormat(false, iteration.date)}
+                    <div class="flight-booking-detail col-xl-4 col-sm-6 col-12 mb-1">
+                        <div class="flight-booking-detail-container d-flex flex-row">
+                            <div class="d-flex flex-column align-items-center justify-content-center mr-1">
+                                <div class="text-center">
+                                    <img alt="" src="./../../shared/assets/images/plane.png"
+                                        style="width: 30px;"
+                                    >
+                                    <div style="font-family: 'header'; color: #CCC6C6">
+                                    ${iteration.origin_code.toLowerCase()}›${iteration.dest_code.toLowerCase()}</div>
+                                </div>
+                                <img src="http://pics.avs.io/80/40/${iteration.flight_number.substring(0, 2)}.png">
+                            </div>
+                            <div class="d-flex flex-column align-items-start justify-content-center ml-1">
+                                <h5 class="text-purple" style="font-family: 'header'">${iteration.flight_number}</h5>
+                                <h5 class="text-purple" style="font-family: 'header'">${getDisplayDateFormat(false, iteration.date)}</h5>
+                                <h5 class="text-purple" style="font-family: 'header'">${iteration.departure} - ${iteration.arrival}</h5>
+                            </div>
+                        </div>
                     </div>
                 `
             })
-
-            html += `
-                <div class="flight-booking text-center mt-1 mb-1 editable-container" data-booking-id=${booking[0].booking_id}>
-                    ${subHTMLContent}
-                </div>
-            `
         }
     })
 
+    document.querySelector(".flight-bookings").innerHTML = subHTMLContent;
+
+    subHTMLContent = ``;
+
     chosenBookings.hotels.forEach(hotel => {
+        let hotelLocation = ``;
+        let splits = hotel.hotel_address.split(', ');
+        hotelLocation = splits[splits.length - 1].toLowerCase();
+
+        let dateString = "";
+        let startDate = hotel.date_start.substring(5);
+        splits = startDate.split('-');
+        startDate = `${splits[1]}/${splits[0]}`
+        dateString += startDate;
+        startDate = hotel.date_end.substring(5);
+        splits = startDate.split('-');
+        startDate = `${splits[1]}/${splits[0]}`
+        dateString += " › " + startDate;
+
         if (hotel) {
-            html += `
-            <div class="hotel-booking text-center mt-2 mb-2 editable-container" data-booking-id=${hotel.id}>
-                <i class="fa fa-hotel" aria-hidden="true"></i>
-                ${hotel.hotel_name} - ${hotel.number_of_beds} rooms (${getDisplayDateFormat(false, hotel.date_start)} - ${getDisplayDateFormat(false, hotel.date_end)})
+            subHTMLContent += `
+            <div class="flight-booking-detail col-xl-4 col-sm-6 col-12 mb-1">
+                <div class="flight-booking-detail-container d-flex flex-row">
+                    <div class="d-flex flex-column align-items-center justify-content-center mr-1">
+                        <div class="text-center">
+                            <img alt="" src="./../../shared/assets/images/hotel.png"
+                                style="width: 30px;"
+                            >
+                            <div style="font-family: 'header'; color: #CCC6C6">
+                            ${hotelLocation}</div>
+                        </div>
+                        <img class="hotel-thumbnail" alt="" src="${hotel.hotel_image_url}">
+                    </div>
+                    <div class="d-flex flex-column align-items-start justify-content-center ml-1">
+                        <h5 class="text-purple" style="font-family: 'header'">${dateString}</h5>
+                        <h5 class="text-purple" style="font-family: 'header'; font-size: 1rem;">${hotel.hotel_name}</h5>
+                    </div>
+                </div>
             </div>
         `
         }
     })
 
-    document.querySelector(".bookings").innerHTML = html;
+    document.querySelector(".hotel-bookings").innerHTML = subHTMLContent;
 }
 
 const printDetails = () => {
@@ -317,61 +529,123 @@ const printDetails = () => {
     detailsBox.innerHTML = "";
     let html = "";
 
-    const detailsByDay = {};
-    details.forEach(detail => {
-        if (detail) {
-            let date = detail.date;
-            if (Object.keys(detailsByDay).includes(date)) {
-                detailsByDay[date].push(detail);
-            } else {
-                detailsByDay[date] = [];
-                detailsByDay[date].push(detail);
+    details.forEach((detailsOfDay, index) => {
+        let dayDetailsHTML = ``;
+        detailsOfDay.forEach(detail => {
+
+            let detailHTML = ``;
+            if (detail.time !== "" || detail.detail !== "") {
+                detailHTML += `<div class='detail-time-div ${detail.isRemind ? 'time-div-remind' : 'time-div-not-remind'}'>`
+                let detailContent = ``;
+                if (detail.detail !== "") {
+                    if (detail.time !== "")
+                        detailContent = `· ${detail.detail}`
+                    else
+                        detailContent = `${detail.detail}`
+                }
+
+                detailHTML += `
+                    <span  style="font-family: 'header'">
+                        <i style="color: ${!detail.isRemind ? 'var(--theme-purple);' : 'white'}" class="fas fa-clock"></i>
+                        ${detail.time}
+                        ${detailContent}
+                    </span>
+                `
+
+                detailHTML += "</div>";
             }
-        }
-    }) 
 
-    Object.keys(detailsByDay).forEach(key => {
-        detailsByDay[key] = detailsByDay[key].sort(function(a, b) {
-            return Date.parse('1970/01/01 ' + a.time.slice(0, -2) + ' ' + a.time.slice(-2)) - Date.parse('1970/01/01 ' + b.time.slice(0, -2) + ' ' + b.time.slice(-2))
-        })
-    })
-
-    let listOfDays = Object.keys(detailsByDay).sort(
-        function (a, b) {
-            return Date.parse(a) - Date.parse(b)
-        }
-    )
-
-    listOfDays.forEach(day => {
-        html += `
-            <h3 class="mt-2 text-purple">${getDisplayDateFormat(true, day)}</h3>
-        `
-        detailsByDay[day].forEach(detail => {
             let alarmClass = "";
             let attractionClass = "";
             if (detail.isRemind)
                 alarmClass = '<span class="mr-1"><i class="fas fa-clock"></i></span>'
-            if (detail.attraction.id != '')
+            if (detail.attraction.id)
                 attractionClass = `
-                    <p class="ml-2 mb-0">
-                        <img style="width: 60px; height: 60px; object-fit: cover;" alt="" src="${detail.attraction.image}">
-                        <span class="d-flex align-items-center" style="display: inline-flex !important">
-                            <a target="_blank" href="../../attraction/attraction.php?id=${detail.attraction.id}" class="destination">${detail.attraction.name}</a>
+                    <div class="mb-2 mt-2 plan-detail-attraction" style="background: white;">
+                        <div class="img-div" style="width: 60px; height: 60px; object-fit: cover;
+                        background-image: url('${detail.attraction.image}')
+                        "></div>
+                        
+                        <div>
+                            ${detailHTML}
+                        </div>
+                        
+                        <span class="d-flex align-items-center detail-attraction-div" style="display: inline-flex !important">
+                            <i class="fa fa-map-marker-alt mr-1" aria-hidden="true"></i>
+                            <a class="destination" target="blank" 
+                            href="../../attraction/attraction.php?id=${detail.attraction.id}">${detail.attraction.name}</a>
                         </span>
-                    </p>
+
+                    </div>
                 `
 
-            html += `
-                <div class="editable-container left-container">
-                    <p class="ml-2 mb-0 mt-1 text-gray">
-                        <span class="text-pink time font-weight-bold" style="display: inline;">${detail.time}: </span>
-                        <span>${detail.detail}</span>
-                        ${alarmClass}
-                    </p>
-                    ${attractionClass}
+            let timeHTML = `
+                <p class="mb-0 mt-1 text-gray">
+                    ${alarmClass}
+                </p>
+            `;
+
+            if (detail.attraction.id)
+                dayDetailsHTML += `
+                    <div class="mb-2 mt-2 editable-container left-container draggable" draggable="true"
+                    data-day=${index}>
+                        ${attractionClass}
+                    </div>
+                `
+            else {
+
+                let divContent = ``;
+
+                divContent += `<div class='detail-all-div ${detail.isRemind ? 'detail-all-remind' : 'detail-all-not-remind'}'>`
+                let detailContent = ``;
+                if (detail.detail !== "") {
+                    if (detail.time !== "")
+                        detailContent = `· ${detail.detail}`
+                    else
+                        detailContent = `${detail.detail}`
+                }
+
+                divContent += `
+                <span  style="font-family: 'header'">
+                    <i style="color: ${!detail.isRemind ? 'var(--theme-purple);' : 'white'}" class="fas fa-clock"></i>
+                    ${detail.time}
+                    ${detailContent}
+                </span>
+                `
+
+                divContent += "</div>"
+
+                if (detail.isRemind) {
+                    dayDetailsHTML += `
+                        <div class="mb-2 mt-2 editable-container left-container draggable" draggable="true"
+                        data-day=${index}>
+                            ${divContent}
+                        </div>
+                `
+                } else {
+                    dayDetailsHTML += `
+                        <div class="mb-2 mt-2 editable-container left-container draggable" draggable="true"
+                        data-day=${index}>
+                            ${divContent}
+                        </div>
+                    `
+                }
+            }
+        })
+        html += `
+            <div id="day-${index + 1}" class="day-draggable mt-3 mb-3 col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12" >
+                <div class="editable-container text-left day-div">
+                    <h4 class="text-purple text-left" style="font-family: 'body'">day ${index + 1}</h4>
                 </div>
-            `   
-        }) 
+                
+
+                <div class="details" data-day="${index}">
+                    ${dayDetailsHTML}
+                </div>                
+            </div>
+        `
+
+
     })
 
     detailsBox.innerHTML = html;
@@ -383,130 +657,41 @@ const getDisplayDateFormat = (isWeekDay, ISODate) => {
     const toYear = newDateObj.getFullYear();
     const toDate = newDateObj.getDate();
     const DOW = newDateObj.getDay()
-    const dateTemplate = isWeekDay? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
+    const dateTemplate = isWeekDay ? `${weekDays[DOW]}, ${toDate} ${months[toMonth - 1]} ${toYear}` : `${toDate} ${months[toMonth - 1]} ${toYear}`;
     // console.log(dateTemplate)
     return dateTemplate;
 }
 
-//Testing only
-const dummyData = () => {
-    availableBookings = {
-        hotels: [
-            {
-                'id': 1,
-                'user_id': 1,
-                'date_start': '2021-11-18',
-                'date_end': '2021-11-20',
-                'number_of_nights': 2,
-                'hotel_id': 12345,
-                'hotel_name': 'Bulgari Hotel London',
-                'hotel_image_url': 'https://pix10.agoda.net/hotelImages/4880829/228078015/97f70b1331c0e8d7ba87e1b478c8a6ff.jpg?s=1024x768',
-                'status': 1,
-                'number_of_beds': 1,
-                'date_booked': '',
-                'total_cost': '2646.12 EUR',
-            }
-        ],
-        flights: {
-            1: [
-                {
-                    'id': 1,
-                    'booking_id': 1,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 1,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ],
-            2: [
-                {
-                    'id': 1,
-                    'booking_id': 2,
-                    'origin_code': 'FCO',
-                    'dest_code': 'LHR',
-                    'origin': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'destination': 'Heathrow Airport',
-                    'departure': '07:30',
-                    'arrival': '09:30',
-                    'date': '2021-11-18',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321neo',
-                    'airline': 'British Airways',
-                    'flight_number': 'BA551'
-                }, {
-                    'id': 2,
-                    'booking_id': 2,
-                    'origin_code': 'LHR',
-                    'dest_code': 'FCO',
-                    'origin': 'Heathrow Airport',
-                    'destination': 'Leonardo Da Vinci - Fiumicino Airport',
-                    'departure': '07:25',
-                    'arrival': '10:55',
-                    'date': '2021-11-20',
-                    'class': 'BUSINESS',
-                    'aircraft': 'Airbus A321',
-                    'airline': 'ITA Italia Trasporto Aereo (Alitalia)',
-                    'flight_number': 'AZ201'
-                }
-            ]
-        }
-    }
-
-    title = 'hanoi hanoi hanoi',
-    description = 'hola welcome to the capital for the first time',
-    fromDate = '2020-11-27',
-    toDate = '2020-11-30',
-    created = '2021-11-01'
-    chosenBookingIndex = {
-        flights: [1],
-        hotels: [1]
-    }
-
-    details = [
-        {
-            "rawID": 1,
-            "detail": "abcdef",
-            "date": "2021-11-06",
-            "time": "09:45",
-            "isRemind": false,
-            "attraction": {
-                "id": "953101",
-                "name": "Disney’s Hollywood Studios",
-                "image": "https://media-cdn.tripadvisor.com/media/photo-m/1280/18/df/2c/bb/disney-s-hollywood-studios.jpg",
-            }
+const showColabsSwal = () => {
+    Swal.fire({
+        title: 'List of authors',
+        html: `
+            <div class="text-center colab-details">
+                
+            </div>
+        `,
+        didOpen: () => {
+            let colabList = document.querySelector(".colab-details");
+            let listHTML = ``;
+            colabs.forEach(colab => {
+                listHTML += `
+                    <div class="colab-result">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6 offset-md-0 offset-sm-3">
+                                <img src="${colab.image}" alt="" class="des-result-img">
+                            </div>
+                            <div class="col-md-8 col-sm-12 d-flex align-items-center justify-content-center justify-content-md-start">
+                                <div class="text-md-left text-center">
+                                    <h5 class="text-pink">${colab.display_name}</h5>
+                                    <p class="text-gray">${colab.mail}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            })
+            colabList.innerHTML = listHTML;
         },
-        {
-            "rawID": 2,
-            "detail": "wake me up",
-            "date": "2021-11-06",
-            "time": "06:00",
-            "isRemind": true,
-            "attraction": {
-                "id": "",
-                "name": "",
-                "image": "",
-            }
-        }
-    ]
+        allowOutsideClick: () => !Swal.isLoading()
+    })
 }

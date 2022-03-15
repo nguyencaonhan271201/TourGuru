@@ -1,5 +1,6 @@
 class HotelBookingInfo {
-  constructor (currencyCode, currencyRate, hotelID, hotelURL, checkIn, checkOut, numberOfNights, price) {
+  constructor (currencyCode, currencyRate, hotelID, hotelURL, checkIn, checkOut, numberOfNights, price,
+    name, address, stars, long, lat, reviewScore, numberOfGuests, numberOfRooms) {
     this.currency = {
       code: currencyCode,
       rate: currencyRate,
@@ -7,9 +8,9 @@ class HotelBookingInfo {
     this.hotel = {
       ID: hotelID,
       imageURL: hotelURL,
-      name: '',
-      stars: 0,
-      address: ''
+      name: name,
+      stars: stars,
+      address: address
     }
     this.date = {
       checkIn: checkIn,
@@ -17,8 +18,18 @@ class HotelBookingInfo {
     }
     this.numberOfNights = numberOfNights;
     this.singleNight = price;
-    this.numberOfRooms = 0;
+    this.numberOfGuests = numberOfGuests;
+    this.numberOfRooms = numberOfRooms;
     this.totalCost = 0;
+    this.coordinates = {
+      longitude: long,
+      latitude: lat
+    }
+    this.score = {
+      score: reviewScore.score,
+      word: reviewScore.word
+    }
+    this.roomDetails = [];
   }
 
   displayNightFullString() {
@@ -27,27 +38,25 @@ class HotelBookingInfo {
   }
 
   buildObjectForSend(uid) {
-    let reformattedImageURL = this.hotel.imageURL.indexOf("?") != -1? 
-    this.hotel.imageURL.substring(0, this.hotel.imageURL.indexOf("?"))
-    : this.hotel.imageURL;
-
     let sendData = {
       "user_id": `${uid}`,
       "date_start": `${this.date.checkIn}`,
       "date_end": `${this.date.checkOut}`,
       "number_of_nights": `${this.numberOfNights}`,
-      "hotel_id": `${this.hotel.ID}`,
-      "hotel_name": `${this.hotel.name}`,
-      "hotel_image_url": `${reformattedImageURL}`,
-      "number_of_beds": `${this.numberOfRooms}`,
       "total_cost": `${this.buildCostString()}`,
+      "hotel": {
+        "name": `${this.hotel.name}`,
+        "image_url": `${this.hotel.imageURL}`,
+        "address": `${this.hotel.address.replace(/\s\s+/g, ' ').replaceAll(" ,", ",")}`,
+        "stars": `${this.hotel.stars}`,
+      }
     }
 
     return sendData;
   }
 
   buildCostString() {
-    return `${this.totalCost} ${this.currency.code}`
+    return `${this.totalCost.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${this.currency.code}`
   }
 
   displayRoomString() {

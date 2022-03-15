@@ -14,15 +14,15 @@ class PlanDetail {
   public function addPlanDetails($details, &$errors) {
     try {
       foreach ($details as $detail) {
-        $query = "INSERT INTO plan_details(plan_id, destination_id, destination_name, destination_image, detail, date, start,
-        set_alarmed) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO plan_details(plan_id, destination_id, destination_name, destination_image, detail, start,
+        set_alarmed, minute_alarm, date_order, time_order) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
 
         $valueInsert = [];
 
         foreach ($detail as $key => $value) {
-          if ($key == "plan_id")
+          if ($key == "plan_id" || $key == "date_order" || $key == "time_order")
             array_push($valueInsert, intval(htmlspecialchars($value)));
           else if ($key == "set_alarmed") 
             array_push($valueInsert, $value == true? 1 : 0);
@@ -30,9 +30,10 @@ class PlanDetail {
             array_push($valueInsert, htmlspecialchars($value));
         }
 
-        $stmt->bind_param("issssssi", ...$valueInsert);
+        $stmt->bind_param("isssssiiii", ...$valueInsert);
 
         $stmt->execute();
+        var_dump($stmt);
 
         if ($stmt->affected_rows != 1) {
           $errors['execute_err'] = "Server error.";
@@ -47,7 +48,7 @@ class PlanDetail {
 
   public function getPlanDetails($plan_id, &$errors) {
     try {
-      $query = "SELECT * FROM plan_details WHERE plan_id = ? ORDER BY id ASC";
+      $query = "SELECT * FROM plan_details WHERE plan_id = ? ORDER BY date_order ASC, time_order ASC";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $plan_id);
       $stmt->execute();

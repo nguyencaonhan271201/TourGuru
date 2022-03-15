@@ -20,7 +20,7 @@
           $mail->SMTPSecure = 'ssl';                       
           $mail->Port = SMTP_PORT;                    
           //Recipients
-          $mail->setFrom(SMTP_UNAME, "TourGuru");
+          $mail->setFrom(SMTP_UNAME, "Tour Guru");
           $mail->addAddress($to, $display);     
           $mail->isHTML(true);                                 
           $mail->Subject = $subject;

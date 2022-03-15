@@ -54,6 +54,21 @@
       } else {
         echo json_encode($info);
       }
+    } else if (isset($_GET["getHotelsDetails"])) {
+      $booking = new HotelBooking($conn);
+      if (!isset($_GET["booking_id"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $info = $booking->getHotelBookingDetails($_GET["booking_id"]);
+
+      if (empty($info)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($info);
+      }
     } else if (isset($_GET["getFlightsInfoAdmin"])) {
       $booking = new FlightBooking($conn);
       if (!isset($_GET["user_id"]) || !isset($_GET["booking_id"]) || !isset($_GET["isAdmin"])) {
@@ -92,6 +107,21 @@
       }
       
       $info = $booking->getHotelBookingInfoAdmin($_GET["user_id"], $_GET["booking_id"]);
+
+      if (empty($info)) {
+        http_response_code(400);
+        exit;
+      } else {
+        echo json_encode($info);
+      }
+    } else if (isset($_GET["getHotelsDetailsAdmin"])) {
+      $booking = new HotelBooking($conn);
+      if (!isset($_GET["user_id"]) || !isset($_GET["booking_id"]) || !isset($_GET["isAdmin"])) {
+        http_response_code(400);
+        exit;
+      }
+      
+      $info = $booking->getHotelBookingDetailsAdmin($_GET["user_id"], $_GET["booking_id"]);
 
       if (empty($info)) {
         http_response_code(400);

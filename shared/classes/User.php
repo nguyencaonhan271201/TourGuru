@@ -68,7 +68,7 @@ class User {
 
     public function getHeaderInfo($id) {
         try {
-            $query = "SELECT role, image FROM users WHERE user_id = ?";
+            $query = "SELECT role, image, display_name, mail FROM users WHERE user_id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param("s", $id);
             $stmt->execute();
@@ -183,26 +183,26 @@ class User {
 
     public function getUserForDashboard($offset){
         $offset *= 10;
-            $sql = 
-            "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated,
-            image, (SELECT COUNT(*) FROM flight_bookings WHERE user_id = users.user_id) AS numberOfFlights,
-            (SELECT COUNT(*) FROM hotel_bookings WHERE user_id = users.user_id) AS numberOfHotels,
-            (SELECT COUNT(*) FROM visited_locations WHERE user_id = users.user_id) AS numberOfLocations
-            FROM users
-            ORDER BY date_created DESC
-            LIMIT ?";
+        $sql = 
+        "SELECT user_id as userID, display_name as userName, mail, date_created as timeCreated,
+        image, (SELECT COUNT(*) FROM flight_bookings WHERE user_id = users.user_id) AS numberOfFlights,
+        (SELECT COUNT(*) FROM hotel_bookings WHERE user_id = users.user_id) AS numberOfHotels,
+        (SELECT COUNT(*) FROM visited_locations WHERE user_id = users.user_id) AS numberOfLocations
+        FROM users
+        ORDER BY date_created DESC
+        LIMIT ?";
 
-            //userID,userName, mail, timeCreated
+        //userID,userName, mail, timeCreated
 
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i", $offset);
-            $stmt->execute();
-            $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-            
-            if (count($result) >= ($offset - 10)) {
-                return array_slice($result, $offset - 10, 10);
-            } else {
-                return [];
-            }
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $offset);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        
+        if (count($result) >= ($offset - 10)) {
+            return array_slice($result, $offset - 10, 10);
+        } else {
+            return [];
+        }
     }
 }

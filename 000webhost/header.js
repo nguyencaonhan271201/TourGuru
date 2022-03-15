@@ -39,8 +39,12 @@ const updateInfo = () => {
 
   //getAvatar
   let profileImage = userInfo.image;
-  if (profileImage.includes("../../"))
-    profileImage = root + "/" + profileImage.substring(6, profileImage.length);
+  if (profileImage.includes("../../") || profileImage.includes("../../../")) {
+    while (profileImage.includes("../")) {
+      profileImage = profileImage.replace('../', '');
+    }
+    profileImage = root + "/" + profileImage;
+  }
   document.getElementById("profile-img").setAttribute("src", profileImage);
 };
 

@@ -172,7 +172,7 @@ h4 {
 .des-result-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   max-height: 100px;
   max-width: 100%;
   text-align: center;
@@ -194,7 +194,7 @@ h4 {
 
 .left-container {
   margin: 0 !important;
-  margin-left: 20px !important;
+  margin-left: 0px !important;
 }
 
 #details * {
@@ -240,6 +240,20 @@ body {
 
 #btn-print:hover {
   background: var(--theme-dark-pink);
+}
+
+#btn-share {
+  background: var(--theme-link);
+  border: none;
+  border-radius: 10rem;
+  padding: 5px 20px;
+  color: white;
+  transition: background 200ms;
+  /* display: none; */
+}
+
+#btn-share:hover {
+  background: var(--theme-link-hover);
 }
 
 #btn-create {
@@ -302,8 +316,169 @@ html {
   overflow-y: visible !important;
 }
 
+#plan-mode {
+  color: var(--theme-dark-purple);
+}
+
+#plan-mode i {
+  font-size: 16px;
+}
+
+.details * {
+  text-align: left;
+}
+
+.details .editable-icon {
+  text-align: center;
+}
+
+.day-div .editable-icon {
+  text-align: center;
+}
+
+.day-div {
+  text-align: left;
+  margin-left: 0px;
+}
+
+.draggable {
+  cursor: pointer;
+}
+
+.draggable.dragging {
+  cursor: pointer;
+}
+
+#colabs-list {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#colabs-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: pointer;
+}
+
+.colabs img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+  object-fit: contain;
+}
+
+.colabs img:not(:first-child) {
+  margin-left: -15px;
+}
+
+.colab-details {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 300px;
+}
+
+.colab-result {
+  max-width: 100%;
+  margin-bottom: 5px;
+}
+
+.plan-detail-attraction {
+  border: 2px solid var(--theme-purple);
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.plan-detail-attraction .img-div {
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.details .editable-container {
+  width: 100%;
+}
+
+.detail-time-div {
+  border-top: 2px solid var(--theme-purple);
+  border-bottom: 2px solid var(--theme-purple);
+  padding: 0px 2px;
+  font-size: 18px;
+}
+
+.detail-attraction-div {
+  padding: 0px 5px;
+  font-size: 16px;
+  color: var(--theme-text-dark-purple);
+}
+
+.detail-attraction-div a {
+  color: var(--theme-text-dark-purple) !important;
+}
+
+.detail-attraction-div a:hover {
+  color: var(--theme-text-dark-purple-hover) !important;
+}
+
+.time-div-remind {
+  background: var(--theme-purple);
+  color: white;
+}
+
+.time-div-not-remind {
+  background: white;
+  color: var(--theme-purple);
+}
+
+.detail-all-div {
+  border: 2px solid var(--theme-purple);
+  padding: 10px 5px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
+.detail-all-remind {
+  background: var(--theme-purple);
+  color: white;
+}
+
+.detail-all-not-remind {
+  background: white;
+  color: var(--theme-purple);
+}
+
+.flight-booking-detail {
+  padding: 0px 2px;
+  height: 100%;
+}
+
+.flight-booking-detail-container {
+  border: 2px solid var(--theme-purple);
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 18px;
+}
+
+.hotel-thumbnail {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 @media screen and (max-width: 768px) {
   .main-container {
     width: 100%;
+  }
+
+  #plan-title {
+    font-size: 2rem;
+    max-width: 75%;
+    display: table-caption;
+    width: fit-content;
   }
 }
