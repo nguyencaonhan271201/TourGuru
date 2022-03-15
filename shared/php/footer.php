@@ -1,5 +1,5 @@
 <?php 
-  putenv("ROOT=/TourGuru_v2");
+  putenv("ROOT=/TourGuru");
 ?>
 
 <footer class="d-flex align-items-center justify-content-center">
