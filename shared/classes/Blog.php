@@ -42,6 +42,28 @@ class Blog {
     }
   }
 
+  public function getPublicInfo($blog_id, &$errors) {    
+    try {
+      $query = "SELECT *, (SELECT mail FROM users u WHERE u.user_id = posts.author) AS author_email,
+      (SELECT image FROM users u WHERE u.user_id = posts.author) AS author_image,
+      (SELECT display_name FROM users u WHERE u.user_id = posts.author) AS author_name,
+      (SELECT category_name FROM post_categories p WHERE p.category_id = posts.category) AS category_name
+      FROM posts WHERE post_id = ?";
+      $stmt = $this->conn->prepare($query);
+      $stmt->bind_param("i", $blog_id);
+      $stmt->execute();
+      $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+      if (count($result) == 0) {
+        $errors["no_result"] = "No results";
+      }
+      return $result;
+    } catch (Exception $e) {
+      $errors["execute_err"] = "Error occured";
+      return;
+    }
+  }
+
   public function createBlog($content, $title, $category, $description, $user, $plan, $image, &$errors) {
     $cat = ucwords($category);
     $newURL = "";
@@ -230,21 +252,21 @@ class Blog {
     //Add to post table
     if ($image["tmp_name"] != '') {
       if ($plan != null) {
-        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id = ?, cover = ? WHERE post_id = ?";
+        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id = ?, cover = ?, date_updated = NOW() WHERE post_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sisssisi", $user, $category_id, $title, $content, $description, $plan, $newURL, $blogID);
       } else {
-        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, cover = ?, plan_id = NULL WHERE post_id = ?";
+        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, cover = ?, plan_id = NULL, date_updated = NOW() WHERE post_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sissssi", $user, $category_id, $title, $content, $description, $newURL, $blogID);
       }
     } else {
       if ($plan != null) {
-        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id = ? WHERE post_id = ?";
+        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id = ?, date_updated = NOW() WHERE post_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sisssii", $user, $category_id, $title, $content, $description, $plan, $blogID);
       } else {
-        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id = NULL WHERE post_id = ?";
+        $query = "UPDATE posts SET author = ?, category = ?, title = ?, content = ?, description = ?, plan_id, date_updated = NOW() = NULL WHERE post_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("sisssi", $user, $category_id, $title, $content, $description, $blogID);
       }
