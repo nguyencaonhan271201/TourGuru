@@ -1,5 +1,5 @@
 <?php 
-  putenv("ROOT=/TourGuru_v2");
+  putenv("ROOT=/TourGuru");
 ?>
     <link rel="icon" href="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg">
     <link href="<?php echo getenv('ROOT')?>/shared/css/style.css" rel="stylesheet" />
