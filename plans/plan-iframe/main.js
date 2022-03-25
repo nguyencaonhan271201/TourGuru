@@ -275,6 +275,7 @@ const gatherInformation = () => {
                         details.push([]);
                     }
                     let detailToAdd = {
+                        date: result.date,
                         time: result.start,
                         detail: result.detail,
                         attraction: {

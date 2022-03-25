@@ -7,11 +7,11 @@ $(".attraction_search")
     render: {
       option: function (item, escape) {
         return `<div class="search_result">
-        <div class="d-flex align-items-center m-3">
-          <img src="${item.photo.images.thumbnail.url}" class="me-3">
-          <h2>${item.name}</h2>
-        </div>
-      </div>`;
+            <div class="d-flex align-items-center m-3">
+              <img src="${item.photo.images.thumbnail.url}" class="me-3">
+              <h2>${item.name}</h2>
+            </div>
+          </div>`;
       },
     },
     load: function (query, callback) {
@@ -33,7 +33,7 @@ $(".attraction_search")
           callback();
         },
         success: function (res) {
-          //console.log(res.data.map((opt) => opt.result_object));
+          console.log(res.data.map((opt) => opt.result_object));
           callback(
             res.data.map((opt) => {
               if (opt.result_object.photo) return opt.result_object;

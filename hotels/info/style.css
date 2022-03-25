@@ -443,15 +443,26 @@ input[type="date"]:after {
   object-fit: cover;
 }
 
+.container-fluid {
+  width: 80% !important;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 1000px) {
+  .main-container {
+    width: 100%;
+  }
+
+  .container-fluid {
+    width: 95% !important;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .hotel-option-rating {
     position: relative;
     right: 0;
     width: fit-content;
-  }
-
-  .main-container {
-    width: 100%;
   }
 
   .image-head-left img {

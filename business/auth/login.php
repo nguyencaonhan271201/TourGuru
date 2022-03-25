@@ -33,7 +33,7 @@
                 <div class="col-md-6 col-sm-0" id="sign-in-main-col"> 
                     <div class="container">
                         <div class="main-col-above text-md-left p-3 text-sm-center">
-                            <h3 class="text-purple">sign in</h3>
+                            <h3 class="text-purple">sign in - business</h3>
                             <p><span class="text-lighter">don't have an account? 
                                 <a href="./" class="text-dark-purple a-dark-purple">sign up</a> 
                             </span> </p>

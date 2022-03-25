@@ -7,7 +7,7 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Tour Guru | Hotel Info</title>
+        <title>Tour Guru | Hotel</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -27,7 +27,7 @@
             include '../../shared/php/header.php';
         ?>
 
-        <div class="container mb-4 d-flex justify-content-center" style="margin-top: 80px;">
+        <div class="container-fluid mb-4 d-flex justify-content-center" style="margin-top: 80px;">
             <div class="main-container">
                 <div class="row">
                     <div class="col-md-3 col-sm-12 order-md-1 order-2 p-md-0 p-3">
@@ -43,13 +43,13 @@
 
                                 <div class="form-group">
                                   <label for="check-in">check-in</label>
-                                  <input type="date"
+                                  <input type="text"
                                     class="form-control" name="check-in" id="check-in" aria-describedby="helpId" placeholder="">
                                 </div>
 
                                 <div class="form-group">
                                   <label for="property">check-out</label>
-                                  <input type="date"
+                                  <input type="text"
                                     class="form-control" name="check-out" id="check-out" aria-describedby="helpId" placeholder="">
                                 </div>
 
@@ -81,6 +81,23 @@
                                                 ?>
                                             </select>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 col-12 pr-md-1">
+                                        <div class="form-group">
+                                            <label for="guests">currency</label>
+                                            <select class="form-control" name="currency" id="currency">
+                                               
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12 pb-3 pl-md-1 d-flex align-items-end justify-content-center">
+                                        <a id="btn-search-booking" class="btn btn-info" href="#" role="button"
+                                        style="width: 100%">
+                                            search
+                                        </a>
                                     </div>
                                 </div>
                             </form>

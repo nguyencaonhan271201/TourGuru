@@ -17,12 +17,14 @@ class HotelBooking extends Booking {
       rooms: bookingInfo.number_of_beds,
       nights: bookingInfo.number_of_nights
     };
+    this.status = bookingInfo.status;
     this.date_booked = bookingInfo.date_booked;
     this.dates = {
       from: bookingInfo.date_start,
       to: bookingInfo.date_end,
     }
     this.totalCost = bookingInfo.total_cost;
+    this.business = bookingInfo.business;
   }
 
   buildDurationString() {
@@ -50,6 +52,7 @@ class FlightBookingIteration {
       }
     };
     this.flightNumber = iteration.flight_number;
+    this.business = iteration.business;
   }
 }
 
@@ -62,6 +65,7 @@ class FlightBooking extends Booking {
     this.date = bookingInfo[0].date;
     this.totalPrice = bookingInfo[0].total_price;
     this.numberOfPax = bookingInfo[0].number_of_pax;
+    this.status = bookingInfo[0].status;
     this.iterations = [];
     bookingInfo.forEach(iteration => {
       this.iterations.push(new FlightBookingIteration(iteration));

@@ -15,14 +15,14 @@ class Business {
         $this->conn = $conn;
     }
 
-    public function localSignUp($id, $email, $password, $business_name, &$errors) {
+    public function localSignUp($id, $email, $password, $business_name, $business_type, &$errors) {
         try {
             //Hash password
             $hash = password_hash($password, PASSWORD_DEFAULT);
 
-            $query = "INSERT INTO businesses(biz_user_id, mail, password, business_name) VALUES (?, ?, ?, ?)";
+            $query = "INSERT INTO businesses(biz_user_id, mail, password, business_type, business_name) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->conn->prepare($query);
-            $stmt->bind_param("ssss", $id, $email, $hash, $business_name);
+            $stmt->bind_param("sssis", $id, $email, $hash, $business_type, $business_name);
             $stmt->execute();
             if ($stmt->affected_rows == 1) {
                 return;
@@ -37,7 +37,7 @@ class Business {
 
     public function getProfileInfo($id) {
         try {
-            $query = "SELECT business_name, business_code, mail, image FROM businesses WHERE biz_user_id = ?";
+            $query = "SELECT business_name, business_code, business_type, mail, image FROM businesses WHERE biz_user_id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param("s", $id);
             $stmt->execute();
@@ -50,7 +50,7 @@ class Business {
 
     public function getHeaderInfo($id) {
         try {
-            $query = "SELECT business_name, business_code, image FROM businesses WHERE biz_user_id = ?";
+            $query = "SELECT business_name, business_code, business_type, image FROM businesses WHERE biz_user_id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param("s", $id);
             $stmt->execute();
@@ -61,7 +61,7 @@ class Business {
         }
     }
 
-    public function editProfile($id, $displayName, $businessCode, $image, &$errors) {
+    public function editProfile($id, $displayName, $businessCode, $businessType, $image, &$errors) {
         $newURL = "";
 
         if ($image["tmp_name"] != '') {
@@ -117,7 +117,7 @@ class Business {
                 return;
             }
 
-            if (!filter_var($businessCode, FILTER_SANITIZE_STRING)) {
+            if ($businessCode && !filter_var($businessCode, FILTER_SANITIZE_STRING)) {
                 $errors["businessCode"] = "Business code is not valid.";
                 return;
             }
@@ -126,14 +126,14 @@ class Business {
             $filter_code = htmlspecialchars($businessCode);
             
             if ($image["tmp_name"] != '') {
-                $query = "UPDATE businesses SET business_name = ?, business_code = ?, image = ? WHERE biz_user_id = ?";
+                $query = "UPDATE businesses SET business_name = ?, business_code = ?, business_type = ?, image = ? WHERE biz_user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("ssss", $filter_name, $filter_code, $newURL, $id);
+                $stmt->bind_param("ssiss", $filter_name, $filter_code, $businessType, $newURL, $id);
                 $stmt->execute();
             } else {
-                $query = "UPDATE businesses SET business_name = ?, business_code = ? WHERE biz_user_id = ?";
+                $query = "UPDATE businesses SET business_name = ?, business_code = ?, business_type = ? WHERE biz_user_id = ?";
                 $stmt = $this->conn->prepare($query);
-                $stmt->bind_param("sss", $filter_name, $filter_code, $id);
+                $stmt->bind_param("ssis", $filter_name, $filter_code, $businessType, $id);
                 $stmt->execute();
             }
             if ($stmt->affected_rows == -1 || $stmt->errno > 0) {

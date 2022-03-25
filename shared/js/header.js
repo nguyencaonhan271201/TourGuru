@@ -35,10 +35,14 @@ const updateInfo = () => {
   isAdmin = userInfo.isAdmin;
   isBusiness = userInfo.isBusiness || null; 
 
+  document.getElementById("blog-item").href = `${root}/blogs/search?user=${userInfo.uid}`; 
+
   if (isBusiness && isBusiness === true) {
     document.getElementById("user-dropdown").style.display = "none";
     document.getElementById("business-dropdown").style.display = "block";
     document.getElementById("business-name").style.display = "block";
+    document.getElementById("business-name").innerText = userInfo.businessName.length > 20?
+    userInfo.businessName.substring(0, 20) + "..." : userInfo.businessName;
   } else {
     document.getElementById("user-dropdown").style.display = "block";
     document.getElementById("business-dropdown").style.display = "none";
@@ -67,4 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (getPanel != null) {
     getPanel.style = "display: none;";
   }
+
+  let getDisclaimer = document.querySelector(".disclaimer");
+  if (getDisclaimer != null) {
+    getDisclaimer.style = "display: none;";
+  }
 });
+

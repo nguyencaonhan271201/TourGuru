@@ -29,12 +29,27 @@
                 <hr id="main-col-hr">
                 <form id="edit-account-form" class="auth-form" method="post" action="index.php" enctype="multipart/form-data">
                     <div class="p-3">
-                        <div>
-                            <div class="d-flex flex-row justify-content-between">
-                                <h5 class="input-label">email</h5>
-                                <h5 id="email-invalid" class="invalid-text">invalid</h5>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <h5 class="input-label">email</h5>
+                                    <h5 id="email-invalid" class="invalid-text">invalid</h5>
+                                </div>
+                                <input type="email" id="email" name="email" class="" disabled>
                             </div>
-                            <input type="email" id="email" name="email" class="" disabled>
+                            <div class="col-md-6 col-12">
+                                <div class="d-flex flex-row justify-content-between">
+                                    <h5 class="input-label">business type</h5>
+                                    <h5 id="business-type-invalid" class="invalid-text">invalid</h5>
+                                </div>
+                                <select type="email" id="business-type" name="business-type" class="" required>
+                                    <option value="0">airline</option>
+                                    <option value="1">hotel</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-12">

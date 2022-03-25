@@ -26,7 +26,9 @@ class Plan {
     try {
       $query = "SELECT f1.*, (SELECT f.total_cost FROM flight_bookings f WHERE f.id = f1.booking_id) AS total_price, 
       (SELECT COUNT(*) FROM flight_bookings_customers f2 WHERE f2.booking_id = f1.booking_id) AS number_of_pax,
-      (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked 
+      (SELECT f.date_booked FROM flight_bookings f WHERE f.id = f1.booking_id) AS date_booked,
+      (SELECT f.status FROM flight_bookings f WHERE f.id = f1.booking_id) AS status,
+      (SELECT b.business_id FROM businesses b WHERE f1.flight_number LIKE CONCAT('%', b.business_code, '%') AND b.business_type=0) AS business
       FROM flight_bookings_iterations f1 
       WHERE booking_id IN (SELECT id FROM flight_bookings WHERE user_id = ?)";
       $stmt = $this->conn->prepare($query);
@@ -42,11 +44,12 @@ class Plan {
 
   public function getHotelBookings($uid, &$errors) {
     try {
-      $query = "SELECT id, user_id, date_start, date_end, number_of_nights, approved, date_booked, total_cost,
+      $query = "SELECT id, user_id, date_start, date_end, number_of_nights, approved AS status, date_booked, total_cost,
       (SELECT name FROM hotels h WHERE h.hotel_id = h1.hotel_id) AS hotel_name,
       (SELECT image_url FROM hotels h WHERE h.hotel_id = h1.hotel_id) AS hotel_image_url,
       (SELECT address FROM hotels h WHERE h.hotel_id = h1.hotel_id) AS hotel_address,
-      (SELECT SUM(number_of_room)  FROM hotel_booking_details h2 WHERE h2.booking_id = h1.id) AS number_of_beds
+      (SELECT SUM(number_of_room)  FROM hotel_booking_details h2 WHERE h2.booking_id = h1.id) AS number_of_beds,
+      (SELECT business_id FROM businesses b JOIN hotels h ON h.name = b.business_name WHERE h.hotel_id = h1.hotel_id) AS business
       FROM hotel_bookings h1 WHERE user_id = ?";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $uid);
@@ -59,7 +62,7 @@ class Plan {
     }
   }
 
-  public function addPlanInfo($data, $colabs, $locations, &$errors) {
+  public function addPlanInfo($data, $colabs, $locations, $isEdit, &$errors) {
     try {
       //List of fields
       $fields = ["user_id", "plan_title"];
@@ -102,6 +105,20 @@ class Plan {
           $query = "INSERT INTO plan_locations(plan_id, location_id, location_name, location_image) VALUES (?, ?, ?, ?)";
           $stmt = $this->conn->prepare($query);
           $stmt->bind_param("isss", $insert_id, $location["location_id"], $location["location_name"], $location["location_image"]);
+          $stmt->execute();
+        }
+
+        if ($isEdit != null) {
+          if ($data["mode"] === 1) {
+            //Update linked plan
+            $query = "UPDATE posts SET plan_id = ? WHERE plan_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("ii", $insert_id, $isEdit);
+          } else {
+            $query = "UPDATE posts SET plan_id = NULL WHERE plan_id = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bind_param("i", $isEdit);
+          }
           $stmt->execute();
         }
 

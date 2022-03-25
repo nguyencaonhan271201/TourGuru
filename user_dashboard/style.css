@@ -134,12 +134,71 @@ h4,
   background: var(--theme-dark-purple) !important;
 }
 
+.btn-support {
+  color: white !important;
+  border-radius: 20rem;
+  background: var(--theme-pink) !important;
+  border: none !important;
+}
+
+.btn-support:hover {
+  background: var(--theme-dark-pink) !important;
+}
+
 #map {
   height: 80vh !important;
+}
+
+.approved {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #90ee90;
+  display: block;
+  text-align: center;
+  font-family: "header";
+}
+
+.pending {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #ffffe0;
+  display: block;
+  text-align: center;
+  font-family: "header";
+}
+
+.rejected {
+  font-size: 14px;
+  width: 80px;
+  border-radius: 20px;
+  color: #000;
+  background: #f08080;
+  display: block;
+  text-align: center;
+  font-family: "header";
+}
+
+.btn-disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.btn-disabled:hover {
+  background: var(--theme-pink) !important;
 }
 
 @media screen and (max-width: 576px) {
   #map {
     height: 100vh !important;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .main-container {
+    width: 95% !important;
   }
 }

@@ -59,6 +59,26 @@
         http_response_code(200);
         exit;
       }
+    } else if (isset($_POST["deleteBlog"])) {
+      if (!isset($_POST["uid"]) || !isset($_POST["blogID"])) {
+        http_response_code(400);
+        exit;
+      }
+      $user = $_POST["uid"];
+      $blog_id = $_POST["blogID"];      
+
+      $blog = new Blog($conn);
+      $errors = [];
+      $blog->deleteBlog($blog_id, $user, $errors);
+
+      if (!empty($errors)) {
+        echo json_encode($errors);
+        http_response_code(400);
+        exit;
+      } else {
+        http_response_code(200);
+        exit;
+      }
     }
   } else {
     http_response_code(400);
