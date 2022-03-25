@@ -216,6 +216,7 @@ const printDetailReactions = (result) => {
     tmpDetailedReactions[0].count += 1;
     tmpDetailedReactions[0].people.push({
       display: reaction.display_name || reaction.email,
+      uid: reaction.user_id,
       image: reaction.image,
       type: reaction.reaction_type
     })
@@ -224,6 +225,7 @@ const printDetailReactions = (result) => {
       tmpDetailedReactions[reaction.reaction_type.toString()].count += 1;
       tmpDetailedReactions[reaction.reaction_type.toString()].people.push({
         display: reaction.display_name || reaction.email,
+        uid: reaction.user_id,
         image: reaction.image,
         type: parseInt(reaction.reaction_type)
       })
@@ -232,6 +234,7 @@ const printDetailReactions = (result) => {
         count: 1,
         people: [{
           display: reaction.display_name || reaction.email,
+          uid: reaction.user_id,
           image: reaction.image,
           type: parseInt(reaction.reaction_type)
         }]
@@ -372,16 +375,18 @@ const reDisplayDetails = (selected) => {
     listHTML += `
       <div class="reactor d-flex align-items-center justify-content-start">
         <div style="position: relative;">
+          <a target="_blank" href="./../search?user=${reaction.uid}">
           <img
           class="reactor-img" 
           src="${reaction.image}"
           alt=""></img>
+          </a>
           <img
           class="reactor-img-type" 
           src="../../shared/assets/images/posts/reactions/${reaction.type}.png"
           alt=""></img>
         </div>
-        <h5 id="reactor-name">${reaction.display}</h5>
+        <h5 id="reactor-name"><a target="_blank" href="./../search?user=${reaction.uid}">${reaction.display}</a></h5>
       </div>
     `;
   })

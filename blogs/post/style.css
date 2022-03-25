@@ -588,6 +588,20 @@ h4 {
   color: white !important;
 }
 
+#reactor-name {
+  cursor: pointer;
+}
+
+#reactor-name a,
+#reactor-name a:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.reactor-img {
+  cursor: pointer;
+}
+
 @media screen and (max-width: 1000px) {
   .reaction-details {
     width: 75vw;
