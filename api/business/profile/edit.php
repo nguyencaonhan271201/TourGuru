@@ -41,6 +41,7 @@
         $info['isBusiness'] = true;
         $info['businessName'] = $info['business_name'];
         $info['businessCode'] = $info['business_code'];
+        $info['businessType'] = $info['business_type'];
         unset($info['business_name']);
         unset($info['business_code']);
         if (empty($info)) {
@@ -61,6 +62,7 @@
     $id = $_POST["id"];
     $displayName = $_POST["displayName"];
     $businessCode = $_POST["businessCode"];
+    $businessType = $_POST["businessType"];
     if (isset($_FILES["image"])) {
       $image = $_FILES['image'];
     } else {
@@ -72,7 +74,7 @@
 
     $business = new Business($conn);
 
-    $business->editProfile($id, $displayName, $businessCode, $image, $errors); 
+    $business->editProfile($id, $displayName, $businessCode, $businessType, $image, $errors); 
 
     if (isset($errors["server_error"])) {
       http_response_code(400);

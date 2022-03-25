@@ -58,12 +58,11 @@
         $stmt->execute();
         $results = $stmt->get_result();
         $events = $results->fetch_all(MYSQLI_ASSOC);
-            
 
-        $dateNext10Mins = new DateTime('+10 minutes');
-        $dateNext10Mins2 = new DateTime('+10 minutes');
+        foreach ($events as $event) {   
+            $dateNext10Mins = new DateTime('+ ' . strval($event["minute_alarm"]) . ' minutes');
+            $dateNext10Mins2 = new DateTime('+ ' . strval($event["minute_alarm"]) . ' minutes');
 
-        foreach ($events as $event) {
             //Check if the event is in the list
             $dateString = "{$event["date"]} {$event["start"]}:30";
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);

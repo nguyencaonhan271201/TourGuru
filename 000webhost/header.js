@@ -14,10 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInfo();
   }
 
-  document.getElementById("log-out").addEventListener("click", (e) => {
-    e.preventDefault();
-    location.replace(`${root}` + "/logout.php");
-  });
+  document.querySelectorAll("#log-out").forEach(logOut => {
+    logOut.addEventListener("click", (e) => {
+      e.preventDefault();
+      location.replace(`${root}` + "/logout.php");
+    })
+  })
 
   if (window.location.pathname.includes("/flights")) {
     document.getElementById("nav-flight").classList.add("active");
@@ -31,15 +33,30 @@ document.addEventListener("DOMContentLoaded", () => {
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
   isAdmin = userInfo.isAdmin;
-  if (userInfo.isAdmin) {
-    document.getElementById("admin-header-block").style.display = "block";
+  isBusiness = userInfo.isBusiness || null; 
+
+  document.getElementById("blog-item").href = `${root}/blogs/search?user=${userInfo.uid}`; 
+
+  if (isBusiness && isBusiness === true) {
+    document.getElementById("user-dropdown").style.display = "none";
+    document.getElementById("business-dropdown").style.display = "block";
+    document.getElementById("business-name").style.display = "block";
+    document.getElementById("business-name").innerText = userInfo.businessName.length > 20?
+    userInfo.businessName.substring(0, 20) + "..." : userInfo.businessName;
   } else {
-    document.getElementById("admin-header-block").style.display = "none";
+    document.getElementById("user-dropdown").style.display = "block";
+    document.getElementById("business-dropdown").style.display = "none";
+    document.getElementById("business-name").style.display = "none";
+    if (userInfo.isAdmin) {
+      document.getElementById("admin-header-block").style.display = "block";
+    } else {
+      document.getElementById("admin-header-block").style.display = "none";
+    }
   }
 
   //getAvatar
   let profileImage = userInfo.image;
-  if (profileImage.includes("../../") || profileImage.includes("../../../")) {
+  if (profileImage && (profileImage.includes("../../") || profileImage.includes("../../../"))) {
     while (profileImage.includes("../")) {
       profileImage = profileImage.replace('../', '');
     }
@@ -54,4 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (getPanel != null) {
     getPanel.style = "display: none;";
   }
+
+  let getDisclaimer = document.querySelector(".disclaimer");
+  if (getDisclaimer != null) {
+    getDisclaimer.style = "display: none;";
+  }
 });
+

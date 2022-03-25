@@ -55,6 +55,7 @@ const validateAndSignUp = () => {
     let password = document.getElementById("sign-up-password").value;
     let confirmPassword = document.getElementById("sign-up-confirm-password").value;
     let businessName = document.getElementById("sign-up-business").value;
+    let businessType = parseInt(document.getElementById("sign-up-business-type").value);
 
     if (businessName.length == 0) {
         let businessNameInvalid = signUpForm.querySelector("#name-invalid");
@@ -83,6 +84,24 @@ const validateAndSignUp = () => {
         Swal.fire({
             icon: 'error',
             text: "Please type in your email."
+        });
+        //$('#sign-up-error-modal').modal("show");
+        //$('#sign-up-loading-modal').modal("hide")
+        return;
+    }
+
+    if (businessType !== 0 && businessType !== 1) {
+        let businessTypeInvalid = signUpForm.querySelector("#business-type-invalid");
+        let businessTypeInput = signUpForm.querySelector("#sign-up-business-type");
+        if (!businessTypeInvalid.classList.contains("opacity-1"))
+        businessTypeInvalid.classList.add("opacity-1");
+        if (!businessTypeInput.classList.contains("wrong-input"))
+        businessTypeInput.classList.add("wrong-input");
+        //errorText.innerHTML = "Please type in your email.";
+        swal.close();
+        Swal.fire({
+            icon: 'error',
+            text: "Business type is invalid."
         });
         //$('#sign-up-error-modal').modal("show");
         //$('#sign-up-loading-modal').modal("hide")
@@ -142,7 +161,8 @@ const validateAndSignUp = () => {
                 "id": uid,
                 "email": email,
                 "password": password,
-                "business_name": businessName
+                "business_name": businessName,
+                "business_type": businessType
             }
             updateToDatabaseNormalLogin(data);
             return;
@@ -433,7 +453,8 @@ const updateToDatabaseNormalLogin = (data) => {
         }
         //$('#sign-up-loading-modal').modal("hide")
     }
-    xhr.send(`localSignUp&id=${data.id}&email=${data.email}&password=${data.password}&csrf=${csrf}&business=${data.business_name}`);
+    xhr.send(`localSignUp&id=${data.id}&email=${data.email}&password=${data.password}&csrf=${csrf}&business=${data.business_name}
+    &type=${data.business_type}`);
 }
 
 const loginRedirect = async() => {
@@ -459,16 +480,24 @@ const getInfoFromServer = async() => {
         Swal.close();
         if (xhr.status === 200 && xhr.readyState === 4) {
            //Nhận thông tin và in ra các ô input
-            let result = JSON.parse(xhr.responseText); 
-            localStorage.setItem("headerInfo", JSON.stringify({
-                "isAdmin": false,
-                "image": result.image,
-                "isBusiness": true,
-                "businessName": result.businessName,
-                "businessCode": result.businessCode || ""
-            }));
-            localStorage.removeItem("user");
-            location.replace('./../');
+            try {
+                let result = JSON.parse(xhr.responseText); 
+                localStorage.setItem("headerInfo", JSON.stringify({
+                    "isAdmin": false,
+                    "image": result.image,
+                    "isBusiness": true,
+                    "businessName": result.businessName,
+                    "businessCode": result.businessCode || "",
+                    "businessType": result.businessType
+                }));
+                localStorage.removeItem("user");
+                location.replace('./../');
+            } catch (ex) {
+                Swal.fire({
+                    icon: 'error',
+                    text: "Error occured. Please try again."
+                });
+            }
         }
     }
     xhr.send();
@@ -479,5 +508,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let getPanel = document.querySelector("div[style*='z-index:9999999;']");
     if (getPanel != null) {
         getPanel.style = "display: none;"
+    }
+
+    let getDisclaimer = document.querySelector(".disclaimer");
+    if (getDisclaimer != null) {
+        getDisclaimer.style = "display: none;";
     }
 })

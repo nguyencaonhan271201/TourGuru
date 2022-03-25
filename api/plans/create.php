@@ -55,7 +55,8 @@
       $locations = json_decode($_POST["locations"], true);
       $plan = new Plan($conn);
       $errors = [];
-      $inserted_id = $plan->addPlanInfo($data, $colabs, $locations, $errors);
+      $isEdit = isset($_POST["isEdit"]) ? intval($_POST["isEdit"]) : null;
+      $inserted_id = $plan->addPlanInfo($data, $colabs, $locations, $isEdit, $errors);
 
       if (!empty($errors)) {
         http_response_code(400);

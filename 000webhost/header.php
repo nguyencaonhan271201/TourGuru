@@ -1,5 +1,5 @@
 <?php 
-  //putenv("ROOT=/TourGuru");
+  //putenv("ROOT=/TourGuru_v2");
 ?>
     <link rel="icon" href="/shared/assets/images/logo.svg">
     <link href="/shared/css/style.css" rel="stylesheet" />
@@ -26,7 +26,7 @@
     ></script>
     
     <nav class="navbar navbar-expand-sm navbar-light">
-        <a class="nav-link active" aria-current="page" href="/"
+        <a class="nav-link active" aria-current="page" href=""
           ><img src="/shared/assets/images/logo.svg" id="logo"
         /></a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
@@ -46,6 +46,11 @@
                 ><span>Attractions</span></a
               >
             </li>
+            <li class="nav-item me-4 main-nav-item">
+              <a class="nav-link" id="nav-attraction" aria-current="page" href="/blogs"
+                ><span>Blog</span></a
+              >
+            </li>
           </ul>
 
           <ul id="header-not-logged-in" class="navbar-nav float-lg-right">
@@ -55,6 +60,10 @@
           </ul>
                 
           <ul class="navbar-nav float-lg-right" id="header-logged-in">
+            <p id="business-name">
+             
+            </p>
+            
             <!-- Avatar -->
             <li class="nav-item dropdown dropdown-menu-right dropdown-menu-end">
               <a
@@ -76,27 +85,42 @@
               </a>
 
               <ul class="dropdown-menu dropdown-menu-right dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                <li>
-                  <a class="dropdown-item" href="/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
-                </li>
-                <div class="dropdown-divider"></div>
-                <li>
-                  <a class="dropdown-item" href="/profile/edit"><i class="fas fa-edit"></i> Edit profile</a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
-                </li>
-                <div class="dropdown-divider"></div>
-                <div id="admin-header-block">
+                <div id="business-dropdown">
                   <li>
-                    <a class="dropdown-item" href="/admin_dashboard"><i class="fas fa-chart-line"></i> Management</a>
+                    <a class="dropdown-item" href="/business/profile/edit"><i class="fas fa-edit"></i> Edit business profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/business/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
                   </li>
                   <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
+                </div> 
+                <div id="user-dropdown">
+                    <li>
+                      <a class="dropdown-item" href="/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" id="blog-item" href="#"><i class="fas fa-blog"></i> My blog</a>
+                    </li>
+                  <div class="dropdown-divider"></div>
+                  <li>
+                    <a class="dropdown-item" href="/profile/edit"><i class="fas fa-edit"></i> Edit profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  <div id="admin-header-block">
+                    <li>
+                      <a class="dropdown-item" href="/admin_dashboard"><i class="fas fa-chart-line"></i> Management</a>
+                    </li>
+                    <div class="dropdown-divider"></div>
+                  </div>
+                  <a class="dropdown-item" href="#" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
                 </div>
-                <a class="dropdown-item" href="#" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
               </ul>
             </li>
           </ul>            
@@ -111,4 +135,10 @@
         if (getPanel != null) {
             getPanel.style = "display: none;"
         }
+
+        let getDisclaimer = document.querySelector(".disclaimer");
+        if (getDisclaimer != null) {
+          getDisclaimer.style = "display: none;";
+        }
+
     </script>

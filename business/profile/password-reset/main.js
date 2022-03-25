@@ -93,4 +93,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (getPanel != null) {
         getPanel.style = "display: none;"
     }
+
+    let getDisclaimer = document.querySelector(".disclaimer");
+    if (getDisclaimer != null) {
+        getDisclaimer.style = "display: none;";
+    }
 })

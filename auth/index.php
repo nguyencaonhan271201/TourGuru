@@ -34,8 +34,11 @@
                     <div class="container">
                         <div class="main-col-above text-md-left p-2 text-sm-center">
                             <h3 class="text-purple">sign up</h3>
-                            <p><span class="text-lighter">already have an account? 
+                            <p class="mb-1"><span class="text-lighter">already have an account? 
                                 <a href="./login.php" class="text-dark-purple a-dark-purple">sign in</a> 
+                            </span> </p>
+                            <p ><span class="text-lighter">business? 
+                                <a href="./../business/auth" class="text-dark-purple a-dark-purple">sign up here</a> 
                             </span> </p>
                             <button class="btn btn-google d-flex align-items-center justify-content-center" id="btn-google">
                                 <img src = "./../shared/assets/images/google_logo.svg" alt="" id="img-google-logo" class="mr-2"/>

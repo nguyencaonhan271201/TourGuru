@@ -66,7 +66,7 @@
                     </div> -->
                     <div class="editable-container" id="description-div">
                         <h5 class="editable" id="plan-description"></h5>
-                        <p class="editable-icon"><i class="fas fa-edit"></i></p>
+                        <p class="editable-icon" data-type="description"><i class="fas fa-edit"></i></p>
 
                         <p class="editable-icon-show" id="add-description"
                     data-tooltip="Add description" data-tooltip-location="left"

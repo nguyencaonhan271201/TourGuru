@@ -390,55 +390,113 @@ const loadToTables = () => {
             `;
     } else {
       iterationDiv = `
-            <div>
-                <div>
-                    <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[0].flightNumber.substring(
-                      0,
-                      2
-                    )}.png">
-                    ${bookingDetail.iterations[0].flightNumber}: ${
-        bookingDetail.iterations[0].locations.from.code
-      } - 
-                    ${bookingDetail.iterations[0].locations.to.code} 
-                    (${bookingDetail.iterations[0].time.departure} - ${
-        bookingDetail.iterations[0].time.arrival
-      }) 
-                </div>
-            </div>
+            
         `;
     }
+
+    let approveHTML = ``;
+    if (bookingDetail.status === 0) {
+        approveHTML += `<span class="pending mt-1">PENDING</span>`;
+    } else if (bookingDetail.status === 1) {
+        approveHTML += `<span class="approved mt-1">APPROVED</span>`;
+    } else {
+        approveHTML += `<span class="rejected mt-1">REJECTED</span>`;
+    }
+
+    let returnFlight = "";
+    if (bookingDetail.iterations.length === 2) {
+      returnFlight = `
+        <tr>
+            <td>
+              <div>
+                  <div>
+                      <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[1].flightNumber.substring(
+                        0,
+                        2
+                      )}.png">
+                      ${bookingDetail.iterations[1].flightNumber}: ${
+                        bookingDetail.iterations[1].locations.from.code
+                      } - 
+                                    ${bookingDetail.iterations[1].locations.to.code} 
+                                    (${bookingDetail.iterations[1].time.departure} - ${
+                        bookingDetail.iterations[1].time.arrival
+                      }) 
+                  </div>
+              </div>
+            </td>
+            <td>
+              <a type="button" class="btn btn-support ${bookingDetail.iterations[1].business != null? '' : 'btn-disabled'}" 
+              data-business-id=${
+                bookingDetail.iterations[1].business != null? bookingDetail.iterations[1].business : "-1"
+              }>Support</a>
+            </td>
+        </tr>
+      `
+    }
+
     html += `
             <tr>
-                <td>
+                <td rowspan=${bookingDetail.iterations.length}>
                     ${getDisplayDateFormat(false, bookingDetail.date)}
+                    <div class="d-flex align-items-center justify-content-center">${approveHTML}</div>
                 </td>
                 <td>
-                    ${iterationDiv}
+                  <div>
+                      <div>
+                          <img src="http://pics.avs.io/50/30/${bookingDetail.iterations[0].flightNumber.substring(
+                            0,
+                            2
+                          )}.png">
+                          ${bookingDetail.iterations[0].flightNumber}: ${
+                            bookingDetail.iterations[0].locations.from.code
+                          } - 
+                                        ${bookingDetail.iterations[0].locations.to.code} 
+                                        (${bookingDetail.iterations[0].time.departure} - ${
+                            bookingDetail.iterations[0].time.arrival
+                          }) 
+                      </div>
+                  </div>
                 </td>
-                <td>
+                <td rowspan=${bookingDetail.iterations.length}>
                     ${bookingDetail.class}
                 </td>
-                <td>
+                <td rowspan=${bookingDetail.iterations.length}>
                     ${bookingDetail.numberOfPax}
                 </td>
-                <td>
+                <td rowspan=${bookingDetail.iterations.length}>
                     ${bookingDetail.totalPrice}
                 </td>
-                <td>
+                <td rowspan=${bookingDetail.iterations.length}>
                     ${getDisplayDateFormatAdd7Hours(bookingDetail.date_booked)}
                 </td>
                 <td>
-                    <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${
-                      bookingDetail.booking_id
-                    }>View</a>
+                  <a type="button" class="btn btn-support ${bookingDetail.iterations[0].business != null? '' : 'btn-disabled'}" 
+                  data-business-id=${
+                    bookingDetail.iterations[0].business != null? bookingDetail.iterations[0].business : "-1"
+                  }>Support</a>
                 </td>
+                <td rowspan=${bookingDetail.iterations.length}>
+                  <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${
+                    bookingDetail.booking_id
+                  }>View</a>
+              </td>
             </tr>
+            ${returnFlight}
         `;
   });
   flightsDiv.querySelector("tbody").innerHTML = html;
 
   html = "";
   availableBookings.hotels.forEach((booking) => {
+    let approveHTML = ``;
+    if (booking.status === 0) {
+        approveHTML += `<span class="pending mt-1">PENDING</span>`;
+    } else if (booking.status === 1) {
+        approveHTML += `<span class="approved mt-1">APPROVED</span>`;
+    } else {
+        approveHTML += `<span class="rejected mt-1">REJECTED</span>`;
+    }
+
     html += `
             <tr>
                 <td>
@@ -447,6 +505,7 @@ const loadToTables = () => {
                     )} - ${getShortDisplayDateFormat(booking.dates.to)}
                     <br>
                     (${booking.buildDurationString()})
+                    <div class="d-flex align-items-center justify-content-center">${approveHTML}</div>
                 </td>
                 <td>
                     ${booking.quantityInfo.rooms}
@@ -469,6 +528,10 @@ const loadToTables = () => {
                     <a type="button" class="btn btn-view-booking btn-view-booking-hotel" data-booking-id=${
                       booking.booking_id
                     }>View</a>
+                    <a type="button" class="btn btn-support mt-1 ${booking.business != null? '' : 'btn-disabled'}" 
+                    data-business-id=${
+                      booking.business != null? booking.business: "-1"
+                    }>Support</a>
                 </td>
             </tr>
         `;
@@ -489,6 +552,15 @@ const loadToTables = () => {
       location.replace(`./hotel?id=${id}`);
     });
   });
+
+  document.querySelectorAll(".btn-support").forEach(button => {
+    if (!button.classList.contains("btn-disabled")) {
+      button.addEventListener("click", () => {
+        let businessID = button.getAttribute("data-business-id");
+        chatWithBusiness(businessID);
+      })
+    }
+  })
 
   loadVisitedLocationsToMap();
 
@@ -565,4 +637,8 @@ function loadMap(center, attractions = []) {
       },
     });
   });
+}
+
+const chatWithBusiness = (business_id) => {
+  console.log(`Chat with ${business_id}`);
 }

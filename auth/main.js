@@ -533,9 +533,11 @@ const getInfoFromServer = async() => {
         if (xhr.status === 200 && xhr.readyState === 4) {
            //Nhận thông tin và in ra các ô input
             let result = JSON.parse(xhr.responseText); 
+            console.log(result);
             localStorage.setItem("headerInfo", JSON.stringify({
                 "isAdmin": result.isAdmin,
-                "image": result.image
+                "image": result.image,
+                "uid": user_id
             }));
             localStorage.removeItem("business");
             if (localStorage.getItem("fromFlight") && localStorage.getItem("fromFlight") != "null")
@@ -559,5 +561,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let getPanel = document.querySelector("div[style*='z-index:9999999;']");
     if (getPanel != null) {
         getPanel.style = "display: none;"
+    }
+
+    let getDisclaimer = document.querySelector(".disclaimer");
+    if (getDisclaimer != null) {
+        getDisclaimer.style = "display: none;";
     }
 })

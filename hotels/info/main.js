@@ -39,6 +39,9 @@ let hotelFull = {};
 //For room details
 let roomsInfo = [];
 
+//Valid thread of booking from searching
+let isFromSearch = true;
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelector(".main-container").style.opacity = 0;
     Swal.fire({
@@ -60,20 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // getHotelImages(urlParams.get("hotel"))
         hotelID = urlParams.get("hotel");
         getCurrencyInfo();
-    } else {
-        //location.replace("./../");
-        console.log("4");
-    } 
 
-    //Not chosen any hotel
-    /*
-    if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
-        document.querySelector(".booking").style.display = "none";
-        document.querySelector(".booking-hide").style.display = "block";
-
-        //Load currencies
-        getCurrencyInfo();
-        
         let checkInPicker = document.getElementById('check-in');
         let checkOutPicker = document.getElementById('check-out');
         let picker = new Litepicker({
@@ -86,130 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
             format: 'YYYY-MM-DD',
             minDate: new Date()
         });
-
-        document.getElementById('btn-search-form').addEventListener("click", (e) => {
-            e.preventDefault();
-
-            let urlParams = new URLSearchParams(window.location.search);
-            //Initiate the rooms list
-            //cloneHotelInfo["hotel"].id = urlParams.get("hotel");
-
-            Swal.fire({
-                title: 'Loading...',
-                html: 'Please wait...',
-                allowEscapeKey: false,
-                allowOutsideClick: false,
-                didOpen: () => {
-                Swal.showLoading()
-                }
-            });
-
-            //Validate day
-            let fromDate = new Date($('#check-in').val());
-            if (isNaN(fromDate.getTime())) {
-                swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    text: "Check-in date is not valid. Please try again.",
-                });
-                return;
-            }
-
-            //Check for return day
-            let toDate = new Date($('#check-out').val());
-            if (isNaN(toDate.getTime())) {
-                swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    text: "Check-out date is not valid. Please try again.",
-                });
-                return;
-            }
-
-            if (toDate.getTime() < fromDate.getTime()) {
-                swal.close();
-                //$("#loading-modal").modal("hide");
-                //errorText.innerHTML += "Return date cannot be before Depart date. Please try again";
-                //$("#error-modal").modal("show");
-                Swal.fire({
-                    icon: 'error',
-                    text: "Check-out date cannot be before Check-in date. Please try again.",
-                });
-                return;
-            } else {
-                let Difference_In_Time = toDate.getTime() - fromDate.getTime();
-                numberOfNights = Difference_In_Time / (1000 * 3600 * 24);
-                //cloneHotelInfo["numberOfNights"] = numberOfNights;
-
-                if (numberOfNights == 0) {
-                    swal.close();
-                    Swal.fire({
-                        icon: 'error',
-                        text: "Check-out date must be at least 1 day after Check-in date.",
-                    });
-                }
-            }
-
-            choosingCurrency = document.getElementById("currency").value;
-
-            let checkIn = fromDate.toISOString().split('T')[0];
-            let checkOut = toDate.toISOString().split('T')[0];
-
-            let calculateFare = tmpSingleNight * ratesList[choosingCurrency] * numberOfNights;
-            calculateFare = Math.round(calculateFare * 100) / 100
-            //cloneHotelInfo["singleNight"] = calculateFare;
-
-            let hotelInfo = new HotelBookingInfo(
-                choosingCurrency,
-                ratesList[choosingCurrency],
-                urlParams.get("hotel"),
-                cloneImageURL,
-                checkIn,
-                checkOut,
-                numberOfNights,
-                calculateFare
-            );
-
-            localStorage.setItem("hotelInfo", JSON.stringify(hotelInfo));
-            location.reload();
-        })
     } else {
-        //Check for the correct hotel
-        if (!localStorage.getItem("hotelInfo") || JSON.parse(localStorage.getItem("hotelInfo")).hotel.ID !== urlParams.get("hotel").toString()) {
-            //location.replace("./../");
-            console.log("2");
-            return;
-        } else {
-            document.querySelector(".booking").style.display = "initial";
-            document.querySelector(".booking-hide").style.display = "none";
+        location.replace("./../");
+    } 
 
-            hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
-            Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
-            usingCurrency = hotelChoosingInfo.currency.code;
-            currencyRate = hotelChoosingInfo.currency.rate;
-            singleNightPrice = hotelChoosingInfo.singleNight;
-            totalRoomPrice = singleNightPrice;
-            document.getElementById("total-price").innerText = `${Math.round(singleNightPrice * 100) / 100} ${usingCurrency}`;
-            document.getElementById("nights-count").innerText = `${hotelChoosingInfo.displayNightFullString()}`;
-            document.getElementById("nights-range").innerText = `${getDisplayDateFormat(false, hotelChoosingInfo.date.checkIn)} - ${getDisplayDateFormat(false, hotelChoosingInfo.date.checkOut)}`;
+    //Not chosen any hotel
+    if (!localStorage.getItem("hotelInfo") || localStorage.getItem("hotelInfo") == "null") {
         
-            roomSelect = document.getElementById("rooms");
-            roomSelect.addEventListener("change", () => {
-                numberOfRoom = parseInt(roomSelect.value);
-                totalRoomPrice = singleNightPrice * numberOfRoom;
-                document.getElementById("total-price").innerText = `${Math.round(totalRoomPrice * 100) / 100} ${usingCurrency}`;
-                let roomOrRooms = numberOfRoom == 1? "room" : "rooms";
-                document.getElementById("number-of-rooms").innerText = `${numberOfRoom} ${roomOrRooms}`;
-            })
-        
-            btnBook.addEventListener("click", performBook);
-        
-            document.getElementById("btn-search").addEventListener("click", () => {
-                location.replace('./../')
-            })
-        }
     }
-    */
 })
 
 const getCurrencyInfo = () => {
@@ -226,12 +100,10 @@ const getCurrencyInfo = () => {
 
             getHotelInfo(hotelID)
 
-            //Upload the select
-            // Object.keys(ratesList).forEach((key) => {
-            //     if (key != "USD") {
-            //         document.getElementById("currency").innerHTML += `<option value="${key}">${key}</option>`
-            //     }
-            // })
+            // Upload the select
+            Object.keys(ratesList).forEach((key) => {
+                document.getElementById("currency").innerHTML += `<option value="${key}">${key}</option>`
+            })
         }
     }
 
@@ -246,13 +118,158 @@ const getHotelInfo = (hotelID) => {
 
     if (localStorage.getItem("hotelInfo") !== "null") {
         hotelChoosingInfo = JSON.parse(localStorage.getItem("hotelInfo"));
-        Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
+        if (!hotelChoosingInfo) {
+            isFromSearch = false;
+            let table = document.querySelector(".availability table");
+            let tableFooter = table.tFoot;
+            tableFooter.style.opacity = "0";
+            getHotelInfoFromAPI(hotelID);
+        } else 
+        {
+            Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
+            getHotelDescription(hotelID);
+        }
+    } else {
+        isFromSearch = false;
+        let table = document.querySelector(".availability table");
+        let tableFooter = table.tFoot;
+        tableFooter.style.opacity = "0";
+        getHotelInfoFromAPI(hotelID);
     }
 
-    getHotelDescription(hotelID);
+    document.getElementById('btn-search-booking').addEventListener("click", (e) => {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Loading...',
+            html: 'Please wait...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+            Swal.showLoading()
+            }
+        });
+
+        //Validate day
+        let fromDate = new Date($('#check-in').val());
+        if (isNaN(fromDate.getTime())) {
+            swal.close();
+            Swal.fire({
+                icon: 'error',
+                text: "Check-in date is not valid. Please try again.",
+            });
+            return;
+        }
+
+        //Check for return day
+        let toDate = new Date($('#check-out').val());
+        if (isNaN(toDate.getTime())) {
+            swal.close();
+            Swal.fire({
+                icon: 'error',
+                text: "Check-out date is not valid. Please try again.",
+            });
+            return;
+        }
+
+        if (toDate.getTime() < fromDate.getTime()) {
+            swal.close();
+            //$("#loading-modal").modal("hide");
+            //errorText.innerHTML += "Return date cannot be before Depart date. Please try again";
+            //$("#error-modal").modal("show");
+            Swal.fire({
+                icon: 'error',
+                text: "Check-out date cannot be before Check-in date. Please try again.",
+            });
+            return;
+        } else {
+            let Difference_In_Time = toDate.getTime() - fromDate.getTime();
+            numberOfNights = Difference_In_Time / (1000 * 3600 * 24);
+            //cloneHotelInfo["numberOfNights"] = numberOfNights;
+
+            if (numberOfNights == 0) {
+                swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    text: "Check-out date must be at least 1 day after Check-in date.",
+                });
+                return;
+            }
+        }
+
+        choosingCurrency = document.getElementById("currency").value;
+
+        let checkIn = fromDate.toISOString().split('T')[0];
+        let checkOut = toDate.toISOString().split('T')[0];
+
+        hotelChoosingInfo.date = {
+            "checkIn": checkIn,
+            "checkOut": checkOut
+        }
+        hotelChoosingInfo.numberOfNights = numberOfNights;
+
+        localStorage.setItem("hotelInfo", JSON.stringify(hotelChoosingInfo));
+        location.reload();
+    })
+}
+
+const getHotelInfoFromAPI = (hotelID) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = function() {
+        if(this.status == 200) {
+            try {
+                let results = JSON.parse(xhr.responseText);
+                
+                let hotelChoosing = {};
+                hotelChoosing.currency = {
+                    "code": "VND",
+                    "rate": ratesList["VND"]
+                };
+                hotelChoosing.hotel = {
+                    "ID": results.hotel_id,
+                    "imageURL": results.main_photo_url,
+                    "name": results.name,
+                    "stars": results.class.toString(),
+                    "address": results.address,
+                }
+                hotelChoosing.date = {
+                    "checkIn": "",
+                    "checkOut": ""
+                }
+                hotelChoosing.numberOfNights = 0;
+                hotelChoosing.singleNight = "";
+                hotelChoosing.numberOfGuests = "2";
+                hotelChoosing.numberOfRooms = "1";
+                hotelChoosing.totalCost = 0;
+                hotelChoosing.coordinates = results.location;
+                hotelChoosing.score = {
+                    "score": results.review_score,
+                    "word": results.review_score_word,
+                }
+                hotelChoosing.roomDetails = [];
+
+                hotelChoosingInfo = hotelChoosing;
+                Object.setPrototypeOf(hotelChoosingInfo, HotelBookingInfo.prototype);
+
+                getHotelDescription(hotelID);
+            }
+            catch (e) {
+                console.log(e);
+                return;
+            }
+        }
+    }
+
+    xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/data?locale=en-us&hotel_id=${hotelID}`);
+    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+
+    xhr.send();
 }
 
 const performCheck = () => {
+    console.log(hotelFull);
     if (Object.keys(hotelFull).length === 6) {
         updateHotelInfo(hotelFull);
     }
@@ -278,7 +295,7 @@ const getHotelDescription = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/description?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
@@ -302,24 +319,44 @@ const getHotelRoomsList = async(hotelID) => {
     }
 
     let tmpHotel = {}
-    if (localStorage.getItem("hotelInfo") !== "null") {
+    if (localStorage.getItem("hotelInfo") && localStorage.getItem("hotelInfo") !== "null") {
         tmpHotel = JSON.parse(localStorage.getItem("hotelInfo"));
         Object.setPrototypeOf(tmpHotel, HotelBookingInfo.prototype);
+        
+        
+        let currentDate = new Date();
+        let next4Days = new Date(new Date().getTime() + (4*24*60*60*1000));
+
+        let query = `https://booking-com.p.rapidapi.com/v1/hotels/room-list?units=metric&adults_number_by_rooms=2&hotel_id=${hotelID}` +
+        `&checkin_date=${tmpHotel.date.checkIn? tmpHotel.date.checkIn : currentDate.toISOString().split('T')[0]}` +
+        `&checkout_date=${tmpHotel.date.checkOut? tmpHotel.date.checkOut: next4Days.toISOString().split('T')[0]}` +
+        `&locale=en-us` +
+        `&currency=USD`;
+
+        xhr.open("GET", query);
+        xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+        xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+
+        xhr.send();
+    } else {
+        tmpHotel = hotelChoosingInfo;
+
+        
+        let currentDate = new Date();
+        let next4Days = new Date(new Date().getTime() + (4*24*60*60*1000));
+
+        let query = `https://booking-com.p.rapidapi.com/v1/hotels/room-list?units=metric&adults_number_by_rooms=2&hotel_id=${hotelID}` +
+        `&checkin_date=${tmpHotel.date.checkIn? tmpHotel.date.checkIn : currentDate.toISOString().split('T')[0]}` +
+        `&checkout_date=${tmpHotel.date.checkOut? tmpHotel.date.checkOut: next4Days.toISOString().split('T')[0]}` +
+        `&locale=en-us` +
+        `&currency=USD`;
+
+        xhr.open("GET", query);
+        xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
+        xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+
+        xhr.send();
     }
-    let currentDate = new Date();
-    let next4Days = new Date(new Date().getTime() + (4*24*60*60*1000));
-
-    let query = `https://booking-com.p.rapidapi.com/v1/hotels/room-list?units=metric&adults_number_by_rooms=2&hotel_id=${hotelID}` +
-    `&checkin_date=${tmpHotel.date.checkIn? tmpHotel.date.checkIn : currentDate.toISOString().split('T')[0]}` +
-    `&checkout_date=${tmpHotel.date.checkOut? tmpHotel.date.checkOut: next4Days.toISOString().split('T')[0]}` +
-    `&locale=en-us` +
-    `&currency=USD`;
-
-    xhr.open("GET", query);
-    xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
-
-    xhr.send();
 }
 
 const getHotelFacilities = async(hotelID) => {
@@ -342,7 +379,7 @@ const getHotelFacilities = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/facilities?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
@@ -367,7 +404,7 @@ const getNearbyPlaces = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/nearby-places?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
@@ -392,7 +429,7 @@ const getHotelReviewScores = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/review-scores?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
@@ -402,12 +439,13 @@ const getHotelMapLocation = async(hotelID) => {
 
     xhr.onload = function() {
         if(this.status == 200) {
-            try {
-                let results = JSON.parse(xhr.responseText);
+            let results = JSON.parse(xhr.responseText);
                 hotelFull.map = results.map_preview_url;
 
-                performCheck();
                 getHotelImages(hotelID);
+                performCheck();
+            try {
+                
             }
             catch (e) {
                 console.log(e);
@@ -418,12 +456,14 @@ const getHotelMapLocation = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/map-markers?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
 
 const getHotelImages = async(hotelID) => {
+    console.log("Image", hotelID);
+
     const xhr = new XMLHttpRequest();
 
     xhr.onload = function() {
@@ -442,7 +482,6 @@ const getHotelImages = async(hotelID) => {
             }
             catch (e) {
                 //location.replace("./../");
-                console.log("1");
                 return;
             }
         }
@@ -450,7 +489,7 @@ const getHotelImages = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/photos?locale=en-gb&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "742aa0556amsh7303bc849651e6dp100227jsn2956d8442b49");
+    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
 
     xhr.send();
 }
@@ -503,6 +542,9 @@ const updateImages = () => {
 
 const updateHotelInfo = (hotelInfo) => {
     Swal.close()
+    console.log(hotelInfo);
+
+    document.title = `Tour Guru | Hotel | ${hotelChoosingInfo.hotel.name}`;
 
     //Update form
     document.getElementById("property").value = hotelChoosingInfo.hotel.name;
@@ -715,7 +757,9 @@ const updateHotelInfo = (hotelInfo) => {
             `
         }
 
-        let nightString = `${hotelChoosingInfo.numberOfNights} ${hotelChoosingInfo.numberOfNights === 1? "night" : "nights"}`;
+        let nightString = isFromSearch? `${hotelChoosingInfo.numberOfNights} ${hotelChoosingInfo.numberOfNights === 1? "night" : "nights"}`
+        : '1 night';
+    
 
         let facilitiesListing = ``;
         room.roomInfo.facilities.slice(0, Math.min(room.roomInfo.facilities.length, 20)).forEach(facility => {
@@ -804,8 +848,26 @@ const updateHotelInfo = (hotelInfo) => {
         }
     )})
 
+    if (isFromSearch) {
+        document.getElementById("currency").value = hotelChoosingInfo.currency.code
+    } else {
+        document.getElementById("currency").value = "USD";
+    }
+
     document.querySelector("#total-price").innerHTML =
     `${totalRoomPrice.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")} ${hotelChoosingInfo.currency.code}`
+
+    if (!isFromSearch) {
+        let table = document.querySelector(".availability table");
+        let rows = table.rows;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].cells.length > 3) {
+                rows[i].deleteCell(3);
+            }
+        }
+        let tableFooter = table.tFoot;
+        tableFooter.style.opacity = "0";
+    }
 }
 
 const updateBookingQuantity = () => {
