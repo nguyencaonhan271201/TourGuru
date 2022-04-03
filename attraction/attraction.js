@@ -122,7 +122,9 @@ function getDetailOfAttractions(geoID) {
   xhr.onload = function () {
     if (this.status == 200) {
       let results = JSON.parse(this.responseText);
-      //console.log(results);
+
+      if (results.category.key == "geographic")
+        window.location.href = `attractionRegion.php?id=${geoID}`;
 
       loadDetails(results);
 
