@@ -89,7 +89,5 @@ class thisUser extends User{
             //$this->registerUser($username, $hash, $display, $email, $gender, $errors);
         }
     }
-
-
 }
 ?>
