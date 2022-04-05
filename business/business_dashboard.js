@@ -14,11 +14,6 @@ let bookingChart = new Chart(ctx, {
   },
 });
 
-const ctx2 = document.getElementById("myChart2").getContext("2d");
-let visitedChart = new Chart(ctx2, {
-  type: "pie",
-});
-
 function getBookingTrendsChartDatas(period = "W") {
   const getFlights = () => {
     const xhr = new XMLHttpRequest();
@@ -74,39 +69,6 @@ function getBookingTrendsChartDatas(period = "W") {
   getFlights();
 }
 
-function getVisitedTrendsChartDatas(period = "W") {
-  let tempV;
-
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let result = JSON.parse(this.responseText);
-
-      tempV = result;
-
-      visitedChart.data = {
-        labels: tempV.map((data) => data.zone),
-        datasets: [
-          {
-            data: tempV.map((data) => data.sum),
-            backgroundColor: tempV.map((x, i) => {
-              return tinycolor("#6763a8")
-                .spin(60 * i)
-                .toHexString();
-            }),
-            hoverOffset: 10,
-          },
-        ],
-      };
-
-      visitedChart.update();
-    } else {
-    }
-  };
-  xhr.open("GET", `../api/dashboard/visitedLocations.php?period=${period}`);
-  xhr.send();
-}
-
 function getFlightTableDatas(offset = 1) {
   const xhr = new XMLHttpRequest();
   xhr.onload = function () {
@@ -122,35 +84,52 @@ function getFlightTableDatas(offset = 1) {
   xhr.send();
 }
 
-function getHotelTableDatas(offset = 1) {
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let results = JSON.parse(this.responseText);
-      if (results.length == 0) $(".hotel_table tbody .see_more_row").remove();
-      else loadHotelTable(results);
-      catchTable();
-    } else {
-    }
-  };
-  xhr.open("GET", `../api/dashboard/hotelsBookingInfo.php?offset=${offset}`);
-  xhr.send();
+function loadBusinessTable(flights) {
+  flights.forEach((flight) => {
+    $(".business_table tbody").append(`
+        <tr> 
+            <td >${flight.bookingID}</td>
+            <td>${flight.date}</td>
+            <td>${flight.iterationSummary}</td>
+            <td>${flight.noOfPax}</td>
+            ${tdApprove(flight.status)}
+            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${
+              flight.bookingID
+            }" data-user-id="${flight.userID}"></td>
+        </tr>
+    `);
+  });
+
+  if ($(".flight_table tbody .see_more_row").length)
+    $(".flight_table tbody .see_more_row").remove();
+  $(".flight_table tbody").append(
+    `<tr class="see_more_row" data-type="Flight"><td colspan="100%" class="text-center opacity-25">See more</td></tr>`
+  );
 }
 
-function getUserTableDatas(offset = 1) {
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (this.status == 200) {
-      let results = JSON.parse(this.responseText);
-      if (results.length == 0) $(".user_table tbody .see_more_row").remove();
-      else loadUserTable(results);
-      catchTable();
-      Swal.close();
-    } else {
-    }
-  };
-  xhr.open("GET", `../api/dashboard/usersInfo.php?offset=${offset}`);
-  xhr.send();
+function tdApprove(value) {
+  if (parseInt(value) == 2)
+    return `<td class="green text-center ">approved</td>`;
+  else if (parseInt(value) == 1)
+    return `<td class="red text-center ">rejected</td>`;
+  else
+    return `
+    <td>
+      <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div class="accordion-item">
+        <button class="d-block text-center accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+          pending
+        </button>
+
+        <div id="flush-collapseOne" class="accordion-collapse collapse pt-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+          <div class="accordion-body d-flex justify-content-around align-items-center p-0">
+            <div class="pending green-bordered rounded-circle d-flex justify-content-center align-items-center m-0"><i class="bi bi-check-lg green"></i></div>
+            <div class="pending reject red-bordered rounded-circle d-flex justify-content-center align-items-center m-0"><i class="bi bi-x-lg red"></i></div>
+          </div>
+        </div>
+      </div>
+    </td>
+  `;
 }
 
 function catchTable() {
@@ -170,83 +149,63 @@ function catchTable() {
     .on("click", function () {
       loadTableMore($(this).data().type);
     });
-}
 
-function loadFlightTable(flights) {
-  flights.forEach((flight) => {
-    $(".flight_table tbody").append(`
-        <tr> 
-            <td>${flight.bookingNo}</td>
-            <td>${flight.from}</td>
-            <td>${flight.to}</td>
-            <td>${new Date(flight.timeBooked).addHours(7).toLocaleString()}</td>
-            <td class="context-menu" data-container-id="context-menu-items" data-row-type="Flight"  data-row-id="${
-              flight.bookingNo
-            }" data-user-id="${flight.userID}"></td>
-        </tr>
-    `);
-  });
-
-  if ($(".flight_table tbody .see_more_row").length)
-    $(".flight_table tbody .see_more_row").remove();
-  $(".flight_table tbody").append(
-    `<tr class="see_more_row" data-type="Flight"><td colspan="100%" class="text-center opacity-25">See more</td></tr>`
+  $(".accordion-flush").hover(
+    function () {
+      $(this).find("button.accordion-button").click();
+    },
+    function () {
+      if ($(this).find(".accordion-collapse").hasClass("show"))
+        $(this).find("button.accordion-button").click();
+    }
   );
-}
 
-function loadHotelTable(hotels) {
-  hotels.forEach((hotel) => {
-    $(".hotel_table tbody").append(`
-          <tr>
-              <td>${hotel.bookingNo}</td>
-              <td>${hotel.hotelName}</td>
-              <td>${hotel.from}</td>
-              <td>${hotel.to}</td>
-              <td>${new Date(hotel.timeBooked)
-                .addHours(7)
-                .toLocaleString()}</td>              
-              <td class="context-menu" data-container-id="context-menu-items" data-row-type="Hotel" data-row-id="${
-                hotel.bookingNo
-              }" data-user-id="${hotel.userID}"></td>
-          </tr>
-      `);
+  $(".accordion .pending").on("click", function () {
+    if ($(this).hasClass("green-bordered")) {
+      Swal.fire({
+        title: `Approve this booking?`,
+        showCancelButton: true,
+        confirmButtonText: "Approve",
+        reverseButtons: true,
+        cancelButtonColor: "#6763a8",
+        confirmButtonColor: "#00c2b1",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "POST",
+            // `../api/dashboard/delete${
+            //   type == "User" ? type : type + "Booking"
+            // }.php`,
+            true
+          );
+          xhr.setRequestHeader(
+            "Content-type",
+            "application/x-www-form-urlencoded"
+          );
+          xhr.onload = function () {
+            if (this.status == 200) {
+              if (this.responseText === "1") {
+                $(`.${type.toLowerCase()}_table td[data-row-id="${Id}"]`)
+                  .parent()
+                  .remove();
+              } else disError();
+            } else disError();
+          };
+          xhr.send(`userID=${userId}&ID=${Id}`);
+        }
+      });
+    } else if ($(this).hasClass("red-bordered")) {
+      Swal.fire({
+        title: `Reject this booking?`,
+        showCancelButton: true,
+        confirmButtonText: "Reject",
+        reverseButtons: true,
+        cancelButtonColor: "#6763a8",
+        confirmButtonColor: "#c95998",
+      });
+    }
   });
-
-  if ($(".hotel_table tbody .see_more_row").length)
-    $(".hotel_table tbody .see_more_row").remove();
-  $(".hotel_table tbody").append(
-    `<tr class="see_more_row" data-type="Hotel"><td colspan="100%" class="text-center opacity-25">See more</td></tr>`
-  );
-}
-
-function loadUserTable(users) {
-  users.forEach((user) => {
-    $(".user_table tbody").append(`
-      <tr>
-          <td>${user.userName}</td>
-          <td>${user.mail}</td>
-          <td>${new Date(user.timeCreated)
-            .addHours(7)
-            .toLocaleString()}</td>                  
-          <td class="context-menu" data-container-id="context-menu-items" data-row-type="User"
-          data-hotel=${user.numberOfHotels} data-flight=${
-      user.numberOfFlights
-    } data-location=${user.numberOfLocations} 
-          data-image=${user.image.replace("../../", "../")} data-name="${
-      user.userName
-    }" 
-          data-email="${user.mail}" data-created="${new Date(user.timeCreated)
-      .addHours(7)
-      .toLocaleString()}" data-row-id="${user.userID}"></td>
-      </tr>
-    `);
-  });
-
-  if ($(".user_table tbody .see_more_row").length)
-    $(".user_table tbody .see_more_row").remove();
-  $(".user_table tbody").append(
-    `<tr class="see_more_row" data-type="User"><td colspan="100%" class="text-center opacity-25">See more</td></tr>`
-  );
 }
 
 function loadTableMore(type) {
@@ -334,45 +293,46 @@ function deleteSpecific({ rowType: type, userId, rowId: Id }) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  Swal.fire({
-    title: "Loading...",
-    html: "Please wait...",
-    allowEscapeKey: false,
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    },
-  });
+  {
+    //   Swal.fire({
+    //     title: "Loading...",
+    //     html: "Please wait...",
+    //     allowEscapeKey: false,
+    //     allowOutsideClick: false,
+    //     didOpen: () => {
+    //       Swal.showLoading();
+    //     },
+    //   });
+    //   firebase.auth().onAuthStateChanged(function (user) {
+    //     if (user) {
+    //       if (isAdmin) {
+    //         loadBasicInfo(user.uid);
+    //         getBookingTrendsChartDatas();
+    //         getVisitedTrendsChartDatas();
+    //         $(".booking_trends_chart_options input[type=radio]").on(
+    //           "change",
+    //           function () {
+    //             const { period } = $(this).data();
+    //             getBookingTrendsChartDatas(period);
+    //             getVisitedTrendsChartDatas(period);
+    //           }
+    //         );
+    //         getFlightTableDatas();
+    //         getHotelTableDatas();
+    //         getUserTableDatas();
+    //       } else {
+    //         location.replace("./../auth/login.php");
+    //       }
+    //     } else {
+    //       location.replace("./../auth/login.php");
+    //       return;
+    //     }
+    //   });
+    //   if ($(window).width() <= 768) $(".outline-1").fitText(1.2);
+  }
 
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-      if (isAdmin) {
-        loadBasicInfo(user.uid);
-        getBookingTrendsChartDatas();
-        getVisitedTrendsChartDatas();
-
-        $(".booking_trends_chart_options input[type=radio]").on(
-          "change",
-          function () {
-            const { period } = $(this).data();
-            getBookingTrendsChartDatas(period);
-            getVisitedTrendsChartDatas(period);
-          }
-        );
-
-        getFlightTableDatas();
-        getHotelTableDatas();
-        getUserTableDatas();
-      } else {
-        location.replace("./../auth/login.php");
-      }
-    } else {
-      location.replace("./../auth/login.php");
-      return;
-    }
-  });
-
-  if ($(window).width() <= 768) $(".outline-1").fitText(1.2);
+  loadBusinessTable(tempFlightBookings);
+  catchTable();
 });
 
 const loadBasicInfo = (uid) => {

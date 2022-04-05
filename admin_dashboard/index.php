@@ -153,6 +153,7 @@
       </div>
   
       <div class="w-100 p-3">
+        <hr>
         <h1 class="outline-1 ps-1 text-xs-center text-md-start">flight bookings history</h1>
         <div class="table-responsive">
           <table class="flight_table table table-borderless table-hover">
@@ -169,6 +170,7 @@
           </table>
         </div>
   
+        <hr>
         <h1 class="outline-1 ps-1 text-xs-center text-md-start">hotel bookings history</h1>  
         <div class="table-responsive">
           <table class="hotel_table table table-borderless table-hover">
@@ -186,6 +188,7 @@
           </table>
         </div>
   
+        <hr>
         <h1 class="outline-1 ps-1 text-xs-center text-md-start">registered user history</h1>
         <div class="table-responsive">
           <table class="user_table table table-borderless table-hover">

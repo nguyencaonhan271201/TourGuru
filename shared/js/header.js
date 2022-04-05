@@ -1,4 +1,4 @@
-let root = "/TourGuru_v2";
+let root = "/TourGuru";
 let isAdmin;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInfo();
   }
 
-  document.querySelectorAll("#log-out").forEach(logOut => {
+  document.querySelectorAll("#log-out").forEach((logOut) => {
     logOut.addEventListener("click", (e) => {
       e.preventDefault();
       location.replace(`${root}` + "/logout.php");
-    })
-  })
+    });
+  });
 
   if (window.location.pathname.includes("/flights")) {
     document.getElementById("nav-flight").classList.add("active");
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
   isAdmin = userInfo.isAdmin;
-  isBusiness = userInfo.isBusiness || null; 
+  isBusiness = userInfo.isBusiness || null;
 
   if (isBusiness && isBusiness === true) {
     document.getElementById("user-dropdown").style.display = "none";
@@ -52,9 +52,12 @@ const updateInfo = () => {
 
   //getAvatar
   let profileImage = userInfo.image;
-  if (profileImage && (profileImage.includes("../../") || profileImage.includes("../../../"))) {
+  if (
+    profileImage &&
+    (profileImage.includes("../../") || profileImage.includes("../../../"))
+  ) {
     while (profileImage.includes("../")) {
-      profileImage = profileImage.replace('../', '');
+      profileImage = profileImage.replace("../", "");
     }
     profileImage = root + "/" + profileImage;
   }
