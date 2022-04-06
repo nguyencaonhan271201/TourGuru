@@ -9,3 +9,41 @@ h4 {
   color: var(--black);
   font-size: 15px !important;
 }
+
+.nav button{
+  font-family: "medium";
+  color: var(--black);
+  font-size: 15px !important;
+}
+
+.nav-link:hover{
+  color: var(--purple-1)!important;
+}
+
+.nav-link.active{
+  color: var(--purple-3)!important;
+}
+
+
+textarea{
+  border: 0.5px solid var(--purple-3);
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+.bi{
+  color: var(--purple) !important;
+}
+
+.btn-outline-primary {
+  border-color: var(--purple-1) !important;
+  color: var(--purple-1) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--purple-1) !important;
+}
+
+.btn-outline-primary:hover>.bi{
+  color: var(--white)!important;
+}

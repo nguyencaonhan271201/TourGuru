@@ -52,24 +52,27 @@
   
       <div class="container-fluid summary">
         <div class="row">
-          <div class="col-md-4 col-sm p-3">
-            <div class="h-100 d-flex flex-column justify-content-between">
+          <div class="col-md-4 col-sm p-3 position-relative">
+            <img src="graph_1.svg" class="position-absolute top-0 end-0 mt-2 ps-4">
+            <div class="h-100 d-flex flex-column justify-content-between pt-4">
               <h5 class="text-sm-center text-md-start">New bookings</h5>
-              <h1 class="text-sm-center text-md-start" id="total-flight"></h1>
+              <h1 class="text-sm-center text-md-start" id="new-bookings"></h1>
             </div>
           </div>
-          <div class="col-md-4 col-sm p-3">
-            <div class="h-100 d-flex flex-column justify-content-between">
+          <div class="col-md-4 col-sm p-3 position-relative">
+            <img src="graph_2.svg" class="position-absolute top-0 end-0 mt-2 ps-4">
+            <div class="h-100 d-flex flex-column justify-content-between pt-4">
               <h5 class="text-sm-center text-md-start">Total bookings</h5>
-              <h1 class="text-sm-center text-md-start" id="total-hotel"></h1>
+              <h1 class="text-sm-center text-md-start" id="total-bookings"></h1>
             </div>
           </div>
-          <div class="col-md-4 col-sm p-3">
-            <div class="h-100 d-flex flex-column justify-content-between">
+          <div class="col-md-4 col-sm p-3 position-relative">
+            <img src="graph_3.svg" class="position-absolute top-0 end-0 mt-2 ps-4">
+            <div class="h-100 d-flex flex-column justify-content-between pt-4">
               <h5 class="text-sm-center text-md-start">
                 Revenue
               </h5>
-              <h1 class="text-sm-center text-md-start" id="total-visited"></h1>
+              <h1 class="text-sm-center text-md-start" id="revenue"></h1>
             </div>
           </div>
         </div>
@@ -77,7 +80,7 @@
   
       <div class="container-fluid p-3">
         <div class="row">
-          <div class="col-md-8 col-sm mb-3">
+          <div class="col mb-3">
             <div class="row">
               <div class="col-md-5 d-flex justify-content-sm-center justify-content-md-start align-items-center">
                 <div

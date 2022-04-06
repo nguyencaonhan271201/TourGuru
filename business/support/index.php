@@ -40,7 +40,7 @@
       include "../../shared/php/header.php";
     ?>
     
-    <div class="container-fluid" style="padding-top: 80px;">
+    <div class="container-fluid w-md-50" style="padding-top: 80px;">
       <div class="context-menu-container" id="context-menu-items">
         <ul>
           <li data-choice="view">View</li>
@@ -93,6 +93,7 @@
   <script src="./../../shared/js/firebase.js"></script>  
 
   <script src="temp.js"></script>
+  <script src="card_templates.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script
   type="text/javascript"

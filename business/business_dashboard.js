@@ -3,6 +3,19 @@ let hotelOffset = 1;
 let userOffset = 1;
 
 const ctx = document.getElementById("myChart").getContext("2d");
+
+const busID = JSON.parse(localStorage.getItem("business"))
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessCode
+    ? JSON.parse(localStorage.getItem("headerInfo")).businessCode
+    : JSON.parse(localStorage.getItem("headerInfo")).businessName
+  : "";
+
+const busXHR = JSON.parse(localStorage.getItem("business"))
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessCode
+    ? "flights"
+    : "hotels"
+  : "";
+
 let bookingChart = new Chart(ctx, {
   type: "line",
   options: {
