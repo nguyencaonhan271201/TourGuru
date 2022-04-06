@@ -421,7 +421,8 @@ class Blog {
       (SELECT display_name FROM users u WHERE p.author = u.user_id) AS display_name,
       (SELECT mail FROM users u WHERE p.author = u.user_id) AS email,
       (SELECT image FROM users u WHERE p.author = u.user_id) AS image
-      FROM posts p WHERE author = ?";
+      FROM posts p WHERE author = ?
+      ORDER BY date_created DESC";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $author);
       $stmt->execute();
@@ -463,7 +464,8 @@ class Blog {
       (SELECT mail FROM users u WHERE p.author = u.user_id) AS email,
       (SELECT image FROM users u WHERE p.author = u.user_id) AS image,
       (SELECT category_name FROM post_categories pc WHERE pc.category_id = p.category) AS category_name
-      FROM posts p WHERE category = ?";
+      FROM posts p WHERE category = ?
+      ORDER BY date_created DESC";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("i", $category);
       $stmt->execute();
@@ -504,7 +506,8 @@ class Blog {
       (SELECT display_name FROM users u WHERE p.author = u.user_id) AS display_name,
       (SELECT mail FROM users u WHERE p.author = u.user_id) AS email,
       (SELECT image FROM users u WHERE p.author = u.user_id) AS image
-      FROM posts p WHERE title LIKE ?";
+      FROM posts p WHERE title LIKE ?
+      ORDER BY date_created DESC";
       $stmt = $this->conn->prepare($query);
       $stmt->bind_param("s", $param);
 

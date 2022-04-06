@@ -80,7 +80,19 @@
 
                 $body = "<b style=\"color: #a082af;\">Tour Guru</b> reminds you of the following plan: <p style=\"color: #c95998;\">{$date->format("d/m/Y")} - {$event["start"]}: {$planContent}</p>";
 
-                sendEmail($event["email"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
+                //Get list of emails to send
+                $query = "SELECT mail FROM users WHERE user_id IN 
+                (SELECT user_id FROM plan_editors WHERE plan_id = ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("i", $event["plan_id"]);
+                $stmt->execute();
+                $mails = $stmt->get_result();
+
+                foreach ($mails as $mail) {
+                    sendEmail($mail["mail"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
+                }
+
+                // sendEmail($event["email"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
             }
         }
     }

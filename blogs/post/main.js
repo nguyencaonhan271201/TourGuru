@@ -668,7 +668,6 @@ const printBlogDetail = (info) => {
   document.getElementById("description").innerHTML = info.description;
 
   let getEditButton = document.querySelector(".btn-edit");
-  console.log(getEditButton);
   if (info.author === uid && uid !== "") {
     getEditButton.addEventListener("click", () => {
       window.location = `./../edit?id=${info.post_id}`
@@ -736,7 +735,7 @@ const getFullDate = (isWeekDay, ISODate) => {
   const toMinutes = newDateObj.getMinutes();
   const toSeconds = newDateObj.getSeconds();
   const DOW = newDateObj.getDay()
-  const dateTemplate = `${toDate}/${(toMonth - 1).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
+  const dateTemplate = `${toDate.pad(2)}/${(toMonth).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
   // console.log(dateTemplate)
   return dateTemplate;
 }
@@ -841,10 +840,17 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
                       <p>Press Esc to <a class="blue-a" href="">cancel</a>.</p>
                     </div>
                   </div>
-                    <a class="dropdown-item comment-edit" href="#" data-id="${commentID}">Edit</a>
-                    <a class="dropdown-item comment-reply-btn" href="#" data-id="${commentID}">Reply</a>
-                    <a class="dropdown-item comment-delete" href="#" data-id="${commentID}">Delete</a>
+                  <div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
+                    <button class="post-btn btn btn-sm d-flex align-items-center dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="edit-drop-down">
+                      <a class="dropdown-item comment-edit" style="cursor: pointer;" data-id="${commentID}">Edit</a>
+                      <a class="dropdown-item comment-delete" style="cursor: pointer;" data-id="${commentID}">Delete</a>
+                    </div>
                   </div>
+                </div>
               </div>
             `
           }
@@ -925,6 +931,10 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
             return;
           }
         }
+
+        document.getElementById(`comment-${commentID}`).scrollIntoView({
+          behavior: "smooth"
+        })
       } else {
           Swal.fire({
               icon: "error",
