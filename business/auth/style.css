@@ -99,7 +99,8 @@ h3 {
   border-color: var(--theme-light-border);
 }
 
-.auth-form div input {
+.auth-form div input,
+.auth-form div select {
   width: 100%;
   border-radius: 20em;
   border: 1px solid var(--theme-input-border);

@@ -20,7 +20,7 @@ function quenstionForm_template(user_name = "", user_img = "") {
           <div class="d-flex align-items-center ">
               <img src="${user_img}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
               <div>
-                  <a><h3>${user_name}</h3></a>
+                  <a><h3>${user_name ? user_name : ""}</h3></a>
               </div>
           </div>
           <div class="px-3">
@@ -38,8 +38,9 @@ function quenstionForm_template(user_name = "", user_img = "") {
     `;
 }
 
-function unaQuestionCard_template(question, business, curBusID) {
-  if (business || business.uid == curbusID) {
+function unaQuestionCard_template(question, busID) {
+  console.log(question, busID);
+  if (question.business_id == busID) {
     return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
@@ -61,9 +62,9 @@ function unaQuestionCard_template(question, business, curBusID) {
                     </div>
                 </div>
                 <div class="px-3">
-                  <form class="answer_form">
-                    <textarea rows="5"  class="w-100" name="text"></textarea>
-                    <button class="btn btn-outline-primary btn-sm rounded-pill" type="submit"><i class="bi bi-arrow-up"></i></button>
+                  <form class="answer_form" data-question_id="${question.id}">
+                    <textarea rows="5"  class="w-100" name="text" "></textarea>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill" type="submit" ><i class="bi bi-arrow-up"></i></button>
                   </form>                        
                 </div>
             </div>
@@ -86,7 +87,7 @@ function unaQuestionCard_template(question, business, curBusID) {
       </div>`;
 }
 
-function ansQuestionCard_template(question, business, curBusID) {
+function ansQuestionCard_template(question) {
   return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">

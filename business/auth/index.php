@@ -33,8 +33,8 @@
                 <div class="col-md-6 col-sm-0" id="sign-in-main-col"> 
                     <div class="container">
                         <div class="main-col-above text-md-left p-2 text-sm-center">
-                            <h3 class="text-purple">sign up</h3>
-                            <p><span class="text-lighter">already have an account? 
+                            <h3 class="text-purple">sign up - business</h3>
+                            <p class="mb-1"><span class="text-lighter">already have an account? 
                                 <a href="./login.php" class="text-dark-purple a-dark-purple">sign in</a> 
                             </span> </p>
                             <!-- <button class="btn btn-google d-flex align-items-center justify-content-center" id="btn-google">
@@ -46,12 +46,24 @@
                         <div class="main-col-below">
                             <form id="sign-up-form" class="auth-form" method="post" action="index.php">
                                 <div class="p-3">
-                                    <div>
-                                        <div class="d-flex flex-row justify-content-between">
-                                            <h5 class="input-label">business name</h5>
-                                            <h5 id="name-invalid" class="invalid-text">invalid</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 col-12">
+                                            <div class="d-flex flex-row justify-content-between">
+                                                <h5 class="input-label">business name</h5>
+                                                <h5 id="name-invalid" class="invalid-text">invalid</h5>
+                                            </div>
+                                            <input type="text" id="sign-up-business" name="sign-up-business" class="" required>
                                         </div>
-                                        <input type="text" id="sign-up-business" name="sign-up-business" class="" required>
+                                        <div class="col-md-6 col-12">
+                                            <div class="d-flex flex-row justify-content-between">
+                                                <h5 class="input-label">business type</h5>
+                                                <h5 id="business-type-invalid" class="invalid-text">invalid</h5>
+                                            </div>
+                                            <select type="email" id="sign-up-business-type" name="sign-up-business-type" class="" required>
+                                                <option value="0">airline</option>
+                                                <option value="1">hotel</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div>
                                         <div class="d-flex flex-row justify-content-between">
