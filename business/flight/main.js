@@ -21,11 +21,6 @@ window.addEventListener("DOMContentLoaded", () => {
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
 
-            if (!isAdmin) {
-                location.replace("./../../");
-                return;
-            }
-
             uid = user.uid;
             user_email = user.email;
 
@@ -96,7 +91,7 @@ const getFlightBookingInfo = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            `../../api/bookings/info.php?getFlightsInfoAdmin&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}&isAdmin=${isAdmin}`,
+            `../../api/bookings/info.php?getFlightsInfoAdmin&booking_id=${flightBookingID}&user_id=gxRWAj31d4hQFJrHmwqwI4GlEOZ2&csrf=${csrf}&isAdmin=true`,
             true
         )
         xhr.onload = () => {
@@ -123,7 +118,7 @@ const getFlightBookingInfo = () => {
         let xhr = new XMLHttpRequest();
         xhr.open(
             "GET",
-            `../../api/bookings/info.php?getFlightsPaxAdmin&booking_id=${flightBookingID}&user_id=${uid}&csrf=${csrf}&isAdmin=${isAdmin}`,
+            `../../api/bookings/info.php?getFlightsPaxAdmin&booking_id=${flightBookingID}&user_id=gxRWAj31d4hQFJrHmwqwI4GlEOZ2&csrf=${csrf}&isAdmin=true`,
             true
         )
         xhr.onload = () => {

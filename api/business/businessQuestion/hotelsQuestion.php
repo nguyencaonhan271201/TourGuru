@@ -94,7 +94,7 @@
         (SELECT business_name FROM businesses b WHERE b.business_id = gb.business_id) AS businessName
         FROM guest_business_communications gb WHERE reply_of = ? ORDER BY created DESC";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", intval($question["comm_id"]));
+        $stmt->bind_param("i", $question["comm_id"]);
         $stmt->execute();
         $results = $stmt->get_result();
         $replies = $results->fetch_all(MYSQLI_ASSOC);

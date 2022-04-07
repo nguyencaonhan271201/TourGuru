@@ -4,7 +4,8 @@
     <link rel="icon" href="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg">
     <link href="<?php echo getenv('ROOT')?>/shared/css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -88,6 +89,12 @@
                 <div id="business-dropdown">
                   <li>
                     <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/edit"><i class="fas fa-edit"></i> Edit business profile</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/support"><i class="fa fa-question-circle" aria-hidden="true"></i> customer support</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business"><i class="fas fa-chart-line"></i> Management</a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>

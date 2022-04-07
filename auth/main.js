@@ -62,6 +62,7 @@ const signInWithGoogle = (res) => {
             "password": "",
             "providerToken": res.credential.idToken,
             "isGoogle": true,
+            "username": displayName
         }))
         loginRedirect();
     }
@@ -304,6 +305,7 @@ const validateAndSignIn = () => {
                 "password": password,
                 "providerToken": res.user._delegate.accessToken,
                 "isGoogle": false,
+                "username": res.user.email
             }));
 
             user_id = res.user.uid;
@@ -453,6 +455,7 @@ const updateToDatabaseProviderLogin = (data, token) => {
                 "password": "",
                 "providerToken": token,
                 "isGoogle": true,
+                "username": data.displayName
             };
             getInfoFromServer();
             user_id = data.id;
