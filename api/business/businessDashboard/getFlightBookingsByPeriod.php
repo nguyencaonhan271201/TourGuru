@@ -5,8 +5,8 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 if (isset($_GET['business_id'])) {
-    $offset = $_GET['period'] ? isset($_GET['period']) : 'W';
-    $business_code = $GET['business_id'];
+    $period = isset($_GET['period']) ? $_GET['period'] : 'W';
+    $business_id = $_GET['business_id'];
 
     // $period = 'W';
     // $business_id = 1;
@@ -15,7 +15,7 @@ if (isset($_GET['business_id'])) {
 } else echo json_encode(false); //chua set du lieu 
 
 
-function getBookingInfo($business_id, $period, $conn)
+function getBookingInfo($business_id, $period = 'W', $conn)
 {
     $sql =
         "SELECT date_booked
