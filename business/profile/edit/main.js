@@ -69,6 +69,7 @@ const printInfoToForm = (info) => {
     form.querySelector("#display-name").value = info["display-name"]? info["display-name"] : "";
     form.querySelector("#business-code").value = info["business_code"]? info["business_code"] : "";
     form.querySelector("#profile-img").src = info["image"];
+    form.querySelector("#business-type").value = info["business_type"]? info["business_type"] : 0;
     originalImage = info["image"];
 }
 
@@ -143,6 +144,22 @@ const validateAndEditAccount = () => {
         return;
     }
 
+    let businessType = parseInt(form.querySelector("#business-type").value);
+    if (businessType !== 0 && businessType !== 1) {
+        swal.close();
+        Swal.fire({
+            icon: "error",
+            text: "Business type is invalid."
+        });
+        let businessTypeInvalid = form.querySelector("#business-type-invalid");
+        let businessTypeInput = form.querySelector("#business-type");
+        if (!businessTypeInvalid.classList.contains("opacity-1"))
+            businessTypeInvalid.classList.add("opacity-1");
+        if (!businessTypeInput.classList.contains("wrong-input"))
+            businessTypeInput.classList.add("wrong-input");
+        return;
+    }
+
     let businessCode = form.querySelector("#business-code").value;
 
     let csrf = document.getElementById("csrf").innerText;
@@ -155,7 +172,6 @@ const validateAndEditAccount = () => {
     xhr.onload = () => {
         swal.close();
         if (xhr.status === 200 && xhr.readyState === 4) {
-            console.log(xhr.responseText);
             let result = JSON.parse(xhr.responseText);
             if (result["resultCode"] == 0) {
                 //Success
@@ -206,6 +222,7 @@ const validateAndEditAccount = () => {
     formData.append("csrf", csrf);
     formData.append("displayName", displayName);
     formData.append("businessCode", businessCode);
+    formData.append("businessType", businessType);
     if (imageInput.value != "") {
         formData.append("image", imageInput.files[0]);
     }
@@ -230,7 +247,8 @@ const getHeaderInfoFromServer = () => {
                 "image": result.image,
                 "isBusiness": true,
                 "businessName": result.businessName,
-                "businessCode": result.businessCode
+                "businessCode": result.businessCode,
+                "businessType": result.businessType
            }));
             //Navigate to home page
             location.replace("./../../");

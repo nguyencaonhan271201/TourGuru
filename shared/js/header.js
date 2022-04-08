@@ -1,4 +1,4 @@
-let root = "/TourGuru";
+let root = "/TourGuru_v2";
 let isAdmin;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInfo();
   }
 
-  document.querySelectorAll("#log-out").forEach((logOut) => {
+  document.querySelectorAll("#log-out").forEach(logOut => {
     logOut.addEventListener("click", (e) => {
       e.preventDefault();
       location.replace(`${root}` + "/logout.php");
-    });
-  });
+    })
+  })
 
   if (window.location.pathname.includes("/flights")) {
     document.getElementById("nav-flight").classList.add("active");
@@ -33,16 +33,22 @@ document.addEventListener("DOMContentLoaded", () => {
 const updateInfo = () => {
   let userInfo = JSON.parse(localStorage.getItem("headerInfo"));
   isAdmin = userInfo.isAdmin;
-  isBusiness = userInfo.isBusiness || null;
+  isBusiness = userInfo.isBusiness || null; 
+
+  document.getElementById("blog-item").href = `${root}/blogs/search?user=${userInfo.uid}`; 
 
   if (isBusiness && isBusiness === true) {
     document.getElementById("user-dropdown").style.display = "none";
     document.getElementById("business-dropdown").style.display = "block";
     document.getElementById("business-name").style.display = "block";
+    document.querySelector(".navbar-nav").style.opacity = 0;
+    document.getElementById("business-name").innerText = userInfo.businessName.length > 20?
+    userInfo.businessName.substring(0, 20) + "..." : userInfo.businessName;
   } else {
     document.getElementById("user-dropdown").style.display = "block";
     document.getElementById("business-dropdown").style.display = "none";
     document.getElementById("business-name").style.display = "none";
+    document.querySelector(".navbar-nav").style.opacity = 1;
     if (userInfo.isAdmin) {
       document.getElementById("admin-header-block").style.display = "block";
     } else {
@@ -52,12 +58,9 @@ const updateInfo = () => {
 
   //getAvatar
   let profileImage = userInfo.image;
-  if (
-    profileImage &&
-    (profileImage.includes("../../") || profileImage.includes("../../../"))
-  ) {
+  if (profileImage && (profileImage.includes("../../") || profileImage.includes("../../../"))) {
     while (profileImage.includes("../")) {
-      profileImage = profileImage.replace("../", "");
+      profileImage = profileImage.replace('../', '');
     }
     profileImage = root + "/" + profileImage;
   }
@@ -70,4 +73,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (getPanel != null) {
     getPanel.style = "display: none;";
   }
+
+  let getDisclaimer = document.querySelector(".disclaimer");
+  if (getDisclaimer != null) {
+    getDisclaimer.style = "display: none;";
+  }
 });
+

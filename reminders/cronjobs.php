@@ -58,12 +58,11 @@
         $stmt->execute();
         $results = $stmt->get_result();
         $events = $results->fetch_all(MYSQLI_ASSOC);
-            
 
-        $dateNext10Mins = new DateTime('+10 minutes');
-        $dateNext10Mins2 = new DateTime('+10 minutes');
+        foreach ($events as $event) {   
+            $dateNext10Mins = new DateTime('+ ' . strval($event["minute_alarm"]) . ' minutes');
+            $dateNext10Mins2 = new DateTime('+ ' . strval($event["minute_alarm"]) . ' minutes');
 
-        foreach ($events as $event) {
             //Check if the event is in the list
             $dateString = "{$event["date"]} {$event["start"]}:30";
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
@@ -81,7 +80,19 @@
 
                 $body = "<b style=\"color: #a082af;\">Tour Guru</b> reminds you of the following plan: <p style=\"color: #c95998;\">{$date->format("d/m/Y")} - {$event["start"]}: {$planContent}</p>";
 
-                sendEmail($event["email"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
+                //Get list of emails to send
+                $query = "SELECT mail FROM users WHERE user_id IN 
+                (SELECT user_id FROM plan_editors WHERE plan_id = ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("i", $event["plan_id"]);
+                $stmt->execute();
+                $mails = $stmt->get_result();
+
+                foreach ($mails as $mail) {
+                    sendEmail($mail["mail"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
+                }
+
+                // sendEmail($event["email"], $event["display_name"], "ALARM FOR PLAN {$upperCasedTitle} AT {$event["start"]}", $body);
             }
         }
     }

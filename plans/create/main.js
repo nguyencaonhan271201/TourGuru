@@ -286,7 +286,8 @@ const showTitleSwal = () => {
         title: 'Change plan title',
         html: `
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <input required id="title" autocapitalize="none" class="swal2-input" style="display: flex;" placeholder="" type="text"></input>
+                <input required id="title" autocapitalize="none" class="swal2-input" style="display: flex;" placeholder="" type="text"
+                value="${title}"></input>
 
                 <p class="mb-0 mt-1">plan mode</p>
                 <select id="mode" autocapitalize="none" class="swal2-select" style="display: flex;">
@@ -317,7 +318,7 @@ const showTitleSwal = () => {
             document.getElementById("plan-title").innerText = title;
         
             planMode = newMode;
-            let modeHTML = planMode === 0 ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
+            let modeHTML = planMode === "0" ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
             document.getElementById("plan-mode").innerHTML = modeHTML;
         },
         allowOutsideClick: () => !Swal.isLoading()
@@ -787,6 +788,10 @@ const showAddDetailSwal = (day) => {
                     <h4>x</h4>
                 </div>
                 <label for="content" class="mr-2 mt-2 swal-label">description</label><textarea class="swal2-input" type="text" id="content" style="height: auto;" rows="3"></textarea><br>
+                <div>
+                    <label for="date (optional)" class="mr-2 mt-2 swal-label">date</label>
+                    <input class="swal2-input" type="date" id="date"><br>
+                </div>
                 <div class="swal-input-grid">
                     <div>
                         <label for="time (optional)" class="mr-2 mt-2 swal-label">time</label>
@@ -830,6 +835,7 @@ const showAddDetailSwal = (day) => {
             let detail = $('#content').val();
             let minsBefore = $('#reminder-time').val();
             let errorText = "";
+            let date = $('#date').val();
 
             if (choosingAttraction.id === '' && detail === "") {
                 if (errorText !== "")
@@ -843,15 +849,15 @@ const showAddDetailSwal = (day) => {
                 errorText += `remind time is invalid.`
             }
 
-            if ($('#remind').is(':checked') && time === "") {
+            if ($('#remind').is(':checked') && (time === "" || date === "")) {
                 if (errorText !== "")
                     errorText += '<br>'   
-                errorText += `reminder is only available if you set the time for detail.`
+                errorText += `reminder is only available if you set the date and time for detail.`
             }
 
             if (errorText === "") {
                 let detailToAdd = {
-                    // date: date,
+                    date: date,
                     time: time,
                     detail: detail,
                     attraction: choosingAttraction,
@@ -1690,6 +1696,10 @@ const showEditDetail = (day, detailID) => {
                     <h4>x</h4>
                 </div>
                 <label for="content" class="mr-2 mt-2 swal-label">description</label><textarea class="swal2-input" type="text" id="content" style="height: auto;" rows="3"></textarea><br>
+                <div>
+                    <label for="date (optional)" class="mr-2 mt-2 swal-label">date</label>
+                    <input class="swal2-input" type="date" id="date"><br>
+                </div>
                 <div class="swal-input-grid">
                     <div>
                         <label for="time (optional)" class="mr-2 mt-2 swal-label">time</label>
@@ -1730,6 +1740,7 @@ const showEditDetail = (day, detailID) => {
                 }
             })
 
+            $('#date').val(choosingDetail.date);
             $('#time').val(choosingDetail.time);
             $('#content').val(choosingDetail.detail);
             $('#remind').prop('checked', choosingDetail.isRemind);
@@ -1756,6 +1767,7 @@ const showEditDetail = (day, detailID) => {
 
         },
         preConfirm: () => {
+            let date = $('#date').val();
             let time = $('#time').val();
             let detail = $('#content').val();
             let minsBefore = $('#reminder-time').val();
@@ -1773,14 +1785,15 @@ const showEditDetail = (day, detailID) => {
                 errorText += `remind time is invalid.`
             }
 
-            if ($('#remind').is(':checked') && time === "") {
+            if ($('#remind').is(':checked') && (time === "" || date === "")) {
                 if (errorText !== "")
                     errorText += '<br>'   
-                errorText += `reminder is only available if you set the time for detail.`
+                errorText += `reminder is only available if you set the date and time for detail.`
             }
 
             if (errorText === "") {
                 let detailToAdd = {
+                    date: date,
                     time: time,
                     detail: detail,
                     attraction: choosingAttraction,

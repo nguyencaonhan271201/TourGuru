@@ -189,9 +189,10 @@ const reInitializeEventListeners = () => {
         })
     })
 
-    document.getElementById("add-description").addEventListener("click", () => {
-        showDescriptionSwal();
-    })
+    if (document.getElementById("add-description"))
+        document.getElementById("add-description").addEventListener("click", () => {
+            showDescriptionSwal();
+        })
 
     document.getElementById("add-booking").addEventListener("click", () => {
         showAddBookingSwal();
@@ -587,7 +588,9 @@ const showTitleSwal = () => {
         title: 'Change plan title',
         html: `
             <div class="d-flex flex-column align-items-center justify-content-center">
-                <input required id="title" autocapitalize="none" class="swal2-input" style="display: flex;" placeholder="" type="text"></input>
+                <input 
+                value="${title}"
+                required id="title" autocapitalize="none" class="swal2-input" style="display: flex;" placeholder="" type="text"></input>
 
                 <p class="mb-0 mt-1">plan mode</p>
                 <select id="mode" autocapitalize="none" class="swal2-select" style="display: flex;">
@@ -604,7 +607,7 @@ const showTitleSwal = () => {
         didOpen: () => {
             document.getElementById("title").value = title;
 
-            if (planMode === 0) {
+            if (planMode === "0" || planMode === 0) {
                 document.getElementById("private").selected = true;
             } else {
                 document.getElementById("public").selected = true;
@@ -627,7 +630,7 @@ const showTitleSwal = () => {
             document.getElementById("plan-title").innerText = title;
         
             planMode = newMode;
-            let modeHTML = planMode === 0 ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
+            let modeHTML = planMode === "0" || planMode === 0 ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
             document.getElementById("plan-mode").innerHTML = modeHTML;
         },
         allowOutsideClick: () => !Swal.isLoading()
@@ -920,6 +923,10 @@ const showAddDetailSwal = (day) => {
                     <h4>x</h4>
                 </div>
                 <label for="content" class="mr-2 mt-2 swal-label">description</label><textarea class="swal2-input" type="text" id="content" style="height: auto;" rows="3"></textarea><br>
+                <div>
+                    <label for="date (optional)" class="mr-2 mt-2 swal-label">date</label>
+                    <input class="swal2-input" type="date" id="date"><br>
+                </div>
                 <div class="swal-input-grid">
                     <div>
                         <label for="time (optional)" class="mr-2 mt-2 swal-label">time</label>
@@ -959,6 +966,7 @@ const showAddDetailSwal = (day) => {
             })
         },
         preConfirm: () => {
+            let date = $('#date').val();
             let time = $('#time').val();
             let detail = $('#content').val();
             let minsBefore = $('#reminder-time').val();
@@ -976,15 +984,15 @@ const showAddDetailSwal = (day) => {
                 errorText += `remind time is invalid.`
             }
 
-            if ($('#remind').is(':checked') && time === "") {
+            if ($('#remind').is(':checked') && (time === "" || date === "")) {
                 if (errorText !== "")
                     errorText += '<br>'   
-                errorText += `reminder is only available if you set the time for detail.`
+                errorText += `reminder is only available if you set the date and time for detail.`
             }
 
             if (errorText === "") {
                 let detailToAdd = {
-                    // date: date,
+                    date: date,
                     time: time,
                     detail: detail,
                     attraction: choosingAttraction,
@@ -1292,6 +1300,7 @@ const gatherInformation = () => {
                         details.push([]);
                     }
                     let detailToAdd = {
+                        date: result.date,
                         time: result.start,
                         detail: result.detail,
                         attraction: {
@@ -1347,7 +1356,7 @@ const printToDisplay = () => {
         dateString = `${getDisplayDateFormat(false, fromDate)} - ${getDisplayDateFormat(false, toDate)}`
     }
     
-    let modeHTML = planMode === 0 ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
+    let modeHTML = planMode === 0 || planMode === "0" ? `<i class="fas fa-lock"></i>` : `<i class="fas fa-globe-asia"></i>`;
     document.getElementById("plan-mode").innerHTML = modeHTML;
     
     if (description == "") {
@@ -1611,6 +1620,10 @@ const showEditDetail = (day, detailID) => {
                     <h4>x</h4>
                 </div>
                 <label for="content" class="mr-2 mt-2 swal-label">description</label><textarea class="swal2-input" type="text" id="content" style="height: auto;" rows="3"></textarea><br>
+                <div>
+                    <label for="date (optional)" class="mr-2 mt-2 swal-label">date</label>
+                    <input class="swal2-input" type="date" id="date"><br>
+                </div>
                 <div class="swal-input-grid">
                     <div>
                         <label for="time (optional)" class="mr-2 mt-2 swal-label">time</label>
@@ -1651,6 +1664,7 @@ const showEditDetail = (day, detailID) => {
                 }
             })
 
+            $('#date').val(choosingDetail.date);
             $('#time').val(choosingDetail.time);
             $('#content').val(choosingDetail.detail);
             $('#remind').prop('checked', choosingDetail.isRemind);
@@ -1677,6 +1691,7 @@ const showEditDetail = (day, detailID) => {
 
         },
         preConfirm: () => {
+            let date = $('#date').val();
             let time = $('#time').val();
             let detail = $('#content').val();
             let minsBefore = $('#reminder-time').val();
@@ -1694,14 +1709,15 @@ const showEditDetail = (day, detailID) => {
                 errorText += `remind time is invalid.`
             }
 
-            if ($('#remind').is(':checked') && time === "") {
+            if ($('#remind').is(':checked') && (time === "" || date === "")) {
                 if (errorText !== "")
                     errorText += '<br>'   
-                errorText += `reminder is only available if you set the time for detail.`
+                errorText += `reminder is only available if you set the date and time for detail.`
             }
 
             if (errorText === "") {
                 let detailToAdd = {
+                    date: date,
                     time: time,
                     detail: detail,
                     attraction: choosingAttraction,
@@ -1809,7 +1825,7 @@ const savePlan = () => {
         details.forEach((detailsOfDay, index) => {
             detailsOfDay.forEach((detail, indexDay) => {
                 let detailStorage = {
-                    "plan_id": planID,
+                    "plan_id": newPlanID,
                     "destination_id": detail.attraction.id,
                     "destination_name": detail.attraction.name,
                     "destination_image": detail.attraction.image,
@@ -1899,7 +1915,7 @@ const savePlan = () => {
                 });
             }
         }
-        xhr.send(`planInfo&data=${encodeURIComponent(JSON.stringify(data))}&locations=${encodeURIComponent(JSON.stringify(wrapperLocations))}&colabs=${encodeURIComponent(JSON.stringify(defaultColabs))}&csrf=${csrf}`);
+        xhr.send(`planInfo&isEdit=${planID}&data=${encodeURIComponent(JSON.stringify(data))}&locations=${encodeURIComponent(JSON.stringify(wrapperLocations))}&colabs=${encodeURIComponent(JSON.stringify(defaultColabs))}&csrf=${csrf}`);
     }
 
     if (title == "") {
@@ -1911,7 +1927,28 @@ const savePlan = () => {
         return;
     }
 
-    reAddNewPlan();  
+    if (planMode === "0" || planMode === 0) {
+        swal.close();
+        Swal.fire({
+            title: 'Are you sure want to proceed?',
+            text: 'Saving the plan as private mode will lose all the linked plan in posts at Tour Guru blog.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            confirmButtonColor: 'green',
+            cancelButtonColor: 'red',
+            didOpen: () => {
+                document.querySelector(".swal2-confirm").style.display = "flex";
+                document.querySelector(".swal2-loader").style.display = "none";
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                reAddNewPlan();  
+            }
+        })
+    } else {
+        reAddNewPlan();  
+    }
 }
 
 const deletePlan = async (id, isRedirect) => {
@@ -1945,6 +1982,7 @@ const deletePlan = async (id, isRedirect) => {
             });
         }
     }
+
     xhr.send(`deletePlan&planID=${id}&uid=${uid}&csrf=${csrf}`);
 }
 

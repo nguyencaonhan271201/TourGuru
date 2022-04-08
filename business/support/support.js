@@ -9,15 +9,15 @@ const busCN = JSON.parse(localStorage.getItem("headerInfo"))
   : null;
 
 const busType = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("business")).businessType
-    ? "hotels"
-    : "flights"
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessType === 0
+    ? "flights"
+    : "hotels"
   : null;
 
 const busXHR = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("business")).businessType
-    ? "name"
-    : "code"
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessType === 0
+    ? "code"
+    : "name"
   : null;
 
 let offset = 1;
@@ -95,7 +95,8 @@ function catchAnswerForm() {
 
 function processQuestions(questions, ans, una = ans) {
   questions.forEach((question) => {
-    if (!question.isAnswered) {
+    console.log(question);
+    if (!question.answer.length) {
       una.prepend(unaQuestionCard_template(question, busID));
     } else {
       ans.prepend(ansQuestionCard_template(question));
@@ -116,15 +117,15 @@ function loadQuestions(curBusType, curBusCN, curBusXHR, ans, una = ans) {
   xhr.onload = () => {
     swal.close();
     if (xhr.status === 200 && xhr.readyState === 4) {
-      console.log(this.responseText);
+      // console.log(this.responseText);
       // document.getElementById("phpResponse").innerHTML = xhr.responseText;
-      // let result = JSON.parse(xhr.responseText);
-      // processQuestions(result,        ans,        una);
-      processQuestions(
-        [{ isAnswered: true }, { id: 11, isAnswered: false, business_id: 1 }],
-        ans,
-        una
-      );
+      let result = JSON.parse(xhr.responseText);
+      processQuestions(result, ans, una);
+      // processQuestions(
+      //   [{ isAnswered: true }, { id: 11, isAnswered: false, business_id: 1 }],
+      //   ans,
+      //   una
+      // );
     } else {
       Swal.fire({
         icon: "error",
@@ -145,10 +146,11 @@ document.addEventListener("DOMContentLoaded", () => {
       new URL(window.location.href).searchParams.get("name")
     ) &&
       busCN) ||
-    new URL(window.location.href).searchParams.get("code") == busCN ||
-    new URL(window.location.href).searchParams.get("name") == busCN
+    (busCN &&
+      (new URL(window.location.href).searchParams.get("code") == busCN ||
+        new URL(window.location.href).searchParams.get("name") == busCN))
   ) {
-    $("body>div.container-fluid").prepend(nav_template());
+    $("#qDiv").prepend(nav_template());
     loadQuestions(busType, busCN, busXHR, $("#nav-ans"), $("#nav-una"));
   }
   //link có ID
@@ -170,18 +172,11 @@ document.addEventListener("DOMContentLoaded", () => {
       ? "name"
       : "";
 
-    if (busID) {
-      $("body>div.container-fluid").prepend(
-        quenstionForm_template(userName, userImg)
-      );
+    if (!busID) {
+      $("#qFormDiv").prepend(quenstionForm_template(userName, userImg));
       catchQuestionForm(curBusType, curBusCN, curBusXHR);
     }
 
-    loadQuestions(
-      curBusType,
-      curBusCN,
-      curBusXHR,
-      $("body>div.container-fluid")
-    );
+    loadQuestions(curBusType, curBusCN, curBusXHR, $("#qDiv"));
   } else location.replace("./../../");
 });

@@ -1,10 +1,11 @@
 <?php 
-  putenv("ROOT=/TourGuru");
+  putenv("ROOT=/TourGuru_v2");
 ?>
     <link rel="icon" href="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg">
     <link href="<?php echo getenv('ROOT')?>/shared/css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
@@ -17,8 +18,6 @@
       integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
       crossorigin="anonymous"
     ></script>
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
@@ -28,7 +27,7 @@
     ></script>
     
     <nav class="navbar navbar-expand-sm navbar-light">
-        <a class="nav-link active" aria-current="page" href="<?php echo getenv('ROOT')?>"
+        <a class="nav-link active" aria-current="page" href=""
           ><img src="<?php echo getenv('ROOT')?>/shared/assets/images/logo.svg" id="logo"
         /></a>
         <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
@@ -48,6 +47,11 @@
                 ><span>Attractions</span></a
               >
             </li>
+            <li class="nav-item me-4 main-nav-item">
+              <a class="nav-link" id="nav-attraction" aria-current="page" href="<?php echo getenv('ROOT')?>/blogs"
+                ><span>Blog</span></a
+              >
+            </li>
           </ul>
 
           <ul id="header-not-logged-in" class="navbar-nav float-lg-right">
@@ -58,7 +62,7 @@
                 
           <ul class="navbar-nav float-lg-right" id="header-logged-in">
             <p id="business-name">
-              Vietnam Airlines
+             
             </p>
             
             <!-- Avatar -->
@@ -87,17 +91,26 @@
                     <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/edit"><i class="fas fa-edit"></i> Edit business profile</a>
                   </li>
                   <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/support"><i class="fa fa-question-circle" aria-hidden="true"></i> customer support</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business"><i class="fas fa-chart-line"></i> Management</a>
+                  </li>
+                  <li>
                     <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/business/profile/password-reset"><i class="fa fa-key" aria-hidden="true"></i> Change password</a>
                   </li>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" id="log-out"><i class="fa fa-sign-out-alt"></i> Log out</a>
                 </div> 
                 <div id="user-dropdown">
-                  <li>
+                    <li>
                       <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/user_dashboard"><i class="fa fa-th-list" aria-hidden="true"></i> My dashboard</a>
                     </li>
                     <li>
                       <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" id="blog-item" href="#"><i class="fas fa-blog"></i> My blog</a>
                     </li>
                   <div class="dropdown-divider"></div>
                   <li>
@@ -128,5 +141,10 @@
         let getPanel = document.querySelector("div[style*='z-index:9999999;']");
         if (getPanel != null) {
             getPanel.style = "display: none;"
+        }
+
+        let getDisclaimer = document.querySelector(".disclaimer");
+        if (getDisclaimer != null) {
+          getDisclaimer.style = "display: none;";
         }
     </script>

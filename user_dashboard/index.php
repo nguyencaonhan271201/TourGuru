@@ -41,7 +41,7 @@
                 <div class="flights-bookings mt-3" style="display: none;">
                     <h3 class="text-pink text-center mb-3">flight bookings</h3>
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-active">
                             <thead>
                                 <tr>
                                     <th scope="col">Date</th>
@@ -50,6 +50,7 @@
                                     <th scope="col">Number of pax</th>
                                     <th scope="col">Total price</th>
                                     <th scope="col">Booked at</th>
+                                    <th scope="col">Contact</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>

@@ -161,13 +161,29 @@
         <hr>
         <h1 class="outline-1 ps-1 text-xs-center text-md-start">bookings</h1>
         <div class="table-responsive">
-          <table class="business_table table table-borderless table-hover">
+          <table class="flight_table business_table table table-borderless table-hover">
             <thead>
               <tr>
                 <th scope="col">Booking ID</th>
                 <th scope="col">Date</th>
                 <th scope="col">Iteration summary</th>
                 <th scope="col">No. of pax</th>
+                <th scope="col">Total fare</th>
+                <th scope="col">Status</th>
+                <th scope="col">View</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <table class="hotel_table business_table table table-borderless table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Booking ID</th>
+                <th scope="col">Hotel</th>
+                <th scope="col">Date</th>
+                <th scope="col">Total fare</th>
                 <th scope="col">Status</th>
                 <th scope="col">View</th>
                 <th></th>

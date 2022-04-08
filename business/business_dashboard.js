@@ -1,17 +1,18 @@
 let offset = 1;
+let ratesList = null;
 
 const busID = JSON.parse(localStorage.getItem("business"))
   ? JSON.parse(localStorage.getItem("business")).uid
   : null;
 
 const busType = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("business")).businessType
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessType === 0
     ? "flights"
     : "hotels"
   : null;
 
 const busXHR = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("business")).businessType
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessType
     ? "id"
     : "code"
   : null;
@@ -27,6 +28,31 @@ let bookingChart = new Chart(ctx, {
     },
   },
 });
+
+const getCurrencyInfo = () => {
+  let xhr = new XMLHttpRequest();
+  xhr.open(
+    "GET",
+    "https://exchangerate-api.p.rapidapi.com/rapid/latest/USD",
+    true
+  );
+  xhr.onload = function () {
+    if (this.status == 200) {
+      let result = JSON.parse(xhr.responseText);
+      ratesList = result.rates;
+
+      getRevenue();
+    }
+  };
+
+  xhr.setRequestHeader("x-rapidapi-host", "exchangerate-api.p.rapidapi.com");
+  xhr.setRequestHeader(
+    "x-rapidapi-key",
+    "53fc6537ccmsh8f41627347b7c3cp173fe7jsn844e3f55a629"
+  );
+
+  xhr.send();
+};
 
 function disError() {
   Swal.fire({
@@ -52,6 +78,45 @@ const loadBasicInfo = () => {
       // document.getElementById("phpResponse").innerHTML = xhr.responseText;
       let result = JSON.parse(xhr.responseText)[0];
       document.getElementById("new-bookings").innerHTML = result.totalBooking;
+      document.getElementById("total-bookings").innerHTML = result.totalBooking;
+    }
+  };
+  xhr.send();
+};
+
+const getRevenue = () => {
+  let xhr = new XMLHttpRequest();
+  xhr.open(
+    "GET",
+    `../api/business/businessDashboard/unapprovedBooking${
+      busType[0].toUpperCase() + busType.slice(1)
+    }.php?revenue&business_${busXHR}=${busID}`,
+    true
+  );
+  xhr.onload = () => {
+    if (xhr.status === 200 && xhr.readyState === 4) {
+      // console.log(xhr.responseText);
+      // document.getElementById("phpResponse").innerHTML = xhr.responseText;
+      let result = JSON.parse(xhr.responseText);
+      let sumRevenue = 0;
+
+      result.forEach((cost) => {
+        let price = parseFloat(
+          cost["total_cost"]
+            .replaceAll(",", "")
+            .substring(0, cost["total_cost"].length - 4)
+        );
+        let currency = cost["total_cost"].substring(
+          cost["total_cost"].length - 3,
+          cost["total_cost"].length
+        );
+        let priceInUSD = price / ratesList[currency];
+        sumRevenue += priceInUSD;
+      });
+
+      document.getElementById("revenue").innerHTML = `${sumRevenue.toFixed(
+        2
+      )} USD`;
     }
   };
   xhr.send();
@@ -91,6 +156,16 @@ function getBookingTrendsChartDatas(period = "W") {
   };
 
   getData();
+}
+
+function getSpecific(type) {
+  console.log(type);
+
+  if (busType === "flights") {
+    location.replace(`./flight?id=${type.rowId}`);
+  } else if (busType === "hotels") {
+    location.replace(`./hotel?id=${type.rowId}`);
+  }
 }
 
 function catchTable() {
@@ -200,18 +275,55 @@ function tdApprove(value) {
 
 function loadTable(datas) {
   datas.forEach((data) => {
-    $(".business_table tbody").append(`
+    let dateString = "";
+    let iterationString = "";
+
+    if (busType === "flights") {
+      data.iterations.forEach((iteration, i) => {
+        if (i === 0) {
+          dateString += `${iteration["date"]}`;
+          iterationString += `${iteration["flight_number"]}: ${iteration["origin_code"]} - ${iteration["dest_code"]}`;
+        } else {
+          dateString += `<br>${iteration["date"]}`;
+          iterationString += `<br>${iteration["flight_number"]}: ${iteration["origin_code"]} - ${iteration["dest_code"]}`;
+        }
+      });
+    } else {
+      dateString += `${data["date_start"]}<br>${data["date_end"]}`;
+    }
+
+    if (busType === "flights") {
+      document.querySelector(".hotel_table").style.display = "none";
+
+      $(".flight_table tbody").append(`
         <tr> 
             <td >${data.bookingID}</td>
-            <td>${data.date}</td>
-            <td>${data.iterationSummary}</td>
+            <td>${dateString}</td>
+            <td>${iterationString}</td>
             <td>${data.noOfPax}</td>
+            <td>${data.totalFare}</td>
             ${tdApprove(data.status)}
             <td class="context-menu" data-container-id="context-menu-items" data-row-type="data"  data-row-id="${
               data.bookingID
             }" data-user-id="${data.userID}"></td>
         </tr>
-    `);
+      `);
+    } else {
+      document.querySelector(".flight_table").style.display = "none";
+
+      $(".hotel_table tbody").append(`
+        <tr> 
+            <td>${data.id}</td>
+            <td>${data.hotel_name}</td>
+            <td>${dateString}</td>
+            <td>${data.total_cost}</td>
+            ${tdApprove(data.approved)}
+            <td class="context-menu" data-container-id="context-menu-items" data-row-type="data"  data-row-id="${
+              data.id
+            }" data-user-id="${data.user_id}"></td>
+        </tr>
+      `);
+    }
   });
 
   if ($(".business_table tbody .see_more_row").length)
@@ -256,6 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   loadBasicInfo();
+  getCurrencyInfo();
   getBookingTrendsChartDatas();
   getTableDatas();
 });

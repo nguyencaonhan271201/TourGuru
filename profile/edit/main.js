@@ -152,7 +152,6 @@ const validateAndEditAccount = () => {
     xhr.onload = () => {
         swal.close();
         if (xhr.status === 200 && xhr.readyState === 4) {
-            console.log(xhr.responseText);
             let result = JSON.parse(xhr.responseText);
             if (result["resultCode"] == 0) {
                 //Success
@@ -215,7 +214,8 @@ const getHeaderInfoFromServer = () => {
            let result = JSON.parse(xhr.responseText); 
            localStorage.setItem("headerInfo", JSON.stringify({
                "isAdmin": result.isAdmin,
-               "image": result.image
+               "image": result.image,
+               "uid": uid
            }));
             //Navigate to home page
             location.replace("./../../");

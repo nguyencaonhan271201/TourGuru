@@ -5,13 +5,26 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 if (isset($_GET['business_id'])) {
-    $offset = $_GET['period'] ? isset($_GET['period']) : 'W';
-    $business_code = $GET['business_id'];
+    $period = isset($_GET['period']) ? $_GET['period'] : 'W';
+    $business_code = $_GET['business_id'];
 
-    // $period = 'W';
-    // $business_id = 3;
+    //Get the business id
+    $query = "SELECT business_id FROM businesses WHERE biz_user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $business_code);
+    $stmt->execute();
+    $results = $stmt->get_result();
+    $businesses = $results->fetch_all(MYSQLI_ASSOC);
+    $businessID = 0;
 
-    echo json_encode(getBookingInfo($business_id, $period, $conn));
+    if (count($businesses) == 0) {
+      http_response_code(403);
+      exit;
+    } else {
+      $businessID = $businesses[0]["business_id"];
+    }
+
+    echo json_encode(getBookingInfo($businessID, $period, $conn));
 } else echo json_encode(false); //chua set du lieu 
 
 

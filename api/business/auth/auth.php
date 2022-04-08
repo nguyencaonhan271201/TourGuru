@@ -11,8 +11,7 @@
     //Sign up with local
     if (isset($_POST["localSignUp"])) {
       $business = new Business($conn);
-      var_dump($_POST);
-      
+
       if (!isset($_POST["id"]) || !isset($_POST["email"]) || !isset($_POST["password"])
       || !isset($_POST["business"]) || !isset($_POST["type"])) {
         http_response_code(400);
@@ -24,14 +23,21 @@
       $email = $_POST["email"]? $_POST["email"] : null;
       $password = $_POST["password"]? $_POST["password"] : null;
       $businessName = $_POST["business"]? $_POST["business"] : null;
-      $businessType = $_POST["type"]? $_POST["type"] : null;
+      $businessType = $_POST["type"] != null? $_POST["type"] : null;
+
+      var_dump($id);
+      var_dump($email);
+      var_dump($password);
+      var_dump($businessName);
+      var_dump($_POST["type"]);
+      var_dump($businessType);
 
       //Array of error
       $errors = [];
-      // if ($id == null || $password == null || $email == null || $businessName == null || $businessType == null) {
-      //   http_response_code(400);
-      //   exit;
-      // }
+      if ($id == null || $password == null || $email == null || $businessName == null || $businessType == null) {
+        http_response_code(400);
+        exit;
+      }
 
       $business->localSignUp($id, $email, $password, $businessName, $businessType, $errors);
 

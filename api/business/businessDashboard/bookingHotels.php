@@ -6,12 +6,25 @@ $conn = $db->getConnection();
 
 if (isset($_GET['business_id'])) {
     $offset = $_GET['offset'] ? isset($_GET['offset']) : 1;
-    $business_code = $GET['business_id'];
+    $business_code = $_GET['business_id'];
 
-    // $offset = 1;
-    // $business_id = 3;
+    //Get the business id
+    $query = "SELECT business_id FROM businesses WHERE biz_user_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $business_code);
+    $stmt->execute();
+    $results = $stmt->get_result();
+    $businesses = $results->fetch_all(MYSQLI_ASSOC);
+    $businessID = 0;
 
-    echo json_encode(getBookingInfo($offset, $business_id, $conn));
+    if (count($businesses) == 0) {
+      http_response_code(403);
+      exit;
+    } else {
+      $businessID = $businesses[0]["business_id"];
+    }
+
+    echo json_encode(getBookingInfo($offset, $businessID, $conn));
 } else echo json_encode(false); //chua set du lieu 
 
 
@@ -20,7 +33,9 @@ function getBookingInfo($offset, $business_id, $conn)
     $offset *= 10;
 
     $sql =
-        "SELECT * FROM hotel_bookings
+        "SELECT *,
+        (SELECT name FROM hotels WHERE hotels.hotel_id = hb.hotel_id) AS hotel_name
+        FROM hotel_bookings hb
         WHERE hotel_id IN
         (SELECT h.hotel_id FROM hotels h JOIN businesses b ON h.name = b.business_name WHERE b.business_type=1 AND b.business_id = ?)
         LIMIT ?";

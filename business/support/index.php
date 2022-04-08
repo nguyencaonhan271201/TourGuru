@@ -47,6 +47,8 @@
           <li  data-choice="delete">Delete</li>
         </ul>
       </div> 
+      <div id="qFormDiv"></div>
+      <div id="qDiv"></div>
     </div>
 
     <?php 
@@ -92,7 +94,7 @@
 
   <script src="./../../shared/js/firebase.js"></script>  
 
-  <script src="temp.js"></script>
+  <!-- <script src="temp.js"></script> -->
   <script src="card_templates.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script

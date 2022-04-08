@@ -12,7 +12,7 @@
     if (isset($_POST["googleSignUp"])) {
       $user = new User($conn);
 
-      if (!isset($_POST["id"]) || !isset($_POST["email"]) || !isset($_POST["business"]) || !isset($_POST["image"])) {
+      if (!isset($_POST["id"]) || !isset($_POST["email"]) || !isset($_POST["displayName"]) || !isset($_POST["image"])) {
         http_response_code(400);
         exit;
       }

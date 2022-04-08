@@ -14,9 +14,9 @@ class PlanDetail {
   public function addPlanDetails($details, &$errors) {
     try {
       foreach ($details as $detail) {
-        $query = "INSERT INTO plan_details(plan_id, destination_id, destination_name, destination_image, detail, start,
+        $query = "INSERT INTO plan_details(plan_id, destination_id, destination_name, destination_image, detail, date, start,
         set_alarmed, minute_alarm, date_order, time_order) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
 
         $valueInsert = [];
@@ -30,7 +30,7 @@ class PlanDetail {
             array_push($valueInsert, htmlspecialchars($value));
         }
 
-        $stmt->bind_param("isssssiiii", ...$valueInsert);
+        $stmt->bind_param("issssssiiii", ...$valueInsert);
 
         $stmt->execute();
         var_dump($stmt);

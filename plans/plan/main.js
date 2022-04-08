@@ -290,6 +290,7 @@ const gatherInformation = () => {
                         details.push([]);
                     }
                     let detailToAdd = {
+                        date: result.date,
                         time: result.start,
                         detail: result.detail,
                         attraction: {
@@ -361,7 +362,7 @@ const printToDisplay = () => {
                 cancelButtonColor: 'red'
               }).then((result) => {
                 if (result.isConfirmed) {
-                    location.replace(`./../../blog/create?plan=${planID}`)
+                    location.replace(`./../../blogs/create?plan=${planID}`)
                   }
               })
         })
