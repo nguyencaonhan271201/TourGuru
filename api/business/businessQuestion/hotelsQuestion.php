@@ -65,7 +65,8 @@
       //Get the business id
       $query = "SELECT gb.*,
       (SELECT mail FROM users u WHERE u.user_id = gb.user_id) AS email,
-      (SELECT display_name FROM users u WHERE u.user_id = gb.user_id) AS displayName
+      (SELECT display_name FROM users u WHERE u.user_id = gb.user_id) AS displayName,
+      (SELECT image FROM users u WHERE u.user_id = gb.user_id) AS userIMG
       FROM guest_business_communications gb WHERE business_id = ? AND reply_of IS NULL ORDER BY created DESC LIMIT ?";
       $stmt = $conn->prepare($query);
       $stmt->bind_param("ii", $businessID, $offset);
@@ -87,11 +88,15 @@
         $pushObject->time = $question["created"];
         $pushObject->userID = $question["user_id"];
         $pushObject->text = $question["content"];
+        $pushObject->userIMG = $question["userIMG"];
   
         //Get reply
         $query = "SELECT gb.*,
         (SELECT business_code FROM businesses b WHERE b.business_id = gb.business_id) AS businessCode,
-        (SELECT business_name FROM businesses b WHERE b.business_id = gb.business_id) AS businessName
+        (SELECT business_name FROM businesses b WHERE b.business_id = gb.business_id) AS businessName,
+        (SELECT image FROM businesses b WHERE b.business_id = gb.business_id) AS businessIMG,
+        (SELECT business_id FROM businesses b WHERE b.business_id = gb.business_id) AS business_id,
+        (SELECT biz_user_id FROM businesses b WHERE b.business_id = gb.business_id) AS biz_user_id
         FROM guest_business_communications gb WHERE reply_of = ? ORDER BY created DESC";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $question["comm_id"]);
@@ -107,6 +112,9 @@
           $pushReply->time = $reply["created"];
           $pushReply->userID = $reply["business_id"];
           $pushReply->text = $reply["content"];
+          $pushReply->businessIMG = $reply["businessIMG"];
+          $pushReply->business_id = $reply["business_id"];
+          $pushReply->biz_user_id = $reply["biz_user_id"];
   
           array_push($repliesArray, $pushReply);
         }

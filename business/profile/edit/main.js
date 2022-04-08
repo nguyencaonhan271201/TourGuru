@@ -248,7 +248,9 @@ const getHeaderInfoFromServer = () => {
                 "isBusiness": true,
                 "businessName": result.businessName,
                 "businessCode": result.businessCode,
-                "businessType": result.businessType
+                "businessType": result.businessType,
+                "businessID": result.business_id,
+                "biz_user_id": result.biz_user_id
            }));
             //Navigate to home page
             location.replace("./../../");
