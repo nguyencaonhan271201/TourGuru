@@ -42,7 +42,7 @@ function getBookingInfo($offset, $business_id, $conn)
     $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
     if (count($result) >= ($offset - 10)) {
-        $result = array_slice($result, $offset - 10, 10);
+$result = array_slice($result, $offset - 10, 10);
     } else {
         $result = [];
     }

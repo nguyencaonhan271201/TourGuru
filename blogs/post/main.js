@@ -216,7 +216,7 @@ const printDetailReactions = (result) => {
     tmpDetailedReactions[0].count += 1;
     tmpDetailedReactions[0].people.push({
       display: reaction.display_name || reaction.email,
-      uid: reaction.user_id,
+uid: reaction.user_id,
       image: reaction.image,
       type: reaction.reaction_type
     })
@@ -225,7 +225,7 @@ const printDetailReactions = (result) => {
       tmpDetailedReactions[reaction.reaction_type.toString()].count += 1;
       tmpDetailedReactions[reaction.reaction_type.toString()].people.push({
         display: reaction.display_name || reaction.email,
-        uid: reaction.user_id,
+uid: reaction.user_id,
         image: reaction.image,
         type: parseInt(reaction.reaction_type)
       })
@@ -234,7 +234,7 @@ const printDetailReactions = (result) => {
         count: 1,
         people: [{
           display: reaction.display_name || reaction.email,
-          uid: reaction.user_id,
+uid: reaction.user_id,
           image: reaction.image,
           type: parseInt(reaction.reaction_type)
         }]
@@ -375,18 +375,18 @@ const reDisplayDetails = (selected) => {
     listHTML += `
       <div class="reactor d-flex align-items-center justify-content-start">
         <div style="position: relative;">
-          <a target="_blank" href="./../search?user=${reaction.uid}">
+<a target="_blank" href="./../search?user=${reaction.uid}">
           <img
           class="reactor-img" 
           src="${reaction.image}"
           alt=""></img>
-          </a>
+ </a>
           <img
           class="reactor-img-type" 
           src="../../shared/assets/images/posts/reactions/${reaction.type}.png"
           alt=""></img>
         </div>
-        <h5 id="reactor-name"><a target="_blank" href="./../search?user=${reaction.uid}">${reaction.display}</a></h5>
+ <h5 id="reactor-name"><a target="_blank" href="./../search?user=${reaction.uid}">${reaction.display}</a></h5>
       </div>
     `;
   })
@@ -735,7 +735,7 @@ const getFullDate = (isWeekDay, ISODate) => {
   const toMinutes = newDateObj.getMinutes();
   const toSeconds = newDateObj.getSeconds();
   const DOW = newDateObj.getDay()
-  const dateTemplate = `${toDate.pad(2)}/${(toMonth).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
+const dateTemplate = `${toDate.pad(2)}/${(toMonth).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
   // console.log(dateTemplate)
   return dateTemplate;
 }
@@ -840,7 +840,7 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
                       <p>Press Esc to <a class="blue-a" href="">cancel</a>.</p>
                     </div>
                   </div>
-                  <div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
+ <div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
                     <button class="post-btn btn btn-sm d-flex align-items-center dropdown-toggle" type="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -931,8 +931,7 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
             return;
           }
         }
-
-        document.getElementById(`comment-${commentID}`).scrollIntoView({
+ document.getElementById(`comment-${commentID}`).scrollIntoView({
           behavior: "smooth"
         })
       } else {

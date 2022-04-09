@@ -41,7 +41,7 @@ const updateInfo = () => {
     document.getElementById("user-dropdown").style.display = "none";
     document.getElementById("business-dropdown").style.display = "block";
     document.getElementById("business-name").style.display = "block";
-    document.querySelector(".navbar-nav").style.opacity = 0;
+document.querySelector(".navbar-nav").style.opacity = 0;
     document.getElementById("business-name").innerText = userInfo.businessName.length > 20?
     userInfo.businessName.substring(0, 20) + "..." : userInfo.businessName;
   } else {
