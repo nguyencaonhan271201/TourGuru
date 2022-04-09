@@ -5,7 +5,7 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 if (isset($_GET['business_code'])) {
-    $offset = $_GET['offset'] ? isset($_GET['offset']) : 1;
+    $offset = isset($_GET['offset']) ? $_GET['offset'] : 1;
     $business_code = $_GET['business_code'];
 
     //Get the business id
@@ -31,6 +31,8 @@ if (isset($_GET['business_code'])) {
 function getBookingInfo($offset, $business_id, $conn)
 {
     $offset *= 10;
+
+    var_dump($offset);
 
     $sql =
         "SELECT fi.* FROM flight_bookings_iterations fi JOIN businesses b ON fi.flight_number LIKE CONCAT('%', b.business_code, '%') WHERE b.business_type=0 AND b.business_id = ?
