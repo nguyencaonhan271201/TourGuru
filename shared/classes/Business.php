@@ -50,7 +50,7 @@ class Business {
 
     public function getHeaderInfo($id) {
         try {
-$query = "SELECT business_id, biz_user_id, business_name, business_code, business_type, image FROM businesses WHERE biz_user_id = ?";
+            $query = "SELECT business_id, biz_user_id, business_name, business_code, business_type, image FROM businesses WHERE biz_user_id = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->bind_param("s", $id);
             $stmt->execute();

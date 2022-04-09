@@ -3,5 +3,5 @@
 ?>
 
 <footer class="d-flex align-items-center justify-content-center">
-    <h6 class="m-0"> ©️ 2022 Copyright: TourGuru team. <a href="/about">About us</a></h6>    
+    <h6 class="m-0"> ©️ 2022 Copyright: TourGuru team. <a href="<?php echo getenv('ROOT')?>/about">About us</a></h6>    
 </footer>

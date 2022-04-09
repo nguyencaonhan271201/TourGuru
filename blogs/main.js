@@ -78,6 +78,8 @@ const getCategories = () => {
           })
           container.innerHTML = html;
 
+          formatOverflowLayout();
+
           document.querySelectorAll(".category-item").forEach(item => {
             item.addEventListener("click", () => {
               let getID = item.getAttribute("data-id");
@@ -91,6 +93,28 @@ const getCategories = () => {
 
   xhr.send();
 }
+
+const formatOverflowLayout = () => {
+    let scrollDiv = document.querySelector(
+      `.categories`
+    );
+    if (scrollDiv) {
+      if (isOverflown(scrollDiv)) {
+        scrollDiv.style.justifyContent = 'flex-start';
+      } else {
+        scrollDiv.style.justifyContent = 'center';
+      }
+    }
+  };
+
+  //Check if scroll is overflow
+  const isOverflown = (element) => {
+    if (element) {
+      return (
+        element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
+      );
+    }
+  };
 
 const printTopPosts = () => {
   let amount = topPosts.length;

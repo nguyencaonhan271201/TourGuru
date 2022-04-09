@@ -18,14 +18,14 @@ function quenstionForm_template(user_name = "", user_img = "") {
     <div class="card m-3">
       <div class="card-body">
           <div class="d-flex align-items-center ">
-              <img src="${user_img}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+              <img src="${user_img.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
               <div>
                   <a><h3>${user_name ? user_name : ""}</h3></a>
               </div>
           </div>
           <div class="px-3">
             <form id="question_form">
-              <textarea rows="5" class="w-100" name="text"></textarea>
+              <textarea rows="5" class="w-100 p-2" name="text"></textarea>
               <button class="btn btn-outline-primary btn-sm rounded-pill" type="submit"><i class="bi bi-arrow-up"></i></button>
             </form>                        
           </div>
@@ -44,7 +44,7 @@ function unaQuestionCard_template(question, business) {
     return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <img src="${question.userIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
                 <a href=""><h3>${question.userName}</h3></a>
                 <h4>asked a question on ${question.time}</h4>
@@ -56,7 +56,7 @@ function unaQuestionCard_template(question, business) {
           <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <img src="${business.busIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+                    <img src="${business.busIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
                     <div>
                         <a><h3>${business.busName}</h3></a>
                     </div>
@@ -76,7 +76,7 @@ function unaQuestionCard_template(question, business) {
     return `<div class="card m-3">
   <div class="card-body">
       <div class="d-flex align-items-center">
-          <img src="${question.userIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
                 <a href=""><h3>${question.userName}</h3></a>
                 <h4>asked a question on ${question.time}</h4>
@@ -113,7 +113,7 @@ function repCard_template(answers) {
   <div class="card">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <img src="${answer.businessIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${answer.businessIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
                 <a href=""><h3>${answer.userName}</h3></a>
                 <h4>answered on ${answer.time}</h4>

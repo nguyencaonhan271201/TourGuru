@@ -16,6 +16,8 @@ const signOut = () => {
     firebase.auth().signOut()
     .then(() => {
         localStorage.setItem("headerInfo", null);
+        localStorage.setItem("user", null);
+        localStorage.setItem("business", null);
         location.replace(`${rootDir}/`);
     })
 }

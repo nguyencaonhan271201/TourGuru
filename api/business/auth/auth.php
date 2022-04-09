@@ -23,7 +23,14 @@
       $email = $_POST["email"]? $_POST["email"] : null;
       $password = $_POST["password"]? $_POST["password"] : null;
       $businessName = $_POST["business"]? $_POST["business"] : null;
-      $businessType = $_POST["type"]? $_POST["type"] : null;
+      $businessType = $_POST["type"] != null? $_POST["type"] : null;
+
+      var_dump($id);
+      var_dump($email);
+      var_dump($password);
+      var_dump($businessName);
+      var_dump($_POST["type"]);
+      var_dump($businessType);
 
       //Array of error
       $errors = [];

@@ -56,7 +56,7 @@ window.addEventListener("DOMContentLoaded", () => {
             return;
         }
     })
-let getDisclaimer = document.querySelector(".disclaimer");
+    let getDisclaimer = document.querySelector(".disclaimer");
     if (getDisclaimer != null) {
         getDisclaimer.style = "display: none;";
     }

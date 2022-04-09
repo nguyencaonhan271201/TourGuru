@@ -428,7 +428,7 @@ const loadToTables = () => {
               <a type="button" class="btn btn-support ${bookingDetail.iterations[1].business != null? '' : 'btn-disabled'}" 
               data-business-id=${
                 bookingDetail.iterations[1].business != null? bookingDetail.iterations[1].business : "-1"
-              }>Support</a>
+              } data-is-flight="true" data-airline-code=${bookingDetail.iterations[1].flightNumber.substring(0, 2)}>Support</a>
             </td>
         </tr>
       `
@@ -473,7 +473,7 @@ const loadToTables = () => {
                   <a type="button" class="btn btn-support ${bookingDetail.iterations[0].business != null? '' : 'btn-disabled'}" 
                   data-business-id=${
                     bookingDetail.iterations[0].business != null? bookingDetail.iterations[0].business : "-1"
-                  }>Support</a>
+                  } data-is-flight="true" data-airline-code=${bookingDetail.iterations[0].flightNumber.substring(0, 2)}>Support</a>
                 </td>
                 <td rowspan=${bookingDetail.iterations.length}>
                   <a type="button" class="btn btn-view-booking btn-view-booking-flight" data-booking-id=${
@@ -531,7 +531,7 @@ const loadToTables = () => {
                     <a type="button" class="btn btn-support mt-1 ${booking.business != null? '' : 'btn-disabled'}" 
                     data-business-id=${
                       booking.business != null? booking.business: "-1"
-                    }>Support</a>
+                    } data-is-flight="false" data-hotel-name="${booking.hotel.name}">Support</a>
                 </td>
             </tr>
         `;
@@ -556,8 +556,14 @@ const loadToTables = () => {
   document.querySelectorAll(".btn-support").forEach(button => {
     if (!button.classList.contains("btn-disabled")) {
       button.addEventListener("click", () => {
-        let businessID = button.getAttribute("data-business-id");
-        chatWithBusiness(businessID);
+        let checkFlight = button.getAttribute("data-is-flight") === "true";
+        if (checkFlight) {
+          let airlineCode = button.getAttribute("data-airline-code");
+          chatWithBusiness(checkFlight, airlineCode);
+        } else {
+          let hotelName = button.getAttribute("data-hotel-name");
+          chatWithBusiness(checkFlight, hotelName);
+        }
       })
     }
   })
@@ -639,6 +645,10 @@ function loadMap(center, attractions = []) {
   });
 }
 
-const chatWithBusiness = (business_id) => {
-  console.log(`Chat with ${business_id}`);
+const chatWithBusiness = (isFlightBusiness, business_recognition) => {
+  if (isFlightBusiness) {
+    location.replace(`../business/support?code=${business_recognition}`);
+  } else {
+    location.replace(`../business/support?name=${business_recognition}`);
+  }
 }
