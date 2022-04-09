@@ -1,3 +1,9 @@
+h1{
+  color: var(--purple) !important;
+  background-color: var(--white);
+  margin: 0;
+}
+
 h3 {
   font-family: "medium";
   color: var(--purple-3);
@@ -8,6 +14,17 @@ h4 {
   font-family: "regular";
   color: var(--black);
   font-size: 15px !important;
+}
+
+#qDiv{
+  padding: 0 10vw 0 10vw;
+}
+
+#banner{
+  width: 100vw;
+  height: 50vh;
+  background-image: url("support.svg");
+  background-size: 100px;
 }
 
 .nav button{

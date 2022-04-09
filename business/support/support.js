@@ -134,7 +134,6 @@ function loadQuestions(curBusType, curBusCN, curBusXHR, ans, una = ans) {
   xhr.onload = () => {
     swal.close();
     if (xhr.status === 200 && xhr.readyState === 4) {
-      console.log(this.responseText);
       // document.getElementById("phpResponse").innerHTML = xhr.responseText;
       let result = JSON.parse(xhr.responseText);
       console.log(result);

@@ -39,8 +39,12 @@
     <?php 
       include "../../shared/php/header.php";
     ?>
+
+    <div class="position-relative" id="banner" style="padding-top: 80px;">      
+      <div class="position-absolute top-50 start-50 translate-middle"><h1 class="text-center">Customer Support</h1></div>
+    </div>
     
-    <div class="container-fluid w-md-50" style="padding-top: 80px;">
+    <div class="container-fluid px-md-5">
       <div class="context-menu-container" id="context-menu-items">
         <ul>
           <li data-choice="view">View</li>

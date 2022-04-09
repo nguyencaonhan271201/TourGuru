@@ -1,9 +1,11 @@
 let offset = 1;
 let ratesList = null;
 
-const busID = JSON.parse(localStorage.getItem("business"))
+const biz_user_ID = JSON.parse(localStorage.getItem("business"))
   ? JSON.parse(localStorage.getItem("business")).uid
   : null;
+
+if (!biz_user_ID) location.replace("./../");
 
 const busType = JSON.parse(localStorage.getItem("business"))
   ? JSON.parse(localStorage.getItem("headerInfo")).businessType === 0
@@ -16,9 +18,9 @@ if (busType === "flights") {
 } else document.querySelector(".flight_table").style.display = "none";
 
 const busXHR = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("headerInfo")).businessType
-    ? "id"
-    : "code"
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessType === 0
+    ? "code"
+    : "name"
   : null;
 
 const ctx = document.getElementById("myChart").getContext("2d");
@@ -73,7 +75,7 @@ const loadBasicInfo = () => {
     "GET",
     `../api/business/businessDashboard/unapprovedBooking${
       busType[0].toUpperCase() + busType.slice(1)
-    }.php?business_${busXHR}=${busID}`,
+    }.php?business_id=${biz_user_ID}`,
     true
   );
   xhr.onload = () => {
@@ -94,7 +96,7 @@ const getRevenue = () => {
     "GET",
     `../api/business/businessDashboard/unapprovedBooking${
       busType[0].toUpperCase() + busType.slice(1)
-    }.php?revenue&business_${busXHR}=${busID}`,
+    }.php?revenue&business_id=${biz_user_ID}`,
     true
   );
   xhr.onload = () => {
@@ -154,7 +156,7 @@ function getBookingTrendsChartDatas(period = "W") {
       "GET",
       `../api/business/businessDashboard/get${
         busType[0].toUpperCase() + busType.slice(1)
-      }BookingsByPeriod.php?business_${busXHR}=${busID}&period=${period}`
+      }BookingsByPeriod.php?business_id=${biz_user_ID}&period=${period}`
     );
     xhr.send();
   };
@@ -214,9 +216,9 @@ function catchTable() {
           const xhr = new XMLHttpRequest();
           xhr.open(
             "POST",
-            // `../api/dashboard/delete${
-            //   type == "User" ? type : type + "Booking"
-            // }.php`,
+            `../api/business/businessDashboard/approve${
+              busType[0].toUpperCase() + busType.slice(1)
+            }.php`,
             true
           );
           xhr.setRequestHeader(
@@ -225,14 +227,10 @@ function catchTable() {
           );
           xhr.onload = function () {
             if (this.status == 200) {
-              if (this.responseText === "1") {
-                $(`.${type.toLowerCase()}_table td[data-row-id="${Id}"]`)
-                  .parent()
-                  .remove();
-              } else disError();
+              location.reload();
             } else disError();
           };
-          xhr.send(`userID=${userId}&ID=${Id}`);
+          xhr.send(`bookingID=${$(this).data("row-id")}`);
         }
       });
     } else if ($(this).hasClass("red-bordered")) {
@@ -243,6 +241,27 @@ function catchTable() {
         reverseButtons: true,
         cancelButtonColor: "#6763a8",
         confirmButtonColor: "#c95998",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const xhr = new XMLHttpRequest();
+          xhr.open(
+            "POST",
+            `../api/business/businessDashboard/decline${
+              busType[0].toUpperCase() + busType.slice(1)
+            }.php`,
+            true
+          );
+          xhr.setRequestHeader(
+            "Content-type",
+            "application/x-www-form-urlencoded"
+          );
+          xhr.onload = function () {
+            if (this.status == 200) {
+              location.reload();
+            } else disError();
+          };
+          xhr.send(`bookingID=${$(this).data("row-id")}`);
+        }
       });
     }
   });
@@ -252,12 +271,11 @@ function loadTableMore() {
   getTableDatas(++offset);
 }
 
-function tdApprove(value) {
-  if (parseInt(value) == 2)
-    return `<td class="green text-center ">approved</td>`;
+function tdApprove(value, id) {
+  if (parseInt(value) == 2) return `<td class="red text-center ">rejected</td>`;
   else if (parseInt(value) == 1)
-    return `<td class="red text-center ">rejected</td>`;
-  else
+    return `<td class="green text-center ">approved</td>`;
+  else if (parseInt(value) == 0)
     return `
     <td>
       <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -268,8 +286,8 @@ function tdApprove(value) {
 
         <div id="flush-collapseOne" class="accordion-collapse collapse pt-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
           <div class="accordion-body d-flex justify-content-around align-items-center p-0">
-            <div class="pending green-bordered rounded-circle d-flex justify-content-center align-items-center m-0"><i class="bi bi-check-lg green"></i></div>
-            <div class="pending reject red-bordered rounded-circle d-flex justify-content-center align-items-center m-0"><i class="bi bi-x-lg red"></i></div>
+            <div class="pending green-bordered rounded-circle d-flex justify-content-center align-items-center m-0" data-row-id="${id}"><i class="bi bi-check-lg green"></i></div>
+            <div class="pending reject red-bordered rounded-circle d-flex justify-content-center align-items-center m-0" data-row-id="${id}"><i class="bi bi-x-lg red"></i></div>
           </div>
         </div>
       </div>
@@ -306,7 +324,7 @@ function loadTable(datas) {
             <td>${iterationString}</td>
             <td>${data.noOfPax}</td>
             <td>${data.totalFare}</td>
-            ${tdApprove(data.status)}
+            ${tdApprove(data.status, data.bookingID)}
             <td class="context-menu" data-container-id="context-menu-items" data-row-type="data"  data-row-id="${
               data.bookingID
             }" data-user-id="${data.userID}"></td>
@@ -321,7 +339,7 @@ function loadTable(datas) {
             <td>${data.hotel_name}</td>
             <td>${dateString}</td>
             <td>${data.total_cost}</td>
-            ${tdApprove(data.approved)}
+            ${tdApprove(data.approved, data.id)}
             <td class="context-menu" data-container-id="context-menu-items" data-row-type="data"  data-row-id="${
               data.id
             }" data-user-id="${data.user_id}"></td>
@@ -343,6 +361,7 @@ function getTableDatas(offset = 1) {
     if (this.status == 200) {
       // document.getElementById("phpResponse").innerHTML = xhr.responseText;
       let results = JSON.parse(this.responseText);
+      console.log(results);
       if (results.length == 0)
         $(".business_table tbody .see_more_row").remove();
       else loadTable(results);
@@ -354,13 +373,13 @@ function getTableDatas(offset = 1) {
     "GET",
     `../api/business/businessDashboard/booking${
       busType[0].toUpperCase() + busType.slice(1)
-    }.php?business_${busXHR}=${busID}&offset=${offset}`
+    }.php?business_id=${biz_user_ID}&offset=${offset}`
   );
   xhr.send();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (!busID) location.replace("./../");
+  if (!biz_user_ID) location.replace("./../");
 
   $(".booking_trends_chart_options input[type=radio]").on(
     "change",
