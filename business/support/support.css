@@ -1,0 +1,66 @@
+h1{
+  color: var(--purple) !important;
+  background-color: var(--white);
+  margin: 0;
+}
+
+h3 {
+  font-family: "medium";
+  color: var(--purple-3);
+  font-size: 20px !important;
+}
+
+h4 {
+  font-family: "regular";
+  color: var(--black);
+  font-size: 15px !important;
+}
+
+#qDiv{
+  padding: 0 10vw 0 10vw;
+}
+
+#banner{
+  width: 100vw;
+  height: 50vh;
+  background-image: url("support.svg");
+  background-size: 100px;
+}
+
+.nav button{
+  font-family: "medium";
+  color: var(--black);
+  font-size: 15px !important;
+}
+
+.nav-link:hover{
+  color: var(--purple-1)!important;
+}
+
+.nav-link.active{
+  color: var(--purple-3)!important;
+}
+
+
+textarea{
+  border: 0.5px solid var(--purple-3);
+  border-radius: 20px;
+  box-sizing: border-box;
+}
+
+.bi{
+  color: var(--purple) !important;
+}
+
+.btn-outline-primary {
+  border-color: var(--purple-1) !important;
+  color: var(--purple-1) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--purple-1) !important;
+}
+
+.btn-outline-primary:hover>.bi{
+  color: var(--white)!important;
+}

@@ -453,8 +453,8 @@ const updateToDatabaseNormalLogin = (data) => {
         }
         //$('#sign-up-loading-modal').modal("hide")
     }
-    xhr.send(`localSignUp&id=${data.id}&email=${data.email}&password=${data.password}&csrf=${csrf}&business=${data.business_name}
-    &type=${data.business_type}`);
+    xhr.send(`localSignUp&id=${data.id}&email=${data.email}&password=${data.password}&csrf=${csrf}&business=${data.business_name.trim()}&type=${data.business_type}`);
+
 }
 
 const loginRedirect = async() => {
@@ -488,7 +488,9 @@ const getInfoFromServer = async() => {
                     "isBusiness": true,
                     "businessName": result.businessName,
                     "businessCode": result.businessCode || "",
-                    "businessType": result.businessType
+"businessType": result.businessType,
+                    "businessID": result.business_id,
+                    "biz_user_id": result.biz_user_id
                 }));
                 localStorage.removeItem("user");
                 location.replace('./../');

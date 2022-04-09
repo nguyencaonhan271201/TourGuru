@@ -74,7 +74,7 @@ const findPostsByAuthor = (author) => {
       } else {
           Swal.fire({
               icon: "error",
-              text: "Error occured."
+ text: "Error occured. Author is not valid."
           }).then(() => {
               location.replace("./../");
           })
@@ -115,7 +115,7 @@ const findPostsByCategory = (category) => {
       } else {
           Swal.fire({
               icon: "error",
-              text: "Error occured."
+text: "Error occured. Category is not valid."
           }).then(() => {
               location.replace("./../");
           })

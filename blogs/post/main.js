@@ -216,6 +216,7 @@ const printDetailReactions = (result) => {
     tmpDetailedReactions[0].count += 1;
     tmpDetailedReactions[0].people.push({
       display: reaction.display_name || reaction.email,
+uid: reaction.user_id,
       image: reaction.image,
       type: reaction.reaction_type
     })
@@ -224,6 +225,7 @@ const printDetailReactions = (result) => {
       tmpDetailedReactions[reaction.reaction_type.toString()].count += 1;
       tmpDetailedReactions[reaction.reaction_type.toString()].people.push({
         display: reaction.display_name || reaction.email,
+uid: reaction.user_id,
         image: reaction.image,
         type: parseInt(reaction.reaction_type)
       })
@@ -232,6 +234,7 @@ const printDetailReactions = (result) => {
         count: 1,
         people: [{
           display: reaction.display_name || reaction.email,
+uid: reaction.user_id,
           image: reaction.image,
           type: parseInt(reaction.reaction_type)
         }]
@@ -372,16 +375,18 @@ const reDisplayDetails = (selected) => {
     listHTML += `
       <div class="reactor d-flex align-items-center justify-content-start">
         <div style="position: relative;">
+<a target="_blank" href="./../search?user=${reaction.uid}">
           <img
           class="reactor-img" 
           src="${reaction.image}"
           alt=""></img>
+ </a>
           <img
           class="reactor-img-type" 
           src="../../shared/assets/images/posts/reactions/${reaction.type}.png"
           alt=""></img>
         </div>
-        <h5 id="reactor-name">${reaction.display}</h5>
+ <h5 id="reactor-name"><a target="_blank" href="./../search?user=${reaction.uid}">${reaction.display}</a></h5>
       </div>
     `;
   })
@@ -663,7 +668,6 @@ const printBlogDetail = (info) => {
   document.getElementById("description").innerHTML = info.description;
 
   let getEditButton = document.querySelector(".btn-edit");
-  console.log(getEditButton);
   if (info.author === uid && uid !== "") {
     getEditButton.addEventListener("click", () => {
       window.location = `./../edit?id=${info.post_id}`
@@ -731,7 +735,7 @@ const getFullDate = (isWeekDay, ISODate) => {
   const toMinutes = newDateObj.getMinutes();
   const toSeconds = newDateObj.getSeconds();
   const DOW = newDateObj.getDay()
-  const dateTemplate = `${toDate}/${(toMonth - 1).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
+const dateTemplate = `${toDate.pad(2)}/${(toMonth).pad(2)}/${toYear} ${toHour.pad(2)}:${toMinutes.pad(2)}:${toSeconds.pad(2)}`;
   // console.log(dateTemplate)
   return dateTemplate;
 }
@@ -836,10 +840,17 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
                       <p>Press Esc to <a class="blue-a" href="">cancel</a>.</p>
                     </div>
                   </div>
-                    <a class="dropdown-item comment-edit" href="#" data-id="${commentID}">Edit</a>
-                    <a class="dropdown-item comment-reply-btn" href="#" data-id="${commentID}">Reply</a>
-                    <a class="dropdown-item comment-delete" href="#" data-id="${commentID}">Delete</a>
+ <div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
+                    <button class="post-btn btn btn-sm d-flex align-items-center dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="edit-drop-down">
+                      <a class="dropdown-item comment-edit" style="cursor: pointer;" data-id="${commentID}">Edit</a>
+                      <a class="dropdown-item comment-delete" style="cursor: pointer;" data-id="${commentID}">Delete</a>
+                    </div>
                   </div>
+                </div>
               </div>
             `
           }
@@ -920,6 +931,9 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
             return;
           }
         }
+ document.getElementById(`comment-${commentID}`).scrollIntoView({
+          behavior: "smooth"
+        })
       } else {
           Swal.fire({
               icon: "error",
