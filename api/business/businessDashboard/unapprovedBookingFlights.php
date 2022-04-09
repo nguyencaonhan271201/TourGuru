@@ -63,8 +63,7 @@ function getTotalBooking($business_id, $conn)
     $sql =
         "SELECT COUNT(*) as 'totalBooking'
         FROM flight_bookings
-        WHERE status <> 1 
-        and id IN
+        WHERE id IN
         (SELECT fi.booking_id FROM flight_bookings_iterations fi JOIN businesses b ON fi.flight_number LIKE CONCAT('%', b.business_code, '%') WHERE b.business_type=0 AND b.business_id = ?)";
 
     $stmt = $conn->prepare($sql);

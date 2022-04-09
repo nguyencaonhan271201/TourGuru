@@ -36,6 +36,8 @@ class HotelBooking {
         }
       }
 
+      $data["hotel"]["image_url"] = str_replace("and", "&", $data["hotel"]["image_url"]);
+
       $query = "INSERT INTO hotels(name, image_url, address, stars) VALUES (?, ?, ?, ?)";
       $stmt = $this->conn->prepare($query);
 
@@ -44,6 +46,8 @@ class HotelBooking {
       foreach ($data["hotel"] as $key => $value) {
         if ($key == "stars") {
           array_push($valueInsert, floatval(htmlspecialchars($value)));
+        } else if ($key == "image_url") {
+          array_push($valueInsert, $value);
         } else {
           array_push($valueInsert, htmlspecialchars($value));
         }
