@@ -1,8 +1,12 @@
 const busID = JSON.parse(localStorage.getItem("business"))
-  ? JSON.parse(localStorage.getItem("business")).businessID
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessID
   : null;
 
-const busCN = JSON.parse(localStorage.getItem("headerInfo"))
+const biz_user_id = JSON.parse(localStorage.getItem("business"))
+  ? JSON.parse(localStorage.getItem("headerInfo")).biz_user_id
+  : null;
+
+const busCN = JSON.parse(localStorage.getItem("business"))
   ? JSON.parse(localStorage.getItem("headerInfo")).businessCode
     ? JSON.parse(localStorage.getItem("headerInfo")).businessCode
     : JSON.parse(localStorage.getItem("headerInfo")).businessName
@@ -20,6 +24,14 @@ const busXHR = JSON.parse(localStorage.getItem("business"))
     : "name"
   : null;
 
+const busName = JSON.parse(localStorage.getItem("business"))
+  ? JSON.parse(localStorage.getItem("headerInfo")).businessName
+  : null;
+
+const busIMG = JSON.parse(localStorage.getItem("business"))
+  ? JSON.parse(localStorage.getItem("headerInfo")).image
+  : null;
+
 let offset = 1;
 
 const userID = JSON.parse(localStorage.getItem("user"))
@@ -27,7 +39,7 @@ const userID = JSON.parse(localStorage.getItem("user"))
   : null;
 
 const userName = JSON.parse(localStorage.getItem("user"))
-  ? JSON.parse(localStorage.getItem("user")).displayName
+  ? JSON.parse(localStorage.getItem("user")).username
   : null;
 
 const userImg = JSON.parse(localStorage.getItem("headerInfo"))
@@ -75,7 +87,7 @@ function sendAnswer(questionID, text) {
   xhr.onload = function () {
     if (this.status == 200) {
       console.log(this.responseText);
-      //location.reload();
+      location.reload();
     }
   };
   xhr.send(`qID=${questionID}&business_${busXHR}=${busCN}&text=${text}`);
@@ -95,11 +107,16 @@ function catchAnswerForm() {
 
 function processQuestions(questions, ans, una = ans) {
   questions.forEach((question) => {
-    console.log(question);
     if (!question.answer.length) {
-      una.prepend(unaQuestionCard_template(question, busID));
+      una.append(
+        unaQuestionCard_template(question, {
+          busID: busID,
+          busName: busName,
+          busIMG: busIMG,
+        })
+      );
     } else {
-      ans.prepend(ansQuestionCard_template(question));
+      ans.append(ansQuestionCard_template(question));
     }
   });
 
@@ -117,9 +134,10 @@ function loadQuestions(curBusType, curBusCN, curBusXHR, ans, una = ans) {
   xhr.onload = () => {
     swal.close();
     if (xhr.status === 200 && xhr.readyState === 4) {
-      // console.log(this.responseText);
+      console.log(this.responseText);
       // document.getElementById("phpResponse").innerHTML = xhr.responseText;
       let result = JSON.parse(xhr.responseText);
+      console.log(result);
       processQuestions(result, ans, una);
       // processQuestions(
       //   [{ isAnswered: true }, { id: 11, isAnswered: false, business_id: 1 }],
@@ -172,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? "name"
       : "";
 
+    console.log(curBusType, curBusType, curBusXHR);
     if (!busID) {
       $("#qFormDiv").prepend(quenstionForm_template(userName, userImg));
       catchQuestionForm(curBusType, curBusCN, curBusXHR);

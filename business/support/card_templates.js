@@ -31,17 +31,22 @@ function quenstionForm_template(user_name = "", user_img = "") {
           </div>
       </div>
     </div>
+
+    <div id="nav-ans">
+    
+    </div>
     `;
 }
 
-function unaQuestionCard_template(question, busID) {
-  if (question.business_id == busID) {
+function unaQuestionCard_template(question, business) {
+  console.log(question, business);
+  if (question.businessID == busID) {
     return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
             <img src="${question.userIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
-                <a href="../../user.php?id=${question.userID}"><h3>${question.userName}</h3></a>
+                <a href=""><h3>${question.userName}</h3></a>
                 <h4>asked a question on ${question.time}</h4>
             </div>
         </div>
@@ -51,9 +56,9 @@ function unaQuestionCard_template(question, busID) {
           <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+                    <img src="${business.busIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
                     <div>
-                        <a><h3>vietnamairlines</h3></a>
+                        <a><h3>${business.busName}</h3></a>
                     </div>
                 </div>
                 <div class="px-3">
@@ -72,12 +77,12 @@ function unaQuestionCard_template(question, busID) {
   <div class="card-body">
       <div class="d-flex align-items-center">
           <img src="${question.userIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
-          <div>
-            <a href="../../user.php?id=${question.userID}"><h3>${question.userName}</h3></a>
-            <h4>asked a question on ${question.time}</h4>
-          </div>
+            <div>
+                <a href=""><h3>${question.userName}</h3></a>
+                <h4>asked a question on ${question.time}</h4>
+            </div>
       </div>
-      <p class="card-text">${question.text}</p>
+        <p class="card-text">${question.text}</p>
       </div>
       </div>`;
 }
@@ -86,28 +91,38 @@ function ansQuestionCard_template(question) {
   return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <img src="${question.userIMG}" alt="" loading="lazy" id="profile-img">
+            <img src="${
+              question.userIMG
+            }" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
-              <a href="../../user.php?id=${question.userID}"><h3>${question.userName}</h3></a>
-              <h4>asked a question on ${question.time}</h4>
+                <a href=""><h3>${question.userName}</h3></a>
+                <h4>asked a question on ${question.time}</h4>
             </div>
         </div>
         <p class="card-text">${question.text}</p>
   
-        <div class="ms-5">
-          <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
-                    <div>
-                        <a><h3>vietnamairlines</h3></a>
-                        <h4>answered on April 2019</h4>
-                    </div>
-                </div>
-                <p class="card-text">${question.aswer[0].text}</p>
-            </div>
-          </div>
-        </div>
+        ${repCard_template(question.answer)}
     </div>
   </div>`;
+}
+
+function repCard_template(answers) {
+  let html = ``;
+  answers.forEach((answer) => {
+    html += `<div class="ms-5">
+  <div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <img src="${answer.businessIMG}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <div>
+                <a href=""><h3>${answer.userName}</h3></a>
+                <h4>answered on ${answer.time}</h4>
+            </div>
+        </div>
+        <p class="card-text"> ${answer.text}</p>
+    </div>
+  </div>
+</div>`;
+  });
+  return html;
 }

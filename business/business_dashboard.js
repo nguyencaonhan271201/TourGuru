@@ -11,6 +11,10 @@ const busType = JSON.parse(localStorage.getItem("business"))
     : "hotels"
   : null;
 
+if (busType === "flights") {
+  document.querySelector(".hotel_table").style.display = "none";
+} else document.querySelector(".flight_table").style.display = "none";
+
 const busXHR = JSON.parse(localStorage.getItem("business"))
   ? JSON.parse(localStorage.getItem("headerInfo")).businessType
     ? "id"
