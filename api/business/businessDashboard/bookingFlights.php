@@ -5,7 +5,7 @@ $db = Database::getInstance();
 $conn = $db->getConnection();
 
 if (isset($_GET['business_code'])) {
-    $offset = $_GET['offset'] ? isset($_GET['offset']) : 1;
+    $offset = isset($_GET['offset']) ? $_GET['offset'] : 1;
     $business_code = $_GET['business_code'];
 
     //Get the business id
