@@ -1,6 +1,6 @@
 # TourGuru
 
-**CS207 - Introduction to Software Engineering - Group Project**\
+**CS207b - Advanced Software Engineering - Group Project**\
 **Group 7 - CNTT**\
 **Members:** </br>
 
