@@ -76,7 +76,7 @@ function unaQuestionCard_template(question, business) {
     return `<div class="card m-3">
   <div class="card-body">
       <div class="d-flex align-items-center">
-          <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
                 <a href=""><h3>${question.userName}</h3></a>
                 <h4>asked a question on ${question.time}</h4>

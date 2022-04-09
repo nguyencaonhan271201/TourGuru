@@ -36,7 +36,6 @@ if (isset($_GET['revenue'])) {
 
 }
 
-if (isset($_GET['business_id'])) {
     $business_id = $_GET['business_id'];
 
     //Get the business id

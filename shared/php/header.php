@@ -48,7 +48,7 @@
               >
             </li>
             <li class="nav-item me-4 main-nav-item">
-              <a class="nav-link" id="nav-attraction" aria-current="page" href="<?php echo getenv('ROOT')?>/blogs"
+                 <a class="nav-link" id="nav-attraction" aria-current="page" href="<?php echo getenv('ROOT')?>/blogs"
                 ><span>Blog</span></a
               >
             </li>
@@ -108,6 +108,9 @@
                     </li>
                     <li>
                       <a class="dropdown-item" href="<?php echo getenv('ROOT')?>/plans"><i class="fa fa-calendar" aria-hidden="true"></i> My plans</a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" id="blog-item" href="#"><i class="fas fa-blog"></i> My blog</a>
                     </li>
                     <li>
                       <a class="dropdown-item" id="blog-item" href="#"><i class="fas fa-blog"></i> My blog</a>

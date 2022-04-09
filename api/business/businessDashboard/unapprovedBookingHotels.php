@@ -29,7 +29,6 @@ if (isset($_GET['revenue'])) {
                 JOIN businesses b 
                 ON h.name = b.business_name 
             WHERE b.business_type=1 AND b.business_id = ?)";
-      
   $stmt = $conn->prepare($sql);
   $stmt->bind_param("i", $businessID);
   $stmt->execute();

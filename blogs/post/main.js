@@ -216,7 +216,7 @@ const printDetailReactions = (result) => {
     tmpDetailedReactions[0].count += 1;
     tmpDetailedReactions[0].people.push({
       display: reaction.display_name || reaction.email,
-      uid: reaction.user_id,
+    uid: reaction.user_id,
       image: reaction.image,
       type: reaction.reaction_type
     })
@@ -840,7 +840,7 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
                       <p>Press Esc to <a class="blue-a" href="">cancel</a>.</p>
                     </div>
                   </div>
-                  <div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
+<div class="d-flex flex-column align-items-center justify-content-center comment-btn-block">
                     <button class="post-btn btn btn-sm d-flex align-items-center dropdown-toggle" type="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -931,8 +931,7 @@ const apiUpdateComment = (actionType, comment, id = null, childOf = null) => {
             return;
           }
         }
-
-        document.getElementById(`comment-${commentID}`).scrollIntoView({
+document.getElementById(`comment-${commentID}`).scrollIntoView({
           behavior: "smooth"
         })
       } else {
