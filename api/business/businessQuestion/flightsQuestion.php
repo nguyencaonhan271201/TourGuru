@@ -66,7 +66,11 @@
     $query = "SELECT gb.*,
     (SELECT mail FROM users u WHERE u.user_id = gb.user_id) AS email,
     (SELECT display_name FROM users u WHERE u.user_id = gb.user_id) AS displayName,
-    (SELECT image FROM users u WHERE u.user_id = gb.user_id) AS userIMG
+    (SELECT image FROM users u WHERE u.user_id = gb.user_id) AS userIMG,
+    (SELECT business_id from businesses b WHERE b.business_id = gb.business_id) AS business_id,
+    (SELECT biz_user_id from businesses b WHERE b.business_id = gb.business_id) AS biz_user_id,
+    (SELECT business_name from businesses b WHERE b.business_id = gb.business_id) AS business_name,
+    (SELECT business_code from businesses b WHERE b.business_id = gb.business_id) AS business_code
     FROM guest_business_communications gb WHERE business_id = ? AND reply_of IS NULL ORDER BY created DESC LIMIT ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ii", $businessID, $offset);
@@ -89,6 +93,10 @@
       $pushObject->userID = $question["user_id"];
       $pushObject->text = $question["content"];
       $pushObject->userIMG = $question["userIMG"];
+      $pushObject->businessID = $question["business_id"];
+      $pushObject->bizUserID = $question["biz_user_id"];
+      $pushObject->businessName = $question["business_name"];
+      $pushObject->businessCode = $question["business_code"];
 
       //Get reply
       $query = "SELECT gb.*,
