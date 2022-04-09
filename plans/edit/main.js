@@ -1770,6 +1770,13 @@ const showDeleteDetailConfirmation = (detailID) => {
     })
 }
 
+const recheckTimeSwal = () => {
+    document.getElementById("reminder-time").readOnly = !document.getElementById("remind").checked;
+    if (!document.getElementById("remind").checked) {
+        document.getElementById("reminder-time").value = "";
+    }
+}
+
 const bookingSwalEventListeners = () => {
     document.querySelectorAll('.flight-booking-enabled').forEach(item => {
         item.addEventListener("click", () => {
@@ -1869,7 +1876,7 @@ const savePlan = () => {
         let hotelIndexes = [];
 
         chosenBookings.flights.forEach(booking => {
-            if (booking[0])
+            if (booking && booking[0])
                 flightIndexes.push(booking[0]["booking_id"]);
         })
 

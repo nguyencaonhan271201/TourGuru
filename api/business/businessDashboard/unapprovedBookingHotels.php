@@ -65,8 +65,7 @@ function getTotalBooking($business_id, $conn)
 {
     $sql =
         "SELECT COUNT(*) AS 'totalBooking' FROM hotel_bookings
-        WHERE approved <> 1 and 
-            hotel_id IN
+        WHERE hotel_id IN
             (SELECT h.hotel_id 
             FROM hotels h 
                 JOIN businesses b 

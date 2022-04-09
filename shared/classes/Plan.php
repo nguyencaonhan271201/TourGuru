@@ -274,9 +274,9 @@ class Plan {
   }
 
   public function deletePlan($plan_id, $uid, &$errors) {
-    $sql = "DELETE FROM plans WHERE user_id = ? AND id = ?";
+    $sql = "DELETE FROM plans WHERE id = ?";
     $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param("si", $uid, $plan_id);
+    $stmt->bind_param("i", $plan_id);
     $stmt->execute();
     if ($stmt->affected_rows != 1){
       $errors["server_err"] = "Error occurred!!!";

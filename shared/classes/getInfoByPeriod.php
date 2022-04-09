@@ -110,7 +110,7 @@ class getInfoByPeriod{
     
           foreach ($list as $booking) {
             $date = new DateTime($booking["date_booked"]);
-            $date->modify("+7 hours");
+            // $date->modify("+7 hours");
             $month = intval($date->format('m'));
             $day = intval($date->format('d'));
             $year = intval($date->format('Y'));
@@ -148,7 +148,7 @@ class getInfoByPeriod{
     
           foreach ($list as $booking) {
             $date = new DateTime($booking["date_booked"]);
-            $date->modify("+7 hours");
+            // $date->modify("+7 hours");
             $month = intval($date->format('m'));
             $day = intval($date->format('d'));
             $year = intval($date->format('Y'));
