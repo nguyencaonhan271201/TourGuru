@@ -4,14 +4,14 @@ require_once("../../../shared/classes/Database.php");
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
-if (isset($_GET['business_code'])) {
+if (isset($_GET['business_id'])) {
     $period = isset($_GET['period']) ? $_GET['period'] : 'W';
-    $business_code = $_GET['business_code'];
+    $business_id = $_GET['business_id'];
 
     //Get the business id
     $query = "SELECT business_id FROM businesses WHERE biz_user_id = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $business_code);
+    $stmt->bind_param("s", $business_id);
     $stmt->execute();
     $results = $stmt->get_result();
     $businesses = $results->fetch_all(MYSQLI_ASSOC);

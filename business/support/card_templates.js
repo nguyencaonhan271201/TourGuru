@@ -18,14 +18,14 @@ function quenstionForm_template(user_name = "", user_img = "") {
     <div class="card m-3">
       <div class="card-body">
           <div class="d-flex align-items-center ">
-              <img src="${user_img}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+              <img src="${user_img.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
               <div>
                   <a><h3>${user_name ? user_name : ""}</h3></a>
               </div>
           </div>
           <div class="px-3">
             <form id="question_form">
-              <textarea rows="5" class="w-100" name="text"></textarea>
+              <textarea rows="5" class="w-100 p-2" name="text"></textarea>
               <button class="btn btn-outline-primary btn-sm rounded-pill" type="submit"><i class="bi bi-arrow-up"></i></button>
             </form>                        
           </div>
@@ -38,31 +38,31 @@ function quenstionForm_template(user_name = "", user_img = "") {
     `;
 }
 
-function unaQuestionCard_template(question, busID) {
-  console.log(question, busID);
-  if (question.business_id == busID) {
+function unaQuestionCard_template(question, business) {
+  console.log(question, business);
+  if (question.businessID == busID) {
     return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
-                <a><h3>waseydified</h3></a>
-                <h4>asked a question on April 2019</h4>
+                <a href=""><h3>${question.userName}</h3></a>
+                <h4>asked a question on ${question.time}</h4>
             </div>
         </div>
-        <p class="card-text">I gave 200,000 dong to donate to their cause and paid for our coffee and treated her to lunch and the grab around the area. It is better to pay everything in saigon in dong coz they stop accepting USD in any area other than district 1</p>
+        <p class="card-text">${question.text}</p>
 
         <div class="ms-5">
           <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+                    <img src="${business.busIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
                     <div>
-                        <a><h3>vietnamairlines</h3></a>
+                        <a><h3>${business.busName}</h3></a>
                     </div>
                 </div>
                 <div class="px-3">
-                  <form class="answer_form" data-question_id="${question.id}">
+                  <form class="answer_form" data-question_id="${question.questionID}">
                     <textarea rows="5"  class="w-100" name="text" "></textarea>
                     <button class="btn btn-outline-primary btn-sm rounded-pill" type="submit" ><i class="bi bi-arrow-up"></i></button>
                   </form>                        
@@ -76,13 +76,13 @@ function unaQuestionCard_template(question, busID) {
     return `<div class="card m-3">
   <div class="card-body">
       <div class="d-flex align-items-center">
-          <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
-          <div>
-              <a><h3>waseydified</h3></a>
-              <h4>asked a question on April 2019</h4>
-          </div>
+          <img src="${question.userIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <div>
+                <a href=""><h3>${question.userName}</h3></a>
+                <h4>asked a question on ${question.time}</h4>
+            </div>
       </div>
-      <p class="card-text">I gave 200,000 dong to donate to their cause and paid for our coffee and treated her to lunch and the grab around the area. It is better to pay everything in saigon in dong coz they stop accepting USD in any area other than district 1</p>
+        <p class="card-text">${question.text}</p>
       </div>
       </div>`;
 }
@@ -91,28 +91,38 @@ function ansQuestionCard_template(question) {
   return `<div class="card m-3">
     <div class="card-body">
         <div class="d-flex align-items-center">
-            <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <img src="${
+              question.userIMG
+            }" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
             <div>
-                <a><h3>waseydified</h3></a>
-                <h4>asked a question on April 2019</h4>
+                <a href=""><h3>${question.userName}</h3></a>
+                <h4>asked a question on ${question.time}</h4>
             </div>
         </div>
-        <p class="card-text">I gave 200,000 dong to donate to their cause and paid for our coffee and treated her to lunch and the grab around the area. It is better to pay everything in saigon in dong coz they stop accepting USD in any area other than district 1</p>
+        <p class="card-text">${question.text}</p>
   
-        <div class="ms-5">
-          <div class="card">
-            <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/cs204finalproj.appspot.com/o/istockphoto-1223671392-612x612.jpg?alt=media&amp;token=e9312c19-c34e-4a87-9a72-552532766cde" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
-                    <div>
-                        <a><h3>vietnamairlines</h3></a>
-                        <h4>answered on April 2019</h4>
-                    </div>
-                </div>
-                <p class="card-text">I gave 200,000 dong to donate to their cause and paid for our coffee and treated her to lunch and the grab around the area. It is better to pay everything in saigon in dong coz they stop accepting USD in any area other than district 1</p>
-            </div>
-          </div>
-        </div>
+        ${repCard_template(question.answer)}
     </div>
   </div>`;
+}
+
+function repCard_template(answers) {
+  let html = ``;
+  answers.forEach((answer) => {
+    html += `<div class="ms-5">
+  <div class="card">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <img src="${answer.businessIMG.replace("../../../", "../../")}" class="rounded-circle m-3" height="22" alt="" loading="lazy" id="profile-img">
+            <div>
+                <a href=""><h3>${answer.userName}</h3></a>
+                <h4>answered on ${answer.time}</h4>
+            </div>
+        </div>
+        <p class="card-text"> ${answer.text}</p>
+    </div>
+  </div>
+</div>`;
+  });
+  return html;
 }
