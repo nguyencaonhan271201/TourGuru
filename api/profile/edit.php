@@ -37,6 +37,7 @@
         $id = $_GET["id"];
         
         $info = $user->getHeaderInfo($id);
+
         $info['isAdmin'] = $info['role'] == 0;
         if (empty($info)) {
           http_response_code(400);

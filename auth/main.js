@@ -374,7 +374,7 @@ const initializeEventListeners = () => {
             signInWithGoogle(res)
         })
         .catch(err => {
-            //console.log(err);
+            console.log(err);
             if (errorText != null) {
                 Swal.fire({
                     icon: 'error',
@@ -536,7 +536,6 @@ const getInfoFromServer = async() => {
         if (xhr.status === 200 && xhr.readyState === 4) {
            //Nhận thông tin và in ra các ô input
             let result = JSON.parse(xhr.responseText); 
-            console.log(result);
             localStorage.setItem("headerInfo", JSON.stringify({
                 "isAdmin": result.isAdmin,
                 "image": result.image,
