@@ -253,7 +253,7 @@ const getSearchInfo = (searchQuery) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/locations?name=${searchQuery}&locale=en-us`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -390,7 +390,7 @@ const getHotelsList = (destinationID, destinationType, pageNumber, order_by, adu
     xhr.open("GET", query);
 
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");    
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");    
 
     xhr.send();
 }
@@ -693,7 +693,7 @@ const getFilter = (destinationID, destinationType, pageNumber, order_by, adults,
     xhr.open("GET", query);
 
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }

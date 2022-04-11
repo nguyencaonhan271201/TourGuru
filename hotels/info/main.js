@@ -263,7 +263,7 @@ const getHotelInfoFromAPI = (hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/data?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -295,7 +295,7 @@ const getHotelDescription = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/description?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -335,7 +335,7 @@ const getHotelRoomsList = async(hotelID) => {
 
         xhr.open("GET", query);
         xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-        xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+        xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
         xhr.send();
     } else {
@@ -353,7 +353,7 @@ const getHotelRoomsList = async(hotelID) => {
 
         xhr.open("GET", query);
         xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-        xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+        xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
         xhr.send();
     }
@@ -379,7 +379,7 @@ const getHotelFacilities = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/facilities?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -404,7 +404,7 @@ const getNearbyPlaces = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/nearby-places?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -429,7 +429,7 @@ const getHotelReviewScores = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/review-scores?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -456,7 +456,7 @@ const getHotelMapLocation = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/map-markers?locale=en-us&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
@@ -489,7 +489,7 @@ const getHotelImages = async(hotelID) => {
 
     xhr.open("GET", `https://booking-com.p.rapidapi.com/v1/hotels/photos?locale=en-gb&hotel_id=${hotelID}`);
     xhr.setRequestHeader("x-rapidapi-host", "booking-com.p.rapidapi.com");
-    xhr.setRequestHeader("x-rapidapi-key", "e86a1525abmshcca4c416e787849p14438djsn32322c1f0a32");
+    xhr.setRequestHeader("x-rapidapi-key", "dc1d713e46mshaece5eb10a4b419p13fd1fjsn8dcfc1449a18");
 
     xhr.send();
 }
